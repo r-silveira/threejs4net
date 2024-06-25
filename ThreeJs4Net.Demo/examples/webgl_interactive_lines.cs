@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -47,7 +47,7 @@ namespace ThreeJs4Net.Demo.examples
             scene = new Scene();
 
             var sphereGeometry = new SphereGeometry(5);
-            var material = new MeshBasicMaterial() { Color = Color.Red };
+            var material = new MeshBasicMaterial() { Color = Color.ColorName(ColorKeywords.red) };
 
             sphereInter = new Mesh(sphereGeometry, material);
             sphereInter.Visible = false;
@@ -108,7 +108,7 @@ namespace ThreeJs4Net.Demo.examples
             raycaster = new Raycaster();
 			raycaster.LinePrecision = 3;
 
-            renderer.SetClearColor((Color)colorConvertor.ConvertFromString("#f0f0f0"));
+            renderer.SetClearColor(new Color(0xf0f0f0));
         }
 
         /// <summary>

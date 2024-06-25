@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿#if USE_WINDOWS
+using System.Drawing;
 using ThreeJs4Net.Loaders;
 using ThreeJs4Net.Textures;
 
@@ -22,4 +23,4 @@ namespace ThreeJs4Net.Extras
         }
     }
 }
-
+#endif

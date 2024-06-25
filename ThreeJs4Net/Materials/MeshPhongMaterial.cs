@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Drawing;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Textures;
 
@@ -7,13 +6,13 @@ namespace ThreeJs4Net.Materials
 {
     public class MeshPhongMaterial : Material, IWireframe, IMap, IMorphTargets
     {
-        public Color Color = Color.White; // diffuse
+        public Color Color = Color.ColorName(ColorKeywords.white);
 
-        public Color Ambient = Color.White;
+        public Color Ambient = Color.ColorName(ColorKeywords.white);
 
-        public Color Emissive = Color.Black;
+        public Color Emissive = Color.ColorName(ColorKeywords.black);
 
-        public Color Specular = Color.DarkSlateBlue;
+        public Color Specular = Color.ColorName(ColorKeywords.darkslateblue);
 
         public float Shininess = 30;
 
@@ -24,7 +23,7 @@ namespace ThreeJs4Net.Materials
         public Vector3 WrapRgb = new Vector3( 1, 1, 1 );
 
         // IMap
-
+#if USE_WINDOWS
         public Texture Map  { get; set; }
 
         public Texture AlphaMap { get; set; }
@@ -36,7 +35,20 @@ namespace ThreeJs4Net.Materials
         public Texture BumpMap { get; set; }
 
         public Texture LightMap { get; set; }
+#else
+        public object Map  { get; set; }
 
+        public object AlphaMap { get; set; }
+
+        public object SpecularMap { get; set; }
+
+        public object NormalMap { get; set; }
+
+        public object BumpMap { get; set; }
+
+        public object LightMap { get; set; }
+
+#endif
 
         //
 

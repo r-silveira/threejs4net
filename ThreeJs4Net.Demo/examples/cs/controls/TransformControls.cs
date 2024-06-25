@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -297,39 +297,39 @@ namespace ThreeJs4Net.Demo.examples.cs.controls
 
             this.handleGizmos = new Hashtable();
             this.handleGizmos.Add("X",
-                new ArrayList { new ArrayList { new Mesh(arrowGeometry, new GizmoMaterial { Color = Color.Red }) , new ArrayList { 0.5f, 0.0f, 0.0f }, new ArrayList { 0.0f, 0.0f, (float)-Mat.HalfPI }}, 
-                                new ArrayList { new Line(lineXGeometry, new GizmoLineMaterial { Color = Color.Red })}});
+                new ArrayList { new ArrayList { new Mesh(arrowGeometry, new GizmoMaterial { Color = Color.ColorName(ColorKeywords.red)  }) , new ArrayList { 0.5f, 0.0f, 0.0f }, new ArrayList { 0.0f, 0.0f, (float)-Mat.HalfPI }}, 
+                                new ArrayList { new Line(lineXGeometry, new GizmoLineMaterial { Color = Color.ColorName(ColorKeywords.red) })}});
             this.handleGizmos.Add("Y",
-                new ArrayList { new ArrayList { new Mesh(arrowGeometry, new GizmoMaterial { Color = Color.Lime }), new ArrayList {0.0f,  0.5f, 0.0f }}, 
-                                new ArrayList { new Line(lineYGeometry, new GizmoLineMaterial { Color = Color.Lime })} });
+                new ArrayList { new ArrayList { new Mesh(arrowGeometry, new GizmoMaterial { Color = Color.ColorName(ColorKeywords.lime) }), new ArrayList {0.0f,  0.5f, 0.0f }}, 
+                                new ArrayList { new Line(lineYGeometry, new GizmoLineMaterial { Color = Color.ColorName(ColorKeywords.lime) })} });
             this.handleGizmos.Add("Z",
-                new ArrayList { new ArrayList { new Mesh(arrowGeometry, new GizmoMaterial { Color = Color.Blue }) , new ArrayList {0.0f, 0.0f, 0.5f }, new ArrayList { (float)Mat.HalfPI, 0.0f, 0.0f }}, 
-                                new ArrayList { new Line(lineZGeometry, new GizmoLineMaterial { Color = Color.Blue }) }} );
+                new ArrayList { new ArrayList { new Mesh(arrowGeometry, new GizmoMaterial { Color = Color.ColorName(ColorKeywords.blue) }) , new ArrayList {0.0f, 0.0f, 0.5f }, new ArrayList { (float)Mat.HalfPI, 0.0f, 0.0f }}, 
+                                new ArrayList { new Line(lineZGeometry, new GizmoLineMaterial { Color = Color.ColorName(ColorKeywords.blue) }) }} );
             this.handleGizmos.Add("XYZ",
-                new ArrayList { new ArrayList { new Mesh(new OctahedronGeometry(0.1f, 0), new GizmoMaterial { Color = Color.White, Opacity = 0.25f }), new ArrayList { 0.0f, 0.0f, 0.0f }, new ArrayList { 0.0f, 0.0f, 0.0f } } } );
+                new ArrayList { new ArrayList { new Mesh(new OctahedronGeometry(0.1f, 0), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.white), Opacity = 0.25f }), new ArrayList { 0.0f, 0.0f, 0.0f }, new ArrayList { 0.0f, 0.0f, 0.0f } } } );
             this.handleGizmos.Add("XY",
-                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.29f, 0.29f), new GizmoMaterial { Color = Color.Yellow, Opacity = 0.25f }), new ArrayList { 0.15f, 0.15f, 0.0f } } } );
+                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.29f, 0.29f), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.yellow), Opacity = 0.25f }), new ArrayList { 0.15f, 0.15f, 0.0f } } } );
             this.handleGizmos.Add("YZ",
-                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.29f, 0.29f), new GizmoMaterial { Color = Color.Cyan, Opacity = 0.25f }), new ArrayList { 0.0f, 0.15f, 0.15f }, new ArrayList { 0.0f, (float)Mat.HalfPI, 0.0f } } });
+                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.29f, 0.29f), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.cyan), Opacity = 0.25f }), new ArrayList { 0.0f, 0.15f, 0.15f }, new ArrayList { 0.0f, (float)Mat.HalfPI, 0.0f } } });
             this.handleGizmos.Add("XZ",
-                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.29f, 0.29f), new GizmoMaterial { Color = Color.Magenta, Opacity = 0.25f }), new ArrayList { 0.15f, 0.0f, 0.15f }, new ArrayList { (float)-Mat.HalfPI, 0.0f, 0.0f } } });
+                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.29f, 0.29f), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.magenta), Opacity = 0.25f }), new ArrayList { 0.15f, 0.0f, 0.15f }, new ArrayList { (float)-Mat.HalfPI, 0.0f, 0.0f } } });
 
 
             this.pickerGizmos = new Hashtable();
             this.pickerGizmos.Add("X",
-                new ArrayList { new ArrayList { new Mesh(new CylinderGeometry(0.2f, 0, 1, 4, 1, false), new GizmoMaterial { Color = Color.Red, Opacity = 0.25f }), new ArrayList { 0.6f, 0.0f, 0.0f }, new ArrayList { 0.0f, 0.0f, (float)-Mat.HalfPI } } });
+                new ArrayList { new ArrayList { new Mesh(new CylinderGeometry(0.2f, 0, 1, 4, 1, false), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.red), Opacity = 0.25f }), new ArrayList { 0.6f, 0.0f, 0.0f }, new ArrayList { 0.0f, 0.0f, (float)-Mat.HalfPI } } });
             this.pickerGizmos.Add("Y",
-                new ArrayList { new ArrayList { new Mesh(new CylinderGeometry(0.2f, 0, 1, 4, 1, false), new GizmoMaterial { Color = Color.Lime, Opacity = 0.25f }), new ArrayList { 0.0f, 0.6f, 0.0f }, }});
+                new ArrayList { new ArrayList { new Mesh(new CylinderGeometry(0.2f, 0, 1, 4, 1, false), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.lime), Opacity = 0.25f }), new ArrayList { 0.0f, 0.6f, 0.0f }, }});
             this.pickerGizmos.Add("Z",
-                new ArrayList { new ArrayList { new Mesh(new CylinderGeometry(0.2f, 0, 1, 4, 1, false), new GizmoMaterial { Color = Color.Lime, Opacity = 0.25f }), new ArrayList { 0.0f, 0.0f, 0.6f }, new ArrayList { (float)Mat.HalfPI, 0.0f, 0.0f }}});
+                new ArrayList { new ArrayList { new Mesh(new CylinderGeometry(0.2f, 0, 1, 4, 1, false), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.lime), Opacity = 0.25f }), new ArrayList { 0.0f, 0.0f, 0.6f }, new ArrayList { (float)Mat.HalfPI, 0.0f, 0.0f }}});
             this.pickerGizmos.Add("XYZ",
-                new ArrayList { new ArrayList { new Mesh(new OctahedronGeometry(0.2f, 0), new GizmoMaterial { Color = Color.White, Opacity = 0.25f }) } } );
+                new ArrayList { new ArrayList { new Mesh(new OctahedronGeometry(0.2f, 0), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.white), Opacity = 0.25f }) } } );
             this.pickerGizmos.Add("XY",
-                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.4f, 0.4f), new GizmoMaterial { Color = Color.Yellow, Opacity = 0.25f }), new ArrayList { 0.2f, 0.2f, 0.0f } } });
+                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.4f, 0.4f), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.yellow), Opacity = 0.25f }), new ArrayList { 0.2f, 0.2f, 0.0f } } });
             this.pickerGizmos.Add("YZ",
-                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.4f, 0.4f), new GizmoMaterial { Color = Color.Cyan, Opacity = 0.25f }), new ArrayList { 0.0f, 0.2f, 0.2f }, new ArrayList { 0.0f, (float)Mat.HalfPI, 0.0f } } });
+                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.4f, 0.4f), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.cyan), Opacity = 0.25f }), new ArrayList { 0.0f, 0.2f, 0.2f }, new ArrayList { 0.0f, (float)Mat.HalfPI, 0.0f } } });
             this.pickerGizmos.Add("XZ",
-                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.4f, 0.4f), new GizmoMaterial { Color = Color.Magenta, Opacity = 0.25f }), new ArrayList { 0.2f, 0.0f, 0.2f }, new ArrayList { (float)-Mat.HalfPI, 0.0f, 0.0f } } });
+                new ArrayList { new ArrayList { new Mesh(new PlaneGeometry(0.4f, 0.4f), new GizmoMaterial { Color = Color.ColorName(ColorKeywords.magenta), Opacity = 0.25f }), new ArrayList { 0.2f, 0.0f, 0.2f }, new ArrayList { (float)-Mat.HalfPI, 0.0f, 0.0f } } });
       
             this.init();
         }

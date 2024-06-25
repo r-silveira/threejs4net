@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if USE_WINDOWS
+using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
@@ -40,3 +41,4 @@ namespace ThreeJs4Net.Renderers.WebGL.PlugIns
        }
     }
 }
+#endif

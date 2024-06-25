@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if USE_WINDOWS
+using System;
 using System.Collections;
 using ThreeJs4Net.Textures;
 
@@ -44,7 +45,7 @@ namespace ThreeJs4Net.Renderers
 
             if (null != options)
             {
-                this.DepthBuffer   = (null != options["depthBuffer"])   ? (bool)options["depthBuffer"]   : true;
+                this.DepthBuffer = (null != options["depthBuffer"]) ? (bool)options["depthBuffer"] : true;
                 this.StencilBuffer = (null != options["stencilBuffer"]) ? (bool)options["stencilBuffer"] : true;
             }
         }
@@ -63,11 +64,11 @@ namespace ThreeJs4Net.Renderers
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public void setSize (int width,int height ) 
+        public void setSize(int width, int height)
         {
-		    this.Width = width;
-		    this.Height = height;
-	    }
+            this.Width = width;
+            this.Height = height;
+        }
 
         /// <summary>
         /// 
@@ -147,3 +148,5 @@ namespace ThreeJs4Net.Renderers
         #endregion
     }
 }
+
+#endif

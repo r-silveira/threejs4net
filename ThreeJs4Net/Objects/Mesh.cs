@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -528,7 +526,6 @@ namespace ThreeJs4Net.Objects
             }
             else if (geometry is Geometry geoModel)
             {
-
                 //var fvA, fvB, fvC;
                 //var isMultiMaterial = this.Materials != null & this.Materials.Count > 0;
 

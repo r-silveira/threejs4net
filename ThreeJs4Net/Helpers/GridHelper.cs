@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using ThreeJs4Net.Core;
+﻿using ThreeJs4Net.Core;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
@@ -19,16 +18,11 @@ namespace ThreeJs4Net.Helpers
         /// <param name="step"></param>
         public GridHelper(float size, float step)
         {
-            var colorConvertor = new ColorConverter();
-
             var geometry = new Geometry();
             var material = new LineBasicMaterial { VertexColors = Three.VertexColors };
 
-            this.Color1 = (Color)colorConvertor.ConvertFromString("#444444");
-            this.Color2 = (Color)colorConvertor.ConvertFromString("#888888");
-
-            this.Color1 = Color.DeepSkyBlue; // TODO deze kleur komt door
-            this.Color2 = Color.GreenYellow; // TODO deze kleur komt NIET door
+            this.Color1 = new Color(0x444444);
+            this.Color2 = new Color(0x888888);
 
             for ( var i = - size; i <= size; i += step ) 
             {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 
 namespace ThreeJs4Net.Math
 {
@@ -45,7 +44,7 @@ namespace ThreeJs4Net.Math
 
         public static Color Random(this Color value)
         {
-            return Color.FromArgb(255, random.Next(0, 255), random.Next(0, 255), random.Next(0, 255));
+            return new Color((float)random.NextDouble(), (float)random.NextDouble(), (float)random.NextDouble());
         }
 
         /// <summary>
@@ -95,5 +94,19 @@ namespace ThreeJs4Net.Math
             return value;
         }
 
+        public static float Lerp(this float x, float y, float t)
+        {
+            return (1 - t) * x + t * y;
+
+        }
+
+        public static List<T> Add<T>(this List<T> source, T x, T y, T z)
+        {
+            source.Add(x);
+            source.Add(y);
+            source.Add(z);
+
+            return source;
+        }
     }
 }

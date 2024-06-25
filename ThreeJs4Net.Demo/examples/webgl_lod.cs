@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Demo.examples.cs.controls;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Materials;
@@ -46,14 +46,14 @@ namespace ThreeJs4Net.Demo.examples
             controls.RollSpeed = (float)System.Math.PI / 10;
 
             scene = new Scene();
-            scene.Fog = new Fog(Color.Black, 1, 15000);
+            scene.Fog = new Fog(Color.ColorName(ColorKeywords.black), 1, 15000);
             scene.AutoUpdate = false;
 
-            var light1 = new PointLight((Color)colorConvertor.ConvertFromString("#ff2200"));
+            var light1 = new PointLight(new Color(0xff2200));
             light1.Position = new Vector3(0, 0, 0);
             scene.Add(light1);
 
-            var light2 = new DirectionalLight(Color.White);
+            var light2 = new DirectionalLight(Color.ColorName(ColorKeywords.white));
             light2.Position = new Vector3(0, 0, 1).Normalize();
             scene.Add(light2);
 
@@ -64,7 +64,7 @@ namespace ThreeJs4Net.Demo.examples
             geometry.Add(new GeometryEx() { distance = 2000, geometry = new IcosahedronGeometry(100, 1) });
             geometry.Add(new GeometryEx() { distance = 8000, geometry = new IcosahedronGeometry(100, 4) });
             
-			var material = new MeshLambertMaterial() { Color = Color.White, Wireframe = true } ;
+			var material = new MeshLambertMaterial() { Color = Color.ColorName(ColorKeywords.white), Wireframe = true } ;
 
 			for (var j = 0; j < 1000; j ++ ) {
 

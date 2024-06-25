@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Drawing;
+using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Materials
 {
@@ -22,7 +22,7 @@ namespace ThreeJs4Net.Materials
         /// <param name="parameters"></param>
         public LineBasicMaterial(Hashtable parameters = null)
         {
-            this.Color = Color.White;
+            this.Color = Color.ColorName(ColorKeywords.white);
 
             this.type = "LineBasicMaterial";
 

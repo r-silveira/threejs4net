@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Demo.examples.cs.controls;
 using ThreeJs4Net.Demo.examples.cs.loaders;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -50,13 +50,13 @@ namespace ThreeJs4Net.Demo.examples
       
  			// light
 
-            var dirLight = new DirectionalLight(Color.White);
+            var dirLight = new DirectionalLight(Color.ColorName(ColorKeywords.white));
             dirLight.Position = new Vector3(200, 200, 1000).Normalize();
 
             camera.Add(dirLight);
             camera.Add(dirLight.target);
 
-            var material = new MeshLambertMaterial() { Color = Color.White, Side = Three.DoubleSide };
+            var material = new MeshLambertMaterial() { Color = Color.ColorName(ColorKeywords.white), Side = Three.DoubleSide };
 
             // Link in the loader
 

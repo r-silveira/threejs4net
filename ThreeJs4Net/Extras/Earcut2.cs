@@ -1,31 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using ThreeJs4Net.Math;
 
+/**
+ *  * Port from https://github.com/mapbox/earcut (v2.2.2)
+ */
 namespace ThreeJs4Net.Extras
 {
-    public static class Earcut
+    [Serializable]
+    public class Earcut
     {
-        public static List<int> Triangulate(List<float> data, List<int> holeIndices, int dim = 2)
+        public class EarcutNode
         {
-            dim = Mathf.Max(dim, 2);
+            public float X;
 
-            var hasHoles = holeIndices.Count;
-            var outerLen = hasHoles > 0 ? holeIndices[0] * dim : data.Count;
-            var outerNode = linkedList(data, 0, outerLen, dim, true);
-            var triangles = new List<int>();
+            public float Y;
 
-            if (outerNode == null) return triangles;
-            var minX = 0f;
-            var minY = 0f;
-            var maxX = 0f;
-            var maxY = 0f;
-            var x = 0f;
-            var y = 0f;
-            var size = 0f;
+            public int Z = 0;
 
-            if (hasHoles > 0) outerNode = EliminateHoles(data, holeIndices, outerNode, dim);
+            public int I;
+
+            // previous and next vertice EarcutNodes in a polygon ring
+            public EarcutNode Prev;
+
+            public EarcutNode Next;
+
+            // previous and next EarcutNodes in z-order
+            public EarcutNode PrevZ;
+
+            public EarcutNode NextZ;
+
+            // indicates whether this is a steiner point
+            public bool Steiner = false;
+
+            public EarcutNode(int i, float x, float y)
+            {
+                I = i;
+                X = x;
+                Y = y;
+            }
+
+        }
+        private int dim;
+        public List<int> Triangulate(List<float> data, List<int> holeIndices, int? dim = null)
+        {
+            dim = dim != null ? dim : 2;
+
+            var hasHoles = holeIndices != null && holeIndices.Count > 0;
+
+            var outerLen = hasHoles ? holeIndices[0] * dim.Value : data.Count;
+
+            var outerEarcutNode = LinkedList(data, 0, outerLen, dim.Value, true);
+
+            List<int> triangles = new List<int>();
+
+            if (outerEarcutNode == null || outerEarcutNode.Next == outerEarcutNode.Prev) return triangles;
+
+            float minX = 0, minY = 0, maxX, maxY, x, y, invSize = 0;
+
+            if (hasHoles) outerEarcutNode = EliminateHoles(data, holeIndices, outerEarcutNode, dim.Value);
 
             // if the shape is not too simple, we'll use z-order curve hash later; calculate polygon bbox
             if (data.Count > 80 * dim)
@@ -33,7 +65,7 @@ namespace ThreeJs4Net.Extras
                 minX = maxX = data[0];
                 minY = maxY = data[1];
 
-                for (var i = dim; i < outerLen; i += dim)
+                for (int i = dim.Value; i < outerLen; i += dim.Value)
                 {
                     x = data[i];
                     y = data[i + 1];
@@ -43,44 +75,107 @@ namespace ThreeJs4Net.Extras
                     if (y > maxY) maxY = y;
                 }
 
-                // minX, minY and size are later used to transform coords into integers for z-order calculation
-                size = Mathf.Max(maxX - minX, maxY - minY);
+                // minX, minY and invSize are later used to transform coords into integers for z-order calculation
+                invSize = (float)System.Math.Max(maxX - minX, maxY - minY);
+                invSize = invSize != 0 ? 1 / invSize : 0;
             }
 
-            earcutLinked(outerNode, triangles, dim, minX, minY, size);
+            EarcutLinked(outerEarcutNode, triangles, dim.Value, minX, minY, invSize);
 
             return triangles;
         }
 
-        private static void earcutLinked(Node ear, List<int> triangles, int dim, float minX, float minY, float size, int pass = 0)
+        private bool EarcutNodeEquals(EarcutNode p1, EarcutNode p2)
+        {
+            return p1.X == p2.X && p1.Y == p2.Y;
+        }
+        public EarcutNode LinkedList(List<float> data, int start, int end, int dim, bool clockwise)
+        {
+            int i;
+            EarcutNode last = null;
+
+            if (clockwise == (SignedArea(data, start, end, dim) > 0))
+            {
+                for (i = start; i < end; i += dim)
+                {
+                    last = InsertEarcutNode(i, data[i], data[i + 1], last);
+                }
+            }
+            else
+            {
+                for (i = end - dim; i >= start; i -= dim)
+                {
+                    last = InsertEarcutNode(i, data[i], data[i + 1], last);
+                }
+            }
+
+            if (last != null && EarcutNodeEquals(last, last.Next))
+            {
+                RemoveEarcutNode(last);
+                last = last.Next;
+            }
+
+            return last;
+        }
+
+        public EarcutNode FilterPoints(EarcutNode start = null, EarcutNode end = null)
+        {
+            if (start == null) return start;
+            if (end == null) end = start;
+
+            var p = start;
+            bool again;
+
+            do
+            {
+                again = false;
+
+                if (!p.Steiner && (EarcutNodeEquals(p, p.Next) || Area(p.Prev, p, p.Next) == 0))
+                {
+                    RemoveEarcutNode(p);
+                    p = end = p.Prev;
+
+                    if (p == p.Next) break;
+
+                    again = true;
+                }
+                else
+                {
+                    p = p.Next;
+                }
+            } while (again || p != end);
+
+            return end;
+        }
+
+        public void EarcutLinked(EarcutNode ear, List<int> triangles, int dim, float minX, float minY, float invSize, int? pass = null)
         {
             if (ear == null) return;
 
-            // interlink polygon nodes in z-order
-            if (pass == 0 && size > 0) indexCurve(ear, minX, minY, size);
+            // interlink polygon EarcutNodes in z-order
+            if (pass == null && invSize != 0) IndexCurve(ear, minX, minY, invSize);
 
-            var stop = ear;
-            Node prev;
-            Node next;
+            EarcutNode stop = ear;
+            EarcutNode prev, next;
 
             // iterate through ears, slicing them one by one
-            while (ear.prev != ear.next)
+            while (ear.Prev != ear.Next)
             {
-                prev = ear.prev;
-                next = ear.next;
+                prev = ear.Prev;
+                next = ear.Next;
 
-                if (size > 0 ? isEarHashed(ear, minX, minY, size) : isEar(ear))
+                if (invSize != 0 ? IsEarHashed(ear, minX, minY, invSize) : IsEar(ear))
                 {
                     // cut off the triangle
-                    triangles.Add(prev.i / dim);
-                    triangles.Add(next.i / dim);
-                    triangles.Add(ear.i / dim);
+                    triangles.Add(prev.I / dim);
+                    triangles.Add(ear.I / dim);
+                    triangles.Add(next.I / dim);
 
-                    removeNode(ear);
+                    RemoveEarcutNode(ear);
 
-                    // skipping the next vertice leads to less sliver triangles
-                    ear = next.next;
-                    stop = next.next;
+                    // skipping the next vertex leads to less sliver triangles
+                    ear = next.Next;
+                    stop = next.Next;
 
                     continue;
                 }
@@ -91,241 +186,255 @@ namespace ThreeJs4Net.Extras
                 if (ear == stop)
                 {
                     // try filtering points and slicing again
-                    if (pass == 0)
+                    if (pass == null)
                     {
-                        earcutLinked(FilterPoints(ear, null), triangles, dim, minX, minY, size, 1);
+                        EarcutLinked(FilterPoints(ear), triangles, dim, minX, minY, invSize, 1);
 
                         // if this didn't work, try curing all small self-intersections locally
                     }
                     else if (pass == 1)
                     {
-                        ear = cureLocalIntersections(ear, triangles, dim);
-                        earcutLinked(ear, triangles, dim, minX, minY, size, 2);
+                        ear = CureLocalIntersections(FilterPoints(ear), triangles, dim);
+                        EarcutLinked(ear, triangles, dim, minX, minY, invSize, 2);
 
                         // as a last resort, try splitting the remaining polygon into two
                     }
                     else if (pass == 2)
                     {
-                        splitEarcut(ear, triangles, dim, minX, minY, size);
+                        SplitEarcut(ear, triangles, dim, minX, minY, invSize);
                     }
 
                     break;
                 }
             }
         }
-
-
-        private static bool isEarHashed(Node ear, float minX, float minY, float size)
+        public EarcutNode InsertEarcutNode(int i, float x, float y, EarcutNode last)
         {
-            var a = ear.prev;
-            var b = ear;
-            var c = ear.next;
+            EarcutNode p = new EarcutNode(i, x, y);
 
-            if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
-
-            // triangle bbox; min & max are calculated like this for speed
-            var minTX = a.x < b.x ? (a.x < c.x ? a.x : c.x) : (b.x < c.x ? b.x : c.x);
-            var minTY = a.y < b.y ? (a.y < c.y ? a.y : c.y) : (b.y < c.y ? b.y : c.y);
-            var maxTX = a.x > b.x ? (a.x > c.x ? a.x : c.x) : (b.x > c.x ? b.x : c.x);
-            var maxTY = a.y > b.y ? (a.y > c.y ? a.y : c.y) : (b.y > c.y ? b.y : c.y);
-
-            // z-order range for the current triangle bbox;
-            var minZ = zOrder(minTX, minTY, minX, minY, size);
-            var maxZ = zOrder(maxTX, maxTY, minX, minY, size);
-
-            // first look for points inside the triangle in increasing z-order
-            var p = ear.nextZ;
-
-            while (p != null && p.mZOrder <= maxZ)
+            if (last == null)
             {
-                if (p != ear.prev && p != ear.next &&
-                    pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
-                    area(p.prev, p, p.next) >= 0) return false;
-                p = p.nextZ;
+                p.Prev = p;
+                p.Next = p;
+            }
+            else
+            {
+                p.Next = last.Next;
+                p.Prev = last;
+                last.Next.Prev = p;
+                last.Next = p;
             }
 
-            // then look for points in decreasing z-order
-            p = ear.prevZ;
+            return p;
+        }
+        public bool Intersects(EarcutNode p1, EarcutNode q1, EarcutNode p2, EarcutNode q2)
+        {
+            var o1 = Sign(Area(p1, q1, p2));
+            var o2 = Sign(Area(p1, q1, q2));
+            var o3 = Sign(Area(p2, q2, p1));
+            var o4 = Sign(Area(p2, q2, q1));
 
-            while (p != null && p.mZOrder >= minZ)
+            if (o1 != o2 && o3 != o4) return true; // general case
+
+            if (o1 == 0 && OnSegment(p1, p2, q1)) return true; // p1, q1 and p2 are collinear and p2 lies on p1q1
+            if (o2 == 0 && OnSegment(p1, q2, q1)) return true; // p1, q1 and q2 are collinear and q2 lies on p1q1
+            if (o3 == 0 && OnSegment(p2, p1, q2)) return true; // p2, q2 and p1 are collinear and p1 lies on p2q2
+            if (o4 == 0 && OnSegment(p2, q1, q2)) return true; // p2, q2 and q1 are collinear and q1 lies on p2q2
+
+            return false;
+        }
+        public int Sign(float num)
+        {
+            return num > 0 ? 1 : num < 0 ? -1 : 0;
+        }
+        public bool OnSegment(EarcutNode p, EarcutNode q, EarcutNode r)
+        {
+            return q.X <= System.Math.Max(p.X, r.X) && q.X >= System.Math.Min(p.X, r.X) && q.Y <= System.Math.Max(p.Y, r.Y) && q.Y >= System.Math.Min(p.Y, r.Y);
+        }
+        public bool LocallyInside(EarcutNode a, EarcutNode b)
+        {
+            return Area(a.Prev, a, a.Next) < 0 ?
+                Area(a, b, a.Next) >= 0 && Area(a, a.Prev, b) >= 0 :
+                Area(a, b, a.Prev) < 0 || Area(a, a.Next, b) < 0;
+        }
+        public EarcutNode CureLocalIntersections(EarcutNode start, List<int> triangles, int dim)
+        {
+            var p = start;
+            do
             {
-                if (p != ear.prev && p != ear.next &&
-                    pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
-                    area(p.prev, p, p.next) >= 0) return false;
-                p = p.prevZ;
-            }
+                EarcutNode a = p.Prev,
+                     b = p.Next.Next;
 
-            return true;
+                if (!EarcutNodeEquals(a, b) && Intersects(a, p, p.Next, b) && LocallyInside(a, b) && LocallyInside(b, a))
+                {
+
+                    triangles.Add(a.I / dim);
+                    triangles.Add(p.I / dim);
+                    triangles.Add(b.I / dim);
+
+                    // remove two EarcutNodes involved
+                    RemoveEarcutNode(p);
+                    RemoveEarcutNode(p.Next);
+
+                    p = start = b;
+                }
+                p = p.Next;
+            } while (p != start);
+
+            return FilterPoints(p);
         }
 
-        private static int zOrder(float x, float y, float minX, float minY, float size)
+        // try splitting polygon into two and triangulate them independently
+        public void SplitEarcut(EarcutNode start, List<int> triangles, int dim, float minX, float minY, float invSize)
         {
-            //TODO casting here might be wrong
-            x = 32767 * (x - minX) / size;
-            y = 32767 * (y - minY) / size;
-
-            x = ((int)x | ((int)x << 8)) & 0x00FF00FF;
-            x = ((int)x | ((int)x << 4)) & 0x0F0F0F0F;
-            x = ((int)x | ((int)x << 2)) & 0x33333333;
-            x = ((int)x | ((int)x << 1)) & 0x55555555;
-
-            y = ((int)y | ((int)y << 8)) & 0x00FF00FF;
-            y = ((int)y | ((int)y << 4)) & 0x0F0F0F0F;
-            y = ((int)y | ((int)y << 2)) & 0x33333333;
-            y = ((int)y | ((int)y << 1)) & 0x55555555;
-
-            return (int)x | ((int)y << 1);
-        }
-
-        private static void splitEarcut(Node start, List<int> triangles, int dim, float minX, float minY, float size)
-        {
+            // look for a valid diagonal that divides the polygon into two
             var a = start;
             do
             {
-                var b = a.next.next;
-                while (b != a.prev)
+                var b = a.Next.Next;
+                while (b != a.Prev)
                 {
-                    if (a.i != b.i && isValidDiagonal(a, b))
+                    if (a.I != b.I && IsValidDiagonal(a, b))
                     {
                         // split the polygon in two by the diagonal
                         var c = SplitPolygon(a, b);
 
                         // filter colinear points around the cuts
-                        a = FilterPoints(a, a.next);
-                        c = FilterPoints(c, c.next);
+                        a = FilterPoints(a, a.Next);
+                        c = FilterPoints(c, c.Next);
 
                         // run earcut on each half
-                        earcutLinked(a, triangles, dim, minX, minY, size);
-                        earcutLinked(c, triangles, dim, minX, minY, size);
+                        EarcutLinked(a, triangles, dim, minX, minY, invSize);
+                        EarcutLinked(c, triangles, dim, minX, minY, invSize);
                         return;
                     }
-                    b = b.next;
+                    b = b.Next;
                 }
-                a = a.next;
+                a = a.Next;
             } while (a != start);
         }
-
-        private static bool isValidDiagonal(Node a, Node b)
+        public EarcutNode EliminateHoles(List<float> data, List<int> holeIndices, EarcutNode outerEarcutNode, int dim)
         {
-            return a.next.i != b.i && a.prev.i != b.i && !intersectsPolygon(a, b) &&
-                locallyInside(a, b) && locallyInside(b, a) && middleInside(a, b);
-        }
+            List<EarcutNode> queue = new List<EarcutNode>();
+            int i, len;
+            int start, end;
+            EarcutNode list;
 
-        private static bool middleInside(Node a, Node b)
-        {
-            var p = a;
-            var inside = false;
-            var px = (a.x + b.x) / 2;
-            var py = (a.y + b.y) / 2;
-
-            do
+            for (i = 0, len = holeIndices.Count; i < len; i++)
             {
-                if (((p.y > py) != (p.next.y > py)) && p.next.y != p.y &&
-                    (px < (p.next.x - p.x) * (py - p.y) / (p.next.y - p.y) + p.x))
-                    inside = !inside;
-                p = p.next;
-            } while (p != a);
-
-            return inside;
-        }
-
-        private static bool intersectsPolygon(Node a, Node b)
-        {
-            var p = a;
-            do
-            {
-                if (p.i != a.i && p.next.i != a.i && p.i != b.i && p.next.i != b.i &&
-                    intersects(p, p.next, a, b)) return true;
-                p = p.next;
-            } while (p != a);
-
-            return false;
-        }
-
-        private static Node cureLocalIntersections(Node start, List<int> triangles, int dim)
-        {
-            var p = start;
-            do
-            {
-                var a = p.prev;
-                var b = p.next.next;
-
-                if (!equals(a, b) && intersects(a, p, p.next, b) && locallyInside(a, b) && locallyInside(b, a))
-                {
-
-                    triangles.Add(a.i / dim);
-                    triangles.Add(p.i / dim);
-                    triangles.Add(b.i / dim);
-
-                    // remove two nodes involved
-                    removeNode(p);
-                    removeNode(p.next);
-
-                    p = start = b;
-                }
-                p = p.next;
-            } while (p != start);
-
-            return p;
-        }
-
-        private static bool intersects(Node p1, Node q1, Node p2, Node q2)
-        {
-            if ((equals(p1, q1) && equals(p2, q2)) ||
-                (equals(p1, q2) && equals(p2, q1))) return true;
-            return area(p1, q1, p2) > 0 != area(p1, q1, q2) > 0 &&
-                area(p2, q2, p1) > 0 != area(p2, q2, q1) > 0;
-        }
-
-        private static bool isEar(Node ear)
-        {
-            var a = ear.prev;
-            var b = ear;
-            var c = ear.next;
-
-            if (area(a, b, c) >= 0) return false; // reflex, can't be an ear
-
-            // now make sure we don't have other points inside the potential ear
-            var p = ear.next.next;
-
-            while (p != ear.prev)
-            {
-                if (pointInTriangle(a.x, a.y, b.x, b.y, c.x, c.y, p.x, p.y) &&
-                    area(p.prev, p, p.next) >= 0) return false;
-                p = p.next;
+                start = holeIndices[i] * dim;
+                end = i < len - 1 ? holeIndices[i + 1] * dim : data.Count;
+                list = LinkedList(data, start, end, dim, false);
+                if (list == list.Next) list.Steiner = true;
+                queue.Add(GetLeftmost(list));
             }
 
-            return true;
-        }
+            queue.Sort(delegate (EarcutNode a, EarcutNode b)
+            {
+                return (int)(a.X - b.X);
+            });
 
-        private static void indexCurve(Node start, float minX, float minY, float size)
+            // process holes from left to right
+            for (i = 0; i < queue.Count; i++)
+            {
+                EliminateHole(queue[i], outerEarcutNode);
+                outerEarcutNode = FilterPoints(outerEarcutNode, outerEarcutNode.Next);
+            }
+
+            return outerEarcutNode;
+        }
+        public void EliminateHole(EarcutNode hole, EarcutNode outerEarcutNode)
         {
-            var p = start;
+            outerEarcutNode = FindHoleBridge(hole, outerEarcutNode);
+            if (outerEarcutNode != null)
+            {
+                var b = SplitPolygon(outerEarcutNode, hole);
+
+                // filter collinear points around the cuts
+                FilterPoints(outerEarcutNode, outerEarcutNode.Next);
+                FilterPoints(b, b.Next);
+            }
+        }
+        // David Eberly's algorithm for finding a bridge between hole and outer polygon
+        public EarcutNode FindHoleBridge(EarcutNode hole, EarcutNode outerEarcutNode)
+        {
+            EarcutNode p = outerEarcutNode;
+            float hx = hole.X,
+                hy = hole.Y,
+                qx = float.NegativeInfinity;
+
+            EarcutNode m = null;
+
+            // find a segment intersected by a ray from the hole's leftmost point to the left;
+            // segment's endpoint with lesser x will be potential connection point
             do
             {
-                if (p.mZOrder == 0) p.mZOrder = zOrder(p.x, p.y, minX, minY, size);
-                p.prevZ = p.prev;
-                p.nextZ = p.next;
-                p = p.next;
-            } while (p != start);
+                if (hy <= p.Y && hy >= p.Next.Y && p.Next.Y != p.Y)
+                {
+                    var x = p.X + (hy - p.Y) * (p.Next.X - p.X) / (p.Next.Y - p.Y);
+                    if (x <= hx && x > qx)
+                    {
+                        qx = x;
+                        if (x == hx)
+                        {
+                            if (hy == p.Y) return p;
+                            if (hy == p.Next.Y) return p.Next;
+                        }
+                        m = p.X < p.Next.X ? p : p.Next;
+                    }
+                }
+                p = p.Next;
+            } while (p != outerEarcutNode);
 
-            p.prevZ.nextZ = null;
-            p.prevZ = null;
+            if (m == null) return null;
 
-            sortLinked(p);
+            if (hx == qx) return m; // hole touches outer segment; pick leftmost endpoint
+
+            // look for points inside the triangle of hole point, segment intersection and endpoint;
+            // if there are no points found, we have a valid connection;
+            // otherwise choose the point of the minimum angle with the ray as connection point
+
+            EarcutNode stop = m;
+            float mx = m.X,
+                my = m.Y,
+                tanMin = float.PositiveInfinity,
+                tan;
+
+            p = m;
+
+            do
+            {
+                if (hx >= p.X && p.X >= mx && hx != p.X &&
+                        PointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.X, p.Y))
+                {
+
+                    tan = (float)System.Math.Abs(hy - p.Y) / (hx - p.X); // tangential
+
+                    if (LocallyInside(p, hole) &&
+                        (tan < tanMin || (tan == tanMin && (p.X > m.X || (p.X == m.X && SectorContainsSector(m, p))))))
+                    {
+                        m = p;
+                        tanMin = tan;
+                    }
+                }
+
+                p = p.Next;
+            } while (p != stop);
+
+            return m;
+        }
+        public bool SectorContainsSector(EarcutNode m, EarcutNode p)
+        {
+            return Area(m.Prev, m, p.Prev) < 0 && Area(p.Next, m, m.Next) < 0;
         }
 
-        private static Node sortLinked(Node list)
+        // Simon Tatham's linked list merge sort algorithm
+        // http://www.chiark.greenend.org.uk/~sgtatham/algorithms/listsort.html
+        public EarcutNode SortLinked(EarcutNode list)
         {
-            var i = 0;
-            Node p;
-            Node q;
-            Node e;
-            Node tail;
-            var numMerges = 0; ;
-            var pSize = 0;
-            var qSize = 0;
-            var inSize = 1;
+            EarcutNode p, q, e, tail;
+            int numMerges, pSize, qSize;
+            int inSize = 1;
 
             do
             {
@@ -339,10 +448,10 @@ namespace ThreeJs4Net.Extras
                     numMerges++;
                     q = p;
                     pSize = 0;
-                    for (i = 0; i < inSize; i++)
+                    for (var i = 0; i < inSize; i++)
                     {
                         pSize++;
-                        q = q.nextZ;
+                        q = q.NextZ;
                         if (q == null) break;
                     }
                     qSize = inSize;
@@ -350,435 +459,251 @@ namespace ThreeJs4Net.Extras
                     while (pSize > 0 || (qSize > 0 && q != null))
                     {
 
-                        if (pSize != 0 && (qSize == 0 || q == null || p.mZOrder <= q.mZOrder))
+                        if (pSize != 0 && (qSize == 0 || q == null || p.Z <= q.Z))
                         {
                             e = p;
-                            p = p.nextZ;
+                            p = p.NextZ;
                             pSize--;
                         }
                         else
                         {
                             e = q;
-                            q = q.nextZ;
+                            q = q.NextZ;
                             qSize--;
                         }
 
-                        if (tail != null) tail.nextZ = e;
+                        if (tail != null) tail.NextZ = e;
                         else list = e;
 
-                        e.prevZ = tail;
+                        e.PrevZ = tail;
                         tail = e;
                     }
 
                     p = q;
                 }
 
-                tail.nextZ = null;
+                tail.NextZ = null;
                 inSize *= 2;
 
             } while (numMerges > 1);
 
             return list;
         }
-
-        private static Node EliminateHoles(List<float> data, List<int> holeIndices, Node outerNode, int dim)
+        public EarcutNode GetLeftmost(EarcutNode start)
         {
-            var i = 0;
-            var len = holeIndices.Count;
-            var start = 0;
-            var end = 0;
-            Node list = null;
-            var queue = new List<Node>();
-            for (i = 0; i < len; i++)
-            {
-                start = holeIndices[i] * dim;
-                end = i < len - 1 ? holeIndices[i + 1] * dim : data.Count;
-                list = linkedList(data, start, end, dim, false);
-                if (list == list.next) list.steiner = true;
-                queue.Add(getLeftmost(list));
-            }
-
-            queue.Sort(delegate (Node a, Node b)
-                {
-                    return (int)Mathf.Ceiling(a.x - b.x);
-                });
-
-            // process holes from left to right
-            for (i = 0; i < queue.Count; i++)
-            {
-                EliminateHole(queue[i], outerNode);
-                outerNode = FilterPoints(outerNode, outerNode.next);
-            }
-
-            return outerNode;
-        }
-
-        private static void EliminateHole(Node hole, Node outerNode)
-        {
-            outerNode = FindHoleBridge(hole, outerNode);
-            if (outerNode != null)
-            {
-                var b = SplitPolygon(outerNode, hole);
-                FilterPoints(b, b.next);
-            }
-        }
-
-        private static Node FilterPoints(Node start, Node end)
-        {
-            if (start == null) return start;
-            if (end == null) end = start;
-
-            var p = start;
-            bool again = true;
+            EarcutNode p = start,
+                leftmost = start;
             do
             {
-                again = false;
-
-                if (!p.steiner && (equals(p, p.next) || area(p.prev, p, p.next) == 0))
-                {
-                    removeNode(p);
-                    p = end = p.prev;
-                    if (p == p.next) return null;
-                    again = true;
-
-                }
-                else
-                {
-                    p = p.next;
-                }
-            } while (again || p != end);
-
-            return end;
-        }
-
-        private static Node SplitPolygon(Node a, Node b)
-        {
-            var a2 = new Node(a.i, a.x, a.y);
-            var b2 = new Node(b.i, b.x, b.y);
-            var an = a.next;
-            var bp = b.prev;
-
-            a.next = b;
-            b.prev = a;
-
-            a2.next = an;
-            an.prev = a2;
-
-            b2.next = a2;
-            a2.prev = b2;
-
-            bp.next = b2;
-            b2.prev = bp;
-
-            return b2;
-        }
-
-        private static Node FindHoleBridge(Node hole, Node outerNode)
-        {
-            var p = outerNode;
-            var hx = hole.x;
-            var hy = hole.y;
-            var qx = float.MinValue;
-            Node m = null;
-
-            // find a segment intersected by a ray from the hole's leftmost point to the left;
-            // segment's endpoint with lesser x will be potential connection point
-            do
-            {
-                if (p == null || p.next == null)
-                {
-                    //Debug.Log("here");
-                }
-                if (hy <= p.y && hy >= p.next.y && p.next.y != p.y)
-                {
-                    var x = p.x + (hy - p.y) * (p.next.x - p.x) / (p.next.y - p.y);
-                    if (x <= hx && x > qx)
-                    {
-                        qx = x;
-                        if (x == hx)
-                        {
-                            if (hy == p.y) return p;
-                            if (hy == p.next.y) return p.next;
-                        }
-                        m = p.x < p.next.x ? p : p.next;
-                    }
-                }
-                p = p.next;
-            } while (p != outerNode);
-
-            if (m == null) return null;
-
-            if (hx == qx) return m.prev; // hole touches outer segment; pick lower endpoint
-
-            // look for points inside the triangle of hole point, segment intersection and endpoint;
-            // if there are no points found, we have a valid connection;
-            // otherwise choose the point of the minimum angle with the ray as connection point
-
-            var stop = m;
-            var mx = m.x;
-            var my = m.y;
-            var tanMin = float.MaxValue;
-            float tan = 0f;
-
-            p = m.next;
-
-            while (p != stop)
-            {
-                if (hx >= p.x && p.x >= mx && hx != p.x &&
-                    pointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.x, p.y))
-                {
-
-                    tan = Mathf.Abs(hy - p.y) / (hx - p.x); // tangential
-
-                    if ((tan < tanMin || (tan == tanMin && p.x > m.x)) && locallyInside(p, hole))
-                    {
-                        m = p;
-                        tanMin = tan;
-                    }
-                }
-
-                p = p.next;
-            }
-
-            return m;
-        }
-
-        private static bool locallyInside(Node a, Node b)
-        {
-            return area(a.prev, a, a.next) < 0 ?
-                area(a, b, a.next) >= 0 && area(a, a.prev, b) >= 0 :
-                area(a, b, a.prev) < 0 || area(a, a.next, b) < 0;
-        }
-
-        private static float area(Node p, Node q, Node r)
-        {
-            return (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-        }
-
-        private static bool pointInTriangle(float ax, float ay, float bx, float by, float cx, float cy, float px, float py)
-        {
-            return (cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 &&
-                (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0 &&
-                (bx - px) * (cy - py) - (cx - px) * (by - py) >= 0;
-        }
-
-        private static Node getLeftmost(Node start)
-        {
-            var p = start;
-            var leftmost = start;
-            do
-            {
-                if (p.x < leftmost.x) leftmost = p;
-                p = p.next;
+                if (p.X < leftmost.X || (p.X == leftmost.X && p.Y < leftmost.Y)) leftmost = p;
+                p = p.Next;
             } while (p != start);
 
             return leftmost;
         }
-
-        // create a circular doubly linked list from polygon points in the specified winding order
-        private static Node linkedList(List<float> data, int start, int end, int dim, bool clockwise)
+        public EarcutNode SplitPolygon(EarcutNode a, EarcutNode b)
         {
-            var i = 0;
-            Node last = null;
+            EarcutNode a2 = new EarcutNode(a.I, a.X, a.Y),
+                b2 = new EarcutNode(b.I, b.X, b.Y),
+                an = a.Next,
+                bp = b.Prev;
 
-            if (clockwise == (signedArea(data, start, end, dim) > 0))
+            a.Next = b;
+            b.Prev = a;
+
+            a2.Next = an;
+            an.Prev = a2;
+
+            b2.Next = a2;
+            a2.Prev = b2;
+
+            bp.Next = b2;
+            b2.Prev = bp;
+
+            return b2;
+        }
+        public bool IsValidDiagonal(EarcutNode a, EarcutNode b)
+        {
+            return a.Next.I != b.I && a.Prev.I != b.I && !IntersectsPolygon(a, b) && // dones't intersect other edges
+                   (LocallyInside(a, b) && LocallyInside(b, a) && MiddleInside(a, b) && // locally visible
+                    (Area(a.Prev, a, b.Prev) > 0 || Area(a, b.Prev, b) > 0) || // does not create opposite-facing sectors
+                    EarcutNodeEquals(a, b) && Area(a.Prev, a, a.Next) > 0 && Area(b.Prev, b, b.Next) > 0); // special zero-length case
+        }
+        public bool MiddleInside(EarcutNode a, EarcutNode b)
+        {
+            EarcutNode p = a;
+            bool inside = false;
+            float px = (a.X + b.X) / 2,
+                 py = (a.Y + b.Y) / 2;
+            do
             {
-                for (i = start; i < end; i += dim) last = insertNode(i, data[i], data[i + 1], last);
-            }
-            else
+                if (((p.Y > py) != (p.Next.Y > py)) && p.Next.Y != p.Y &&
+                        (px < (p.Next.X - p.X) * (py - p.Y) / (p.Next.Y - p.Y) + p.X))
+                    inside = !inside;
+                p = p.Next;
+            } while (p != a);
+
+            return inside;
+        }
+        public bool IntersectsPolygon(EarcutNode a, EarcutNode b)
+        {
+            var p = a;
+            do
             {
-                for (i = end - dim; i >= start; i -= dim) last = insertNode(i, data[i], data[i + 1], last);
+                if (p.I != a.I && p.Next.I != a.I && p.I != b.I && p.Next.I != b.I &&
+                        Intersects(p, p.Next, a, b)) return true;
+                p = p.Next;
+            } while (p != a);
+
+            return false;
+        }
+        public void RemoveEarcutNode(EarcutNode p)
+        {
+            p.Next.Prev = p.Prev;
+            p.Prev.Next = p.Next;
+
+            if (p.PrevZ != null) p.PrevZ.NextZ = p.NextZ;
+            if (p.NextZ != null) p.NextZ.PrevZ = p.PrevZ;
+        }
+        public bool IsEar(EarcutNode ear)
+        {
+            EarcutNode a = ear.Prev,
+                b = ear,
+                c = ear.Next;
+
+            if (Area(a, b, c) >= 0) return false; // reflex, can't be an ear
+
+            // now make sure we don't have other points inside the potential ear
+            var p = ear.Next.Next;
+
+            while (p != ear.Prev)
+            {
+                if (PointInTriangle(a.X, a.Y, b.X, b.Y, c.X, c.Y, p.X, p.Y) &&
+                    Area(p.Prev, p, p.Next) >= 0) return false;
+                p = p.Next;
             }
 
-            if (last != null && equals(last, last.next))
-            {
-                removeNode(last);
-                last = last.next;
-            }
-
-            return last;
+            return true;
         }
 
-        private static void removeNode(Node p)
+        public bool IsEarHashed(EarcutNode ear, float minX, float minY, float invSize)
         {
-            p.next.prev = p.prev;
-            p.prev.next = p.next;
+            EarcutNode a = ear.Prev,
+                b = ear,
+                c = ear.Next;
 
-            if (p.prevZ != null) p.prevZ.nextZ = p.nextZ;
-            if (p.nextZ != null) p.nextZ.prevZ = p.prevZ;
-        }
+            if (Area(a, b, c) >= 0) return false; // reflex, can't be an ear
 
-        private static bool equals(Node p1, Node p2)
-        {
-            return p1.x == p2.x && p1.y == p2.y;
-        }
+            // triangle bbox; min & max are calculated like this for speed
+            float minTX = a.X < b.X ? (a.X < c.X ? a.X : c.X) : (b.X < c.X ? b.X : c.X),
+                  minTY = a.Y < b.Y ? (a.Y < c.Y ? a.Y : c.Y) : (b.Y < c.Y ? b.Y : c.Y),
+                  maxTX = a.X > b.X ? (a.X > c.X ? a.X : c.X) : (b.X > c.X ? b.X : c.X),
+                  maxTY = a.Y > b.Y ? (a.Y > c.Y ? a.Y : c.Y) : (b.Y > c.Y ? b.Y : c.Y);
 
-        private static float signedArea(List<float> data, int start, int end, int dim)
-        {
-            var sum = 0f;
-            var j = end - dim;
-            for (var i = start; i < end; i += dim)
+            // z-order range for the current triangle bbox;
+            float minZ = zOrder(minTX, minTY, minX, minY, invSize),
+                  maxZ = zOrder(maxTX, maxTY, minX, minY, invSize);
+
+            EarcutNode p = ear.PrevZ,
+                n = ear.NextZ;
+
+            // look for points inside the triangle in both directions
+            while (p != null && p.Z >= minZ && n != null && n.Z <= maxZ)
             {
+                if (p != ear.Prev && p != ear.Next &&
+                    PointInTriangle(a.X, a.Y, b.X, b.Y, c.X, c.Y, p.X, p.Y) &&
+                    Area(p.Prev, p, p.Next) >= 0) return false;
+                p = p.PrevZ;
+
+                if (n != ear.Prev && n != ear.Next &&
+                    PointInTriangle(a.X, a.Y, b.X, b.Y, c.X, c.Y, n.X, n.Y) &&
+                    Area(n.Prev, n, n.Next) >= 0) return false;
+                n = n.NextZ;
+            }
+
+            // look for remaining points in decreasing z-order
+            while (p != null && p.Z >= minZ)
+            {
+                if (p != ear.Prev && p != ear.Next &&
+                    PointInTriangle(a.X, a.Y, b.X, b.Y, c.X, c.Y, p.X, p.Y) &&
+                    Area(p.Prev, p, p.Next) >= 0) return false;
+                p = p.PrevZ;
+            }
+
+            // look for remaining points in increasing z-order
+            while (n != null && n.Z <= maxZ)
+            {
+                if (n != ear.Prev && n != ear.Next &&
+                    PointInTriangle(a.X, a.Y, b.X, b.Y, c.X, c.Y, n.X, n.Y) &&
+                    Area(n.Prev, n, n.Next) >= 0) return false;
+                n = n.NextZ;
+            }
+
+            return true;
+        }
+        // interlink polygon EarcutNodes in z-order
+        public void IndexCurve(EarcutNode start, float minX, float minY, float invSize)
+        {
+            var p = start;
+            do
+            {
+                if (p.Z == 0) p.Z = zOrder(p.X, p.Y, minX, minY, invSize);
+                p.PrevZ = p.Prev;
+                p.NextZ = p.Next;
+                p = p.Next;
+            } while (p != start);
+
+            p.PrevZ.NextZ = null;
+            p.PrevZ = null;
+
+            SortLinked(p);
+
+        }
+
+        public int zOrder(float _x, float _y, float minX, float minY, float invSize)
+        {
+            // coords are transformed into non-negative 15-bit integer range
+            int x = Convert.ToInt32(32767 * (_x - minX) * invSize);
+            int y = Convert.ToInt32(32767 * (_y - minY) * invSize);
+
+            x = (x | (x << 8)) & 0x00FF00FF;
+            x = (x | (x << 4)) & 0x0F0F0F0F;
+            x = (x | (x << 2)) & 0x33333333;
+            x = (x | (x << 1)) & 0x55555555;
+
+            y = (y | (y << 8)) & 0x00FF00FF;
+            y = (y | (y << 4)) & 0x0F0F0F0F;
+            y = (y | (y << 2)) & 0x33333333;
+            y = (y | (y << 1)) & 0x55555555;
+
+            return x | (y << 1);
+        }
+        public float Area(EarcutNode p, EarcutNode q, EarcutNode r)
+        {
+            return (q.Y - p.Y) * (r.X - q.X) - (q.X - p.X) * (r.Y - q.Y);
+        }
+        public float SignedArea(List<float> data, int start, int end, int dim)
+        {
+            var sum = 0.0f;
+            for (int i = start, j = end - dim; i < end; i += dim)
+            {
+                var sum1 = (data[j] - data[i]);
+                var sum2 = (data[i + 1] + data[j + 1]);
+                var data1 = data[j];
+                var data2 = data[i];
+                var data3 = data[i + 1];
+                var data4 = data[j + 1];
+                var sum3 = sum1 * sum2;
                 sum += (data[j] - data[i]) * (data[i + 1] + data[j + 1]);
                 j = i;
             }
             return sum;
         }
-
-        private static Node insertNode(int i, float x, float y, Node last)
+        public bool PointInTriangle(float ax, float ay, float bx, float by, float cx, float cy, float px, float py)
         {
-            var p = new Node(i, x, y);
-
-            if (last == null)
-            {
-                p.prev = p;
-                p.next = p;
-
-            }
-            else
-            {
-                p.next = last.next;
-                p.prev = last;
-                last.next.prev = p;
-                last.next = p;
-            }
-            return p;
-        }
-
-        public static Data Flatten(List<List<float[]>> data)
-        {
-            var dim = data[0][0].Length;
-            var result = new Data() { Dim = dim };
-            var holeIndex = 0;
-
-            for (var i = 0; i < data.Count; i++)
-            {
-                for (var j = 0; j < data[i].Count; j++)
-                {
-                    for (var d = 0; d < dim; d++)
-                        result.Vertices.Add(data[i][j][d]);
-                }
-                if (i > 0)
-                {
-                    holeIndex += data[i - 1].Count;
-                    result.Holes.Add(holeIndex);
-                }
-            }
-            return result;
-        }
-
-        public static Data Flatten(List<List<Vector3>> data)
-        {
-            var dim = 2;
-            var result = new Data() { Dim = dim };
-            var holeIndex = 0;
-
-            for (var i = 0; i < data.Count; i++)
-            {
-                for (var j = 0; j < data[i].Count; j++)
-                {
-                    result.Vertices.Add(data[i][j][0]);
-                    result.Vertices.Add(data[i][j][2]);
-                }
-                if (i > 0)
-                {
-                    holeIndex += data[i - 1].Count;
-                    result.Holes.Add(holeIndex);
-                }
-            }
-            return result;
-        }
-    }
-
-    public class Data
-    {
-        public List<float> Vertices;
-        public List<int> Holes;
-        public int Dim;
-
-        public Data()
-        {
-            Vertices = new List<float>();
-            Holes = new List<int>();
-            Dim = 2;
-        }
-    }
-
-    public class Node
-    {
-
-        /* Member Variables. */
-        public int i;
-        public float x;
-        public float y;
-        public int mZOrder;
-        public Node prev;
-        public Node next;
-        public Node prevZ;
-        public Node nextZ;
-        public bool steiner;
-
-        public Node(int ind, float pX, float pY)
-        {
-            /* Initialize Member Variables. */
-            this.i = ind;
-            this.x = pX;
-            this.y = pY;
-            this.mZOrder = 0;
-            this.prev = null;
-            this.next = null;
-            this.prevZ = null;
-            this.nextZ = null;
-        }
-
-        protected void setPreviousNode(Node pNode)
-        {
-            this.prev = pNode;
-        }
-
-        protected Node getPreviousNode()
-        {
-            return this.prev;
-        }
-
-        protected void setNextNode(Node pNode)
-        {
-            this.next = pNode;
-        }
-
-        protected Node getNextNode()
-        {
-            return this.next;
-        }
-
-        protected void setZOrder(int pZOrder)
-        {
-            this.mZOrder = pZOrder;
-        }
-
-        protected int getZOrder()
-        {
-            return this.mZOrder;
-        }
-
-        protected void setPreviousZNode(Node pNode)
-        {
-            this.prevZ = pNode;
-        }
-
-        protected Node getPreviousZNode()
-        {
-            return this.prevZ;
-        }
-
-        protected void setNextZNode(Node pNode)
-        {
-            this.nextZ = pNode;
-        }
-
-        protected Node getNextZNode()
-        {
-            return this.nextZ;
+            return (cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 &&
+                   (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0 &&
+                   (bx - px) * (cy - py) - (cx - px) * (by - py) >= 0;
         }
 
     }

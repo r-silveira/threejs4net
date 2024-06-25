@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Extras;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -86,7 +86,7 @@ namespace ThreeJs4Net.Demo.examples
             camera.Position.Z = 250;
 
             scene = new Scene();
-            scene.Fog = new Fog((Color)colorConvertor.ConvertFromString("#050505"), 2000, 3500);
+            scene.Fog = new Fog(new Color(0x050505), 2000, 3500);
 
             attributes = new Attributes
             { 
@@ -122,7 +122,7 @@ namespace ThreeJs4Net.Demo.examples
             for (int v = 0; v < vertices.Count; v++)
             {
                 values_size[v] = PARTICLE_SIZE * 0.5f;
-                values_color[v] =  Color.Salmon;//   new Color().setHSL(0.01f + 0.1f * (v / vl), 1.0f, 0.5f);
+                values_color[v] = Color.ColorName(ColorKeywords.salmon);//   new Color().setHSL(0.01f + 0.1f * (v / vl), 1.0f, 0.5f);
             }
 
             scene.Add(particles);

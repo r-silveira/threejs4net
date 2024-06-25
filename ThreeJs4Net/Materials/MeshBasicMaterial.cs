@@ -1,5 +1,6 @@
-﻿using System.Collections;
-using System.Drawing;
+﻿#if USE_WINDOWS
+using System.Collections;
+using ThreeJs4Net.Math;
 using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Materials
@@ -36,7 +37,7 @@ namespace ThreeJs4Net.Materials
         /// </summary>
         public MeshBasicMaterial(Hashtable parameters = null)
         {
-            this.Color = Color.White; // emissive
+            this.Color = Color.ColorName(ColorKeywords.white);
 
             this.type = "MeshBasicMaterial";
 
@@ -87,3 +88,95 @@ namespace ThreeJs4Net.Materials
         }
     }
 }
+#else
+using System.Collections;
+using ThreeJs4Net.Math;
+using ThreeJs4Net.Textures;
+
+namespace ThreeJs4Net.Materials
+{
+    public class MeshBasicMaterial : Material, IWireframe, IMorphTargets
+    {
+        // IMap
+        public object Map { get; set; }
+        public object AlphaMap { get; set; }
+        public object SpecularMap { get; set; }
+        public object NormalMap { get; set; } // TODO: not in ThreeJs, just to be an IMap. Must be NULL
+        public object BumpMap { get; set; } // TODO: not in ThreeJs, just to be an IMap.  Must be NULL
+        public object LightMap { get; set; }
+
+        //     public Texture EnvMap;
+        public Color Color;
+        public int Combine;
+        public float Reflectivity;
+        public float RefractionRatio;
+        public bool Fog;
+        public int Shading;
+
+        // IWireFrameable
+        public bool Wireframe { get; set; }
+        public float WireframeLinewidth { get; set; }
+        public string WireframeLinecap;
+        public string WireframeLinejoin;
+        public bool Skinning;
+        public bool MorphTargets { get; set; }
+        public int NumSupportedMorphTargets;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public MeshBasicMaterial(Hashtable parameters = null)
+        {
+            this.Color = Color.ColorName(ColorKeywords.white);
+
+            this.type = "MeshBasicMaterial";
+
+            this.Map = null;
+
+            this.LightMap = null;
+
+            this.SpecularMap = null;
+
+            this.AlphaMap = null;
+
+            this.EnvMap = null;
+            this.Combine = Three.MultiplyOperation;
+            this.Reflectivity = 1;
+            this.RefractionRatio = 0.98f;
+
+            this.Fog = true;
+
+            this.Shading = Three.SmoothShading;
+
+            // IWireFrameable
+            this.Wireframe = false;
+            this.WireframeLinewidth = 1;
+
+            this.WireframeLinecap = "round";
+            this.WireframeLinejoin = "round";
+
+            this.Skinning = false;
+
+            this.SetValues(parameters);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        protected MeshBasicMaterial(MeshBasicMaterial other) : base(other)
+        {
+
+        }
+
+        /// <summary>
+        /// </summary>
+        /// <returns></returns>
+        public override object Clone()
+        {
+            return new MeshBasicMaterial(this);
+        }
+    }
+}
+
+#endif

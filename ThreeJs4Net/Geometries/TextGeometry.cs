@@ -1,32 +1,64 @@
-﻿using System.Collections;
-using ThreeJs4Net.Extras;
+﻿using System;
+using System.Collections;
+using ThreeJs4Net.Core;
 
 namespace ThreeJs4Net.Geometries
 {
-    //public class TextGeometry : ExtrudeGeometry
-    //{
-     //   var textShapes = FontUtils.generateShapes(text, options);
+    [Serializable]
+    public class TextGeometry : Geometry
+    {
+        public Hashtable parameters;
 
-      //  var text3d = new ExtrudeGeometry(textShapes, options);
+        public TextGeometry(string text, Hashtable parameters) : base()
+        {
+            this.type = "TextGeometry";
 
-        //public TextGeometry(string text, Hashtable parameters = null )
-        //{
-        //    parameters = parameters ?? null;
+            this.parameters = new Hashtable()
+            {
+                {"text",text },
+                {"parameters",parameters }
+            };
 
-        //    var textShapes = FontUtils.generateShapes( text, parameters );
+            this.FromBufferGeometry(new TextBufferGeometry(text, parameters));
+            this.MergeVertices();
+        }
 
-        //    // translate parameters to ExtrudeGeometry API
+    }
 
-        //    parameters["amount"] = parameters["height"] ?? 50;
+    [Serializable]
+    public class TextBufferGeometry : ExtrudeBufferGeometry
+    {
+        public TextBufferGeometry()
+        {
 
-        //    // defaults
+        }
+        public TextBufferGeometry(string text, Hashtable parameters)
+        {
+            this.type = "TextBufferGeometry";
 
-        //    if ( parameters["bevelThickness"] == null ) parameters["bevelThickness"] = 10;
-        //    if ( parameters["bevelSize"] == null ) parameters["bevelSize"] = 8;
-        //    if ( parameters["bevelEnabled"] == null ) parameters["bevelEnabled"] = false;
+            this.parameters = new Hashtable()
+            {
+                {"text",text },
+                {"parameters",parameters }
+            };
 
-        //    //ExtrudeGeometry( textShapes, parameters );
-        //}
-    
-    //}
+            if (!parameters.ContainsKey("font") || parameters["font"] == null)
+            {
+                Console.WriteLine("Error: TextGeometry font parameter is not an instance of THREE.Font");
+                return;
+            }
+
+            var font = (Font)parameters["font"];
+
+            var shapes = font.GenerateShapes(text, parameters.ContainsKey("size") ? (int?)parameters["size"] : null);
+
+            if (!parameters.ContainsKey("bevelThickness") || parameters["bevelThickness"] == null) parameters["bevelThickness"] = 10;
+            if (!parameters.ContainsKey("bevelSize") || parameters["bevelSize"] == null) parameters["bevelSize"] = 8;
+            if (!parameters.ContainsKey("bevelEnabled") || parameters["bevelEnabled"] == null) parameters["bevelEnabled"] = false;
+
+            parameters["depth"] = parameters.ContainsKey("height") ? (int)parameters["height"] : 50;
+
+            Init(shapes, parameters);
+        }
+    }
 }

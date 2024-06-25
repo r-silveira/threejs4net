@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Extras;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
@@ -114,7 +114,7 @@ namespace ThreeJs4Net.Demo.examples
                 positions[v * 3 + 2] = (Mat.Random() * 2 - 1) * Radius;
 
                 color = new HSLColor(512 * v / (float)Particles, 1.0f, 0.5f);
-                color = Color.DeepPink;
+                color = Color.ColorName(ColorKeywords.deeppink);
 
                 values_color[v * 3 + 0] = color.R;
                 values_color[v * 3 + 1] = color.G;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if USE_WINDOWS
+using System.Collections.Generic;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Lights;
@@ -36,3 +37,4 @@ namespace ThreeJs4Net.Renderers.WebGL.PlugIns
         }
     }
 }
+#endif

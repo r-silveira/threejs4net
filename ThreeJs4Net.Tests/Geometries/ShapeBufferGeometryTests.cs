@@ -1,9 +1,5 @@
 ﻿using Xunit;
-using ThreeJs4Net.Geometries;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
 using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -28,12 +24,10 @@ namespace ThreeJs4Net.Geometries.Tests
             triangleShape2.MoveTo(0, 0);
             triangleShape2.Ellipse(0, 0, vecB.X, vecA.Y, 0, Mathf.PI, false, 0);
 
-            var geoshape = new ShapeBufferGeometry(new [] { triangleShape2 });
+            var geoshape = new ShapeBufferGeometry(new List<Shape> { triangleShape2 });
             geoshape.RotateX((Mathf.PI / 180) * 90);
 
-            var geomesh = new Mesh(geoshape, new MeshBasicMaterial { Color = Color.Aqua });
-
-
+            var geomesh = new Mesh(geoshape, new MeshBasicMaterial { Color = Color.ColorName(ColorKeywords.aqua) });
         }
     }
 }

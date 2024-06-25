@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Extras;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -90,7 +90,7 @@ namespace ThreeJs4Net.Demo.examples
             uniforms = new Uniforms
             {
                 { "amplitude", new Uniform() { {"type", "f"},  {"value", 1.0f}} },
-                { "color",     new Uniform() { {"type", "c"},  {"value", (Color)colorConvertor.ConvertFromString("#ff2200")}} },
+                { "color",     new Uniform() { {"type", "c"},  {"value", new Color(0xff2200)}} },
                 { "texture",   new Uniform() { {"type", "t"},  {"value", ImageUtils.LoadTexture(@"examples\textures/water.jpg")} }},
             };
 
@@ -125,7 +125,7 @@ namespace ThreeJs4Net.Demo.examples
 
             scene.Add(sphere);
 
-            renderer.SetClearColor((Color)colorConvertor.ConvertFromString("#050505"));
+            renderer.SetClearColor(new Color(0x050505));
         }
 
         /// <summary>

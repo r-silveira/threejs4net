@@ -34,9 +34,12 @@ namespace ThreeJs4Net.Materials
         public bool NeedsUpdate = true;
         public List<UniformLocation> UniformsList;
         public int VertexColors; // Set to use "Color" attribute stream
+#if USE_WINDOWS
         public Texture EnvMap = null; // Hoort hier eigenlijk niet
+#else
+        public object EnvMap = null; // Hoort hier eigenlijk niet
+#endif
 
-        
         /// <summary>
         /// 
         /// </summary>

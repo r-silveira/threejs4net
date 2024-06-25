@@ -104,7 +104,7 @@ namespace ThreeJs4Net
 
         // Mapping modes
 
-
+#if USE_WINDOWS
         public class UVMapping : TextureMapping { }
 
         public class CubeReflectionMapping : TextureMapping { }
@@ -112,7 +112,14 @@ namespace ThreeJs4Net
 
         public class SphericalReflectionMapping : TextureMapping { }
         public class SphericalRefractionMapping : TextureMapping { }
+#else
+        public class UVMapping { }
+        public class CubeReflectionMapping { }
+        public class CubeRefractionMapping { }
 
+        public class SphericalReflectionMapping { }
+        public class SphericalRefractionMapping { }
+#endif
         // Wrapping modes
 
         public static int RepeatWrapping = 1000;

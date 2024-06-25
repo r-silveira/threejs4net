@@ -5,19 +5,19 @@ using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Extras.Core
 {
-    public class CurvePath : Curve<Vector2>
+    public class CurvePath : Curve<Vector3>
     {
-        public List<Curve<Vector2>> Curves = new List<Curve<Vector2>>();
+        public List<Curve<Vector3>> Curves = new List<Curve<Vector3>>();
         private bool AutoClose;
         private float[] cacheLengths = null;
 
         public CurvePath(): base()
         {
-            this.Curves = new List<Curve<Vector2>>();
+            this.Curves = new List<Curve<Vector3>>();
             this.AutoClose = false;
         }
 
-        public void Add(Curve<Vector2> curve)
+        public void Add(Curve<Vector3> curve)
         {
             this.Curves.Add(curve);
         }
@@ -25,16 +25,16 @@ namespace ThreeJs4Net.Extras.Core
         public void ClosePath()
         {
             // Add a line curve if start and end of lines are not connected
-            var startPoint = this.Curves[0].GetPoint(0, new Vector2());
-            var endPoint = this.Curves[this.Curves.Count - 1].GetPoint(1, new Vector2());
+            var startPoint = this.Curves[0].GetPoint(0, new Vector3());
+            var endPoint = this.Curves[this.Curves.Count - 1].GetPoint(1, new Vector3());
 
             if (!startPoint.Equals(endPoint))
             {
-                this.Curves.Add(new LineCurve(endPoint, startPoint));
+                this.Curves.Add(new LineCurve3(endPoint, startPoint));
             }
         }
 
-        public override Vector2 GetPoint(float t, Vector2 optionalTarget)
+        public override Vector3 GetPoint(float t, Vector3 optionalTarget)
         {
             var d = t * this.GetLength();
             var curveLengths = this.GetCurveLengths();
@@ -103,9 +103,9 @@ namespace ThreeJs4Net.Extras.Core
             return lengths.ToArray();
         }
 
-        public new List<Vector2> GetSpacedPoints(int divisions = 40)
+        public new List<Vector3> GetSpacedPoints(int divisions = 40)
         {
-            var points = new List<Vector2>();
+            var points = new List<Vector3>();
             for (var i = 0; i <= divisions; i++)
             {
                 points.Add(this.GetPoint((float)i / divisions, null));
@@ -119,18 +119,22 @@ namespace ThreeJs4Net.Extras.Core
             return points;
         }
 
-        public new List<Vector2> GetPoints(int divisions = 12)
+        public new List<Vector3> GetPoints(int divisions = 12)
         {
-            var points = new List<Vector2>();
-            Vector2 last = null;
+            var points = new List<Vector3>();
+            Vector3 last = null;
 
             for (var i = 0; i < this.Curves.Count; i++)
             {
                 var curve = Curves[i];
-                var resolution = (curve is EllipseCurve) ? divisions * 2
-                    : ((curve is LineCurve || curve is LineCurve3)) ? 1
-                    : (curve is SplineCurve) ? divisions * curve.GetPoints().Count
-                    : divisions;
+                var resolution = (curve != null && curve is EllipseCurve)
+                    ? divisions * 2
+                    : (curve != null && (curve is LineCurve || curve is LineCurve3))
+                        ? 1
+                        : (curve != null && curve is SplineCurve)
+                            ? divisions * curve.GetPoints().Count
+                            : divisions;
+
                 var pts = curve.GetPoints(resolution);
                 for (var j = 0; j < pts.Count; j++)
                 {
@@ -157,7 +161,7 @@ namespace ThreeJs4Net.Extras.Core
         public CurvePath Copy(CurvePath source)
         {
             base.Copy(source);
-            this.Curves = new List<Curve<Vector2>>();
+            this.Curves = new List<Curve<Vector3>>();
 
             for (var i = 0; i < source.Curves.Count; i++)
             {

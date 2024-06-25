@@ -1,10 +1,6 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using OpenTK.Audio;
 using ThreeJs4Net.Core;
-using ThreeJs4Net.Properties;
 
 namespace ThreeJs4Net.Math
 {
@@ -85,6 +81,11 @@ namespace ThreeJs4Net.Math
             v1.X /= v2.X;
             v1.Y /= v2.Y;
             return v1;
+        }
+
+        public Vector3 ToVector3()
+        {
+            return new Vector3(X, Y, 0);
         }
 
         #region --- Already in R116 ---

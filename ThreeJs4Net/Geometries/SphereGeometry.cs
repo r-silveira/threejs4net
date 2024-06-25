@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Math;
@@ -7,145 +8,164 @@ namespace ThreeJs4Net.Geometries
 {
     public class SphereGeometry : Geometry
     {
-        public float Radius;
+        public Hashtable parameters;
 
-        public int WidthSegments;
-
-        public int HeightSegments;
-
-        public float PhiStart;
-
-        public float PhiLength;
-
-        public float ThetaStart;
-
-        public float ThetaLength;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="radius"></param>
-        /// <param name="widthSegments"></param>
-        /// <param name="heightSegments"></param>
-        /// <param name="phiStart"></param>
-        /// <param name="phiLength"></param>
-        /// <param name="thetaStart"></param>
-        /// <param name="thetaLength"></param>
-        public SphereGeometry(float radius = 50, int widthSegments = 8, int heightSegments = 6, float phiStart = 0, float phiLength = (float)Mat.PI2, float thetaStart = 0, float thetaLength = (float)System.Math.PI)
+        public SphereGeometry(float radius, float? widthSegments = null, float? heightSegments = null, float? phiStart = null, float? phiLength = null, float? thetaStart = null, float? thetaLength = null)
+            : base()
         {
-            Debug.Assert(this.FaceVertexUvs.Count == 1, "Should only be 1 element at this stage");
+            parameters = new Hashtable()
+            {
+                {"radius", radius},
+                {"withSegments", widthSegments},
+                {"heightSegments",heightSegments},
+                {"phiStart", phiStart != null ? (float)phiStart : 0},
+                {"phiLength", phiLength != null ? (float)phiLength : 2 * (float)Mathf.PI},
+                {"thetaStart", thetaStart!=null ? (float)thetaStart : 0},
+                {"thetaLength", thetaLength!=null ? (float)thetaLength : (float)Mathf.PI}
+            };
 
-            this.Radius = radius;
-            
-            this.WidthSegments = widthSegments;
-            this.HeightSegments = heightSegments;
-            
-            this.PhiStart = phiStart;
-            this.PhiLength = phiLength;
+            this.FromBufferGeometry(new SphereBufferGeometry(radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength));
+            this.MergeVertices();
+        }
+    }
 
-            this.ThetaStart = thetaStart;
-            this.ThetaLength = thetaLength;
+    public class SphereBufferGeometry : BufferGeometry
+    {
+        public Hashtable parameters;
 
-            var uvs = new List<List<Vector2>>();
-            var vertices = new List<List<int>>();
+        public SphereBufferGeometry(float radius, float? widthSegments = null, float? heightSegments = null, float? phiStart = null, float? phiLength = null, float? thetaStart = null, float? thetaLength = null)
+            : base()
+        {
+            radius = radius != 0 ? radius : 1;
 
-	        for (var y = 0; y <= heightSegments; y ++ ) {
+            if (widthSegments == null) widthSegments = 8;
+            if (heightSegments == null) heightSegments = 6;
 
-                var verticesRow = new List<int>();
-                var uvsRow = new List<Vector2>();
+            widthSegments = (float)Mathf.Max(3, Mathf.Floor(widthSegments.Value));
 
-		        for (var x = 0; x <= widthSegments; x ++ ) {
+            heightSegments = (float)Mathf.Max(2, Mathf.Floor(heightSegments.Value));
 
-			        var u = x / (float)widthSegments;
-                    var v = y / (float)heightSegments;
+            phiStart = phiStart != null ? (float)phiStart : 0;
+            phiLength = phiLength != null ? (float)phiLength : 2 * (float)Mathf.PI; ;
+            thetaStart = thetaStart != null ? (float)thetaStart : 0;
+            thetaLength = thetaLength != null ? (float)thetaLength : (float)Mathf.PI;
 
-			        var vertex = new Vector3();
-			        vertex.X = - radius * (float)System.Math.Cos( phiStart + u * phiLength ) * (float)System.Math.Sin( thetaStart + v * thetaLength );
-			        vertex.Y = radius * (float)System.Math.Cos( thetaStart + v * thetaLength );
-			        vertex.Z = radius * (float)System.Math.Sin( phiStart + u * phiLength ) * (float)System.Math.Sin( thetaStart + v * thetaLength );
+            parameters = new Hashtable()
+            {
+                {"radius", radius},
+                {"withSegments", widthSegments},
+                {"heightSegments",heightSegments},
+                {"phiStart", phiStart != null ? (float)phiStart : 0},
+                {"phiLength", phiLength != null ? (float)phiLength : 2 * (float)Mathf.PI},
+                {"thetaStart", thetaStart!=null ? (float)thetaStart : 0},
+                {"thetaLength", thetaLength!=null ? (float)thetaLength : (float)Mathf.PI}
+            };
 
-		            this.Vertices.Add(vertex);
+            var thetaEnd = (float)Mathf.Min((float)(thetaStart + thetaLength), Mathf.PI);
 
-		            verticesRow.Add(this.Vertices.Count - 1);
-		            uvsRow.Add(new Vector2(u, 1 - v));
+            List<uint> indices = new List<uint>();
+            List<float> vertices = new List<float>();
+            List<float> normals = new List<float>();
+            List<float> uvs = new List<float>();
+            List<List<int>> grid = new List<List<int>>();
 
-		        }
+            int index = 0;
 
-	            vertices.Add(verticesRow);
-	            uvs.Add(uvsRow);
-	        }
+            Vector3 vertex = new Vector3();
+            Vector3 normal = new Vector3();
 
-	        for (var y = 0; y < heightSegments; y ++ ) {
+            for (int iy = 0; iy <= heightSegments; iy++)
+            {
 
-		        for (var x = 0; x < widthSegments; x ++ )
-		        {
+                List<int> verticesRow = new List<int>();
 
-		            var v1 = vertices[y][x + 1];
-		            var v2 = vertices[y][x];
-		            var v3 = vertices[y + 1][x];
-		            var v4 = vertices[y + 1][x + 1];
+                float v = iy / (float)heightSegments;
 
-		            var n1 = ((Vector3)this.Vertices[v1].Clone()).Normalize();
-                    var n2 = ((Vector3)this.Vertices[v2].Clone()).Normalize();
-                    var n3 = ((Vector3)this.Vertices[v3].Clone()).Normalize();
-                    var n4 = ((Vector3)this.Vertices[v4].Clone()).Normalize();
+                // special case for the poles
 
-		            var uv1 = (Vector2)uvs[y][x + 1].Clone();
-                    var uv2 = (Vector2)uvs[y][x].Clone();
-                    var uv3 = (Vector2)uvs[y + 1][x].Clone();
-                    var uv4 = (Vector2)uvs[y + 1][x + 1].Clone();
+                var uOffset = 0.0f;
 
-			        if ( System.Math.Abs( this.Vertices[ v1 ].Y ) == radius ) {
+                if (iy == 0 && thetaStart == 0)
+                {
 
-				        uv1.X = ( uv1.X + uv2.X ) / 2;
+                    uOffset = 0.5f / (float)widthSegments;
 
-                        var face = new Face3(v1, v3, v4);
-                        face.VertexNormals.Add(n1);
-                        face.VertexNormals.Add(n3);
-                        face.VertexNormals.Add(n4);
-				        this.Faces.Add(face);
+                }
+                else if (iy == heightSegments && thetaEnd == (float)Mathf.PI)
+                {
 
-			            this.FaceVertexUvs[0].Add(new List<Vector2> { uv1, uv3, uv4 });
+                    uOffset = -0.5f / (float)widthSegments;
 
-			        } else if ( System.Math.Abs( this.Vertices[ v3 ].Y ) == radius ) {
+                }
 
-				        uv3.X = ( uv3.X + uv4.X ) / 2;
+                for (int ix = 0; ix <= widthSegments; ix++)
+                {
 
-			            var face = new Face3(v1, v2, v3);
-                        face.VertexNormals.Add(n1);
-                        face.VertexNormals.Add(n2);
-                        face.VertexNormals.Add(n3);
-				        this.Faces.Add(face);
+                    float u = ix / (float)widthSegments;
 
-			            this.FaceVertexUvs[0].Add(new List<Vector2> { uv1, uv2, uv3 });
+                    // vertex
 
-			        } else {
+                    vertex.X = (float)(-radius * Mathf.Cos((float)phiStart + u * (float)phiLength) * Mathf.Sin((float)thetaStart + v * (float)thetaLength));
+                    vertex.Y = (float)(radius * Mathf.Cos((float)thetaStart + v * (float)thetaLength));
+                    vertex.Z = (float)(radius * Mathf.Sin((float)phiStart + u * (float)phiLength) * Mathf.Sin((float)thetaStart + v * (float)thetaLength));
 
-			            var face = new Face3(v1, v2, v4);
-				        this.Faces.Add(face);
-                        face.VertexNormals.Add(n1);
-                        face.VertexNormals.Add(n2);
-                        face.VertexNormals.Add(n4);
+                    vertices.Add(vertex.X);
+                    vertices.Add(vertex.Y);
+                    vertices.Add(vertex.Z);
 
-			            this.FaceVertexUvs[0].Add(new List<Vector2> { uv1, uv2, uv4 });
+                    // normal
 
-			            face = new Face3(v2, v3, v4);
-			            this.Faces.Add(face);
-                        face.VertexNormals.Add((Vector3)n2.Clone());
-                        face.VertexNormals.Add(n3);
-                        face.VertexNormals.Add((Vector3)n4.Clone());
+                    normal.Copy(vertex).Normalize();
+                    normals.Add(normal.X);
+                    normals.Add(normal.Y);
+                    normals.Add(normal.Z);
 
-                        this.FaceVertexUvs[0].Add(new List<Vector2> { (Vector2)uv2.Clone(), uv3, (Vector2)uv4.Clone() });
+                    // uv
 
-			        }
+                    uvs.Add(u + uOffset);
+                    uvs.Add(1 - v);
 
-		        }
+                    verticesRow.Add(index++);
 
-	        }
+                }
 
-	        this.ComputeFaceNormals();
+                grid.Add(verticesRow);
+            }
 
-            this.BoundingSphere = new Sphere(new Vector3(), radius);
+            // indices
+
+            for (int iy = 0; iy < (int)heightSegments; iy++)
+            {
+
+                for (int ix = 0; ix < (int)widthSegments; ix++)
+                {
+
+                    var a = grid[iy][ix + 1];
+                    var b = grid[iy][ix];
+                    var c = grid[iy + 1][ix];
+                    var d = grid[iy + 1][ix + 1];
+
+                    if (iy != 0 || thetaStart > 0)
+                    {
+                        indices.Add((uint)a);
+                        indices.Add((uint)b);
+                        indices.Add((uint)d);
+                    }
+                    if (iy != (int)(heightSegments - 1) || thetaEnd < (float)Mathf.PI)
+                    {
+                        indices.Add((uint)b);
+                        indices.Add((uint)c);
+                        indices.Add((uint)d);
+                    }
+                }
+            }
+
+            // build geometry
+
+            this.SetIndex(new BufferAttribute<uint>(indices.ToArray(), 1));
+            this.SetAttribute("position", new BufferAttribute<float>(vertices.ToArray(), 3));
+            this.SetAttribute("normal", new BufferAttribute<float>(normals.ToArray(), 3));
+            this.SetAttribute("uv", new BufferAttribute<float>(uvs.ToArray(), 2));
         }
     }
 }

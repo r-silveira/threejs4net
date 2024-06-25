@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Extras;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Materials;
@@ -81,11 +81,11 @@ namespace ThreeJs4Net.Demo.examples
             this.sceneRtt = new Scene();
             sceneScreen = new Scene();
 
-            var light = new DirectionalLight(Color.White);
+            var light = new DirectionalLight(Color.ColorName(ColorKeywords.white));
             light.Position.Set(0, 0, 1).Normalize();
             this.sceneRtt.Add(light);
 
-            light = new DirectionalLight((Color)colorConvertor.ConvertFromString("#ffaaaa"), 1.5f);
+            light = new DirectionalLight(new Color(0xffaaaa), 1.5f);
             light.Position.Set(0, 0, -1).Normalize();
             this.sceneRtt.Add(light);
 
@@ -113,8 +113,8 @@ namespace ThreeJs4Net.Demo.examples
 
             var geometry = new TorusGeometry(100, 25, 15, 30);      
 
-            var mat1 = new MeshPhongMaterial() { Color = (Color)colorConvertor.ConvertFromString("#555555"), Specular = (Color)colorConvertor.ConvertFromString("#ffaa00"), Shininess = 5 };
-            var mat2 = new MeshPhongMaterial() { Color = (Color)colorConvertor.ConvertFromString("#550000"), Specular = (Color)colorConvertor.ConvertFromString("#ff2200"), Shininess = 5 };
+            var mat1 = new MeshPhongMaterial() { Color = new Color(0x555555), Specular = new Color(0xffaa00), Shininess = 5 };
+            var mat2 = new MeshPhongMaterial() { Color = new Color(0x550000), Specular = new Color(0xff2200), Shininess = 5 };
 
             zmesh1 = new Mesh(geometry, mat1);
             zmesh1.Position.Set(0, 0, 100);
@@ -132,7 +132,7 @@ namespace ThreeJs4Net.Demo.examples
 
         	//	
             var geometry3 = new SphereGeometry(10, 64, 32);
-			var material2 = new MeshBasicMaterial() { Color = Color.White/*, Map = rtTexture*/ };
+			var material2 = new MeshBasicMaterial() { Color = Color.ColorName(ColorKeywords.white)/*, Map = rtTexture*/ };
 
             int n = 5;
         	for( var j = 0; j < n; j ++ ) {

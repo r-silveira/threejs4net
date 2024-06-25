@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using ThreeJs4Net.Math;
 
@@ -205,7 +206,7 @@ namespace ThreeJs4Net.Extras.Core
         #endregion
 
         #region ##> ComputeFrenetFrames
-        public TenetFrames ComputeFrenetFrames(int segments, bool closed)
+        public Hashtable ComputeFrenetFrames(int segments, bool closed)
         {
             if (!(default(T) is Vector3))
             {
@@ -305,11 +306,11 @@ namespace ThreeJs4Net.Extras.Core
                 }
             }
 
-            return new TenetFrames()
+            return new Hashtable()
             {
-                tangents = tangents,
-                normals = normals,
-                binormals = binormals
+                { "tangents", tangents },
+                { "normals", normals },
+                { "binormals", binormals }
             };
         } 
         #endregion

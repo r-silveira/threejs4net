@@ -14,12 +14,12 @@ namespace ThreeJs4Net.Extras.Core.Tests
         [Fact()]
         public void SplineCurveTest()
         {
-            var _curve = new SplineCurve(new Vector2[] {
-                new Vector2( - 10, 0 ),
-                new Vector2( - 5, 5 ),
-                new Vector2( 0, 0 ),
-                new Vector2( 5, - 5 ),
-                new Vector2( 10, 0 )
+            var _curve = new SplineCurve(new Vector3[] {
+                new Vector3( - 10, 0, 0 ),
+                new Vector3( - 5, 5, 0 ),
+                new Vector3( 0, 0, 0 ),
+                new Vector3( 5, - 5, 0 ),
+                new Vector3( 10, 0, 0 )
             });
 
             var expectedPoints = new Vector2[] {
@@ -48,21 +48,21 @@ namespace ThreeJs4Net.Extras.Core.Tests
         [Fact()]
         public void SplineCurve_GetLength()
         {
-            var _curve = new SplineCurve(new Vector2[] {
-                new Vector2( - 10, 0 ),
-                new Vector2( - 5, 5 ),
-                new Vector2( 0, 0 ),
-                new Vector2( 5, - 5 ),
-                new Vector2( 10, 0 )
+            var _curve = new SplineCurve(new Vector3[] {
+                new Vector3( - 10, 0, 0 ),
+                new Vector3( - 5, 5, 0 ),
+                new Vector3( 0, 0, 0 ),
+                new Vector3( 5, - 5, 0 ),
+                new Vector3( 10, 0, 0 )
             });
 
-            var expectedPoints = new Vector2[] {
-                new Vector2( - 10, 0 ),
-                new Vector2( - 6.08f, 4.56f ),
-                new Vector2( - 2, 2.48f ),
-                new Vector2( 2, - 2.48f ),
-                new Vector2( 6.08f, - 4.56f ),
-                new Vector2( 10, 0 )
+            var expectedPoints = new Vector3[] {
+                new Vector3( - 10, 0, 0 ),
+                new Vector3( - 6.08f, 4.56f, 0 ),
+                new Vector3( - 2, 2.48f, 0 ),
+                new Vector3( 2, - 2.48f, 0 ),
+                new Vector3( 6.08f, - 4.56f, 0 ),
+                new Vector3( 10, 0, 0 )
             };
 
             var curve = _curve;
@@ -83,12 +83,12 @@ namespace ThreeJs4Net.Extras.Core.Tests
         [Fact()]
         public void SplineCurve_GetPointAt()
         {
-            var _curve = new SplineCurve(new Vector2[] {
-                new Vector2( - 10, 0 ),
-                new Vector2( - 5, 5 ),
-                new Vector2( 0, 0 ),
-                new Vector2( 5, - 5 ),
-                new Vector2( 10, 0 )
+            var _curve = new SplineCurve(new Vector3[] {
+                new Vector3( - 10, 0, 0 ),
+                new Vector3( - 5, 5, 0 ),
+                new Vector3( 0, 0, 0 ),
+                new Vector3( 5, - 5, 0 ),
+                new Vector3( 10, 0, 0 )
             });
 
             var expectedPoints = new Vector2[] {
@@ -101,7 +101,7 @@ namespace ThreeJs4Net.Extras.Core.Tests
             };
 
             var curve = _curve;
-            var point = new Vector2();
+            var point = new Vector3();
 
             Assert.True(curve.GetPointAt(0, point).Equals(curve.points[0]));
             Assert.True(curve.GetPointAt(1, point).Equals(curve.points[4]));
@@ -115,12 +115,12 @@ namespace ThreeJs4Net.Extras.Core.Tests
         [Fact()]
         public void SplineCurve_GetTangent()
         {
-            var _curve = new SplineCurve(new Vector2[] {
-                new Vector2( - 10, 0 ),
-                new Vector2( - 5, 5 ),
-                new Vector2( 0, 0 ),
-                new Vector2( 5, - 5 ),
-                new Vector2( 10, 0 )
+            var _curve = new SplineCurve(new Vector3[] {
+                new Vector3( - 10, 0, 0 ),
+                new Vector3( - 5, 5, 0 ),
+                new Vector3( 0, 0, 0 ),
+                new Vector3( 5, - 5, 0 ),
+                new Vector3( 10, 0, 0 )
             });
 
             var expectedPoints = new Vector2[] {
@@ -139,10 +139,10 @@ namespace ThreeJs4Net.Extras.Core.Tests
                     new Vector2( 0.7068243340245123f, 0.7073891155727552f ) // 1
                 };
 
-            var tangents = new Vector2[] {
-                curve.GetTangent( 0f, new Vector2() ),
-                curve.GetTangent( 0.5f, new Vector2() ),
-                curve.GetTangent( 1f, new Vector2() )
+            var tangents = new Vector3[] {
+                curve.GetTangent( 0f, new Vector3() ),
+                curve.GetTangent( 0.5f, new Vector3() ),
+                curve.GetTangent( 1f, new Vector3() )
                 };
 
             for (int i = 0; i < tangents.Length; i++)
@@ -156,12 +156,12 @@ namespace ThreeJs4Net.Extras.Core.Tests
         [Fact()]
         public void SplineCurve_GetUtoTmapping()
         {
-            var _curve = new SplineCurve(new Vector2[] {
-                new Vector2( - 10, 0 ),
-                new Vector2( - 5, 5 ),
-                new Vector2( 0, 0 ),
-                new Vector2( 5, - 5 ),
-                new Vector2( 10, 0 )
+            var _curve = new SplineCurve(new Vector3[] {
+                new Vector3( - 10, 0, 0 ),
+                new Vector3( - 5, 5, 0 ),
+                new Vector3( 0, 0, 0 ),
+                new Vector3( 5, - 5, 0 ),
+                new Vector3( 10, 0, 0 )
             });
 
             var curve = _curve;
@@ -181,20 +181,20 @@ namespace ThreeJs4Net.Extras.Core.Tests
         [Fact()]
         public void SplineCurve_GetSpacedPoints()
         {
-            var _curve = new SplineCurve(new Vector2[] {
-                new Vector2( - 10, 0 ),
-                new Vector2( - 5, 5 ),
-                new Vector2( 0, 0 ),
-                new Vector2( 5, - 5 ),
-                new Vector2( 10, 0 )
+            var _curve = new SplineCurve(new Vector3[] {
+                new Vector3( - 10, 0, 0 ),
+                new Vector3( - 5, 5, 0 ),
+                new Vector3( 0, 0, 0 ),
+                new Vector3( 5, - 5, 0 ),
+                new Vector3( 10, 0, 0 )
             });
 
-            var expectedPoints = new Vector2[] {
-                new Vector2( - 10, 0 ),
-                new Vector2( - 4.996509634683014f, 4.999995128640857f ),
-                new Vector2( 0, 0 ),
-                new Vector2( 4.996509634683006f, - 4.999995128640857f ),
-                new Vector2( 10, 0 )
+            var expectedPoints = new Vector3[] {
+                new Vector3( - 10, 0, 0 ),
+                new Vector3( - 4.996509634683014f, 4.999995128640857f, 0 ),
+                new Vector3( 0, 0, 0 ),
+                new Vector3( 4.996509634683006f, - 4.999995128640857f, 0 ),
+                new Vector3( 10, 0, 0 )
             };
 
             var curve = _curve;

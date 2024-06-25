@@ -18,17 +18,6 @@ namespace ThreeJs4Net.Core
         public float Near = 0;
         public float Far = float.PositiveInfinity;
 
-
-        /*
-                this.params = {
-                Sprite: {},
-                Mesh: {},
-                PointCloud: { threshold: 1 },
-                LOD: {},
-                Line: {}
-                };
-        */
-
         public Raycaster()
         {
         }

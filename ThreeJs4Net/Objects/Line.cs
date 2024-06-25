@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;

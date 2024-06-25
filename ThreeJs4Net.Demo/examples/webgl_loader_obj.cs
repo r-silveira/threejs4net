@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
+
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Demo.examples.cs.loaders;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Loaders;
 using ThreeJs4Net.Materials;
@@ -41,10 +42,10 @@ namespace ThreeJs4Net.Demo.examples
 
             // light
 
-            var ambient = new AmbientLight((Color)colorConvertor.ConvertFromString("#101030") );
+            var ambient = new AmbientLight(new Color(0x101030) );
             scene.Add(ambient);
 
-            var directionalLight = new DirectionalLight((Color)colorConvertor.ConvertFromString("#ffeedd") );
+            var directionalLight = new DirectionalLight(new Color(0xffeedd) );
             directionalLight.Position = new Vector3(0, 0, 1);
             scene.Add(directionalLight);
 

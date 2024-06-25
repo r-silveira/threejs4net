@@ -88,8 +88,8 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var testValues = new[] { 0, 0.3f, 0.5f, 0.7f, 1 };
 
-            var p = new Vector2();
-            var a = new Vector2();
+            var p = new Vector3();
+            var a = new Vector3();
 
             foreach (var val in testValues)
             {
@@ -128,11 +128,11 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var tangents = new[]
             {
-                curve.GetTangent(0, new Vector2()),
-                curve.GetTangent(0.25f, new Vector2()),
-                curve.GetTangent(0.5f, new Vector2()),
-                curve.GetTangent(0.75f, new Vector2()),
-                curve.GetTangent(1, new Vector2())
+                curve.GetTangent(0, new Vector3()),
+                curve.GetTangent(0.25f, new Vector3()),
+                curve.GetTangent(0.5f, new Vector3()),
+                curve.GetTangent(0.75f, new Vector3()),
+                curve.GetTangent(1, new Vector3())
             };
 
             for (int i = 0; i < expectedTangents.Length; i++)

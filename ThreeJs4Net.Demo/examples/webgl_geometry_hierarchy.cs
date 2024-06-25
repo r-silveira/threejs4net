@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -36,7 +36,7 @@ namespace ThreeJs4Net.Demo.examples
             this.camera.Position.Z = 500;
 
             scene = new Scene();
-            scene.Fog = new Fog(Color.White, 1, 10000);
+            scene.Fog = new Fog(Color.ColorName(ColorKeywords.white), 1, 10000);
 
             var geometry = new BoxGeometry(100, 100, 100);
             var material = new MeshNormalMaterial();
@@ -62,7 +62,7 @@ namespace ThreeJs4Net.Demo.examples
 
             scene.Add(group);
 
-            renderer.SetClearColor(Color.White);
+            renderer.SetClearColor(Color.ColorName(ColorKeywords.white));
             renderer.SortObjects = false;
         }
 

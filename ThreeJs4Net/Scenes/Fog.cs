@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
+using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Scenes
 {
@@ -10,7 +10,7 @@ namespace ThreeJs4Net.Scenes
         #region Fields
 
         
-        public Color Color = Color.White;
+        public Color Color = Color.ColorName(ColorKeywords.white);
 
         
         public float Far;

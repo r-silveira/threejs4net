@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Textures;
 
@@ -30,7 +30,7 @@ namespace ThreeJs4Net.Renderers.Shaders
         {
             return new Uniforms
             {
-                { "diffuse",               new Uniform() { {"type", "c"}, {"value", Color.White}}},            
+                { "diffuse",               new Uniform() { {"type", "c"}, {"value", Color.ColorName(ColorKeywords.white) } }},
                 { "opacity",               new Uniform() { {"type", "f"}, {"value", 1.0f}}},
 
                 { "map",                   new Uniform() { {"type", "t"}, {"value", null}}},
@@ -58,7 +58,7 @@ namespace ThreeJs4Net.Renderers.Shaders
         private Uniforms MakeBump()
         {
             return new Uniforms
-            { 
+            {
                 { "bumpMap",      new Uniform() { {"type", "t"}, {"value", null}}},
                 { "bumpScale",    new Uniform() { {"type", "f"}, {"value", 1.0f}}},
             };
@@ -88,7 +88,7 @@ namespace ThreeJs4Net.Renderers.Shaders
                 { "fogDensity",  new Uniform() { {"type", "f"},  {"value", 0.00025f}}},
                 { "fogNear",     new Uniform() { {"type", "f"},  {"value", 1}}},
                 { "fogFar",      new Uniform() { {"type", "f"},  {"value", 2000}}},
-                { "fogColor",    new Uniform() { {"type", "c"},  {"value", Color.White}}},
+                { "fogColor",    new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.white) } }},
             };
         }
 
@@ -104,7 +104,7 @@ namespace ThreeJs4Net.Renderers.Shaders
 
                 { "directionalLightDirection",  new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
                 { "directionalLightColor",      new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
-             
+
                 { "hemisphereLightDirection",   new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
                 { "hemisphereLightSkyColor",    new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
                 { "hemisphereLightGroundColor", new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
@@ -112,7 +112,7 @@ namespace ThreeJs4Net.Renderers.Shaders
                 { "pointLightColor",            new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
                 { "pointLightPosition",         new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
                 { "pointLightDistance",         new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
-                
+
                 { "spotLightColor",             new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
                 { "spotLightPosition",          new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
                 { "spotLightDirection",         new Uniform() { {"type", "fv"},  {"value", new Hashtable()}}},
@@ -130,7 +130,7 @@ namespace ThreeJs4Net.Renderers.Shaders
         {
             return new Uniforms
             {
-                { "psColor",      new Uniform() { {"type", "c"},  {"value", Color.White}}},
+                { "psColor",      new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.white) } }},
                 { "opacity",      new Uniform() { {"type", "f"},  {"value", 1.0f}}},
                 { "size",         new Uniform() { {"type", "f"},  {"value", 1.0f}}},
                 { "scale",        new Uniform() { {"type", "f"},  {"value", 1.0f}}},
@@ -139,7 +139,7 @@ namespace ThreeJs4Net.Renderers.Shaders
                 { "fogDensity",   new Uniform() { {"type", "f"},  {"value", 0.00025f}}},
                 { "fogNear",      new Uniform() { {"type", "f"},  {"value", 1.0f}}},
                 { "fogFar",       new Uniform() { {"type", "f"},  {"value", 2000.0f}}},
-                { "fogColor",     new Uniform() { {"type", "c"},  {"value", Color.White}}},
+                { "fogColor",     new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.white) } }},
             };
         }
 
@@ -151,7 +151,11 @@ namespace ThreeJs4Net.Renderers.Shaders
         {
             return new Uniforms
             {
+#if USE_WINDOWS
                 { "shadowMap",       new Uniform() { {"type", "tv"},   {"value", new List<Texture>()}}},
+#else
+                //{ "shadowMap",       new Uniform() { {"type", "tv"},   {"value", new List<Texture>()}}},
+#endif
                 { "shadowMapSize",   new Uniform() { {"type", "v2v"},  {"value", new List<Size>()}}},
 
                 { "shadowBias",      new Uniform() { {"type", "fv1"},  {"value", new List<float>()}}},

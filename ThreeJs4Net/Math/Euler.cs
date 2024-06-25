@@ -83,9 +83,10 @@ namespace ThreeJs4Net.Math
 
         public Euler Copy(Euler euler)
         {
-            this.x = euler.x;
-            this.y = euler.y;
-            this.z = euler.z;
+            x = euler.x;
+            y = euler.y;
+            z = euler.z;
+            order = euler.order;
 
             OnPropertyChanged();
 
@@ -239,7 +240,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float[] ToArray(float[] array, int offset = 0)
+        public float[] ToArray(float[] array = null, int offset = 0)
         {
             array ??= new float[4];
 

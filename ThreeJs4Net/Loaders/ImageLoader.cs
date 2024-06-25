@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if USE_WINDOWS
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -89,3 +90,4 @@ namespace ThreeJs4Net.Loaders
         //}
     }
 }
+#endif

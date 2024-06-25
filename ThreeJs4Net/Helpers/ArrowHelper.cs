@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Materials;

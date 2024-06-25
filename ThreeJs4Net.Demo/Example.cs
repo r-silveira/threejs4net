@@ -3,6 +3,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Renderers;
+using Point = ThreeJs4Net.Extras.Core.Point;
+using Size = ThreeJs4Net.Extras.Core.Size;
 
 namespace ThreeJs4Net.Demo
 {
@@ -11,8 +13,6 @@ namespace ThreeJs4Net.Demo
         protected WebGLRenderer renderer;
 
         protected readonly Random random = new Random();
-
-        protected readonly ColorConverter colorConvertor = new ColorConverter();
 
         protected readonly Stopwatch stopWatch = new Stopwatch();
 

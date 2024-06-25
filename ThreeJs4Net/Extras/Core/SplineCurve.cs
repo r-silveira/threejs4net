@@ -4,18 +4,18 @@ using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Extras.Core
 {
-    public class SplineCurve : Curve<Vector2>
+    public class SplineCurve : Curve<Vector3>
     {
-        public List<Vector2> points;
+        public List<Vector3> points;
 
-        public SplineCurve(IEnumerable<Vector2> points)
+        public SplineCurve(IEnumerable<Vector3> points)
         {
-            this.points = points.ToList() ?? new List<Vector2>();
+            this.points = points.ToList() ?? new List<Vector3>();
         }
 
-        public override Vector2 GetPoint(float t, Vector2 optionalTarget)
+        public override Vector3 GetPoint(float t, Vector3 optionalTarget)
         {
-            Vector2 point = optionalTarget ?? new Vector2();
+            Vector3 point = optionalTarget ?? new Vector3();
 
             var lPoints = this.points;
             var p = (lPoints.Count - 1) * t;
@@ -30,16 +30,17 @@ namespace ThreeJs4Net.Extras.Core
 
             point.Set(
                 Interpolation.CatmullRom(weight, p0.X, p1.X, p2.X, p3.X),
-                Interpolation.CatmullRom(weight, p0.Y, p1.Y, p2.Y, p3.Y)
+                Interpolation.CatmullRom(weight, p0.Y, p1.Y, p2.Y, p3.Y),
+                0
             );
 
             return point;
         }
 
-        public Curve<Vector2> Copy(SplineCurve source)
+        public Curve<Vector3> Copy(SplineCurve source)
         {
             base.Copy(source);
-            this.points = new List<Vector2>();
+            this.points = new List<Vector3>();
             for (var i = 0; i < source.points.Count; i++)
             {
                 var point = source.points[i];

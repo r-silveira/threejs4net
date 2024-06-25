@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using ThreeJs4Net.Core;
+using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
 
 namespace ThreeJs4Net.Lights

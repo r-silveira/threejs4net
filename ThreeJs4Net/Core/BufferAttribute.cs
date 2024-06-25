@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using ThreeJs4Net.Math;
-using Attribute = ThreeJs4Net.Renderers.Shaders.Attribute;
 
 namespace ThreeJs4Net.Core
 {

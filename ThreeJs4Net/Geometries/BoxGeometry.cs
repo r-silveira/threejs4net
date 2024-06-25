@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Math;
 
@@ -149,7 +148,7 @@ namespace ThreeJs4Net.Geometries
                     var uvc = new Vector2((ix + 1) / gridX, 1 - (iy + 1) / gridY);
                     var uvd = new Vector2((ix + 1) / gridX, 1 - iy / gridY);
 
-                    var face = new Face3(a + offset, b + offset, d + offset, Vector3.One(), Color.White);
+                    var face = new Face3(a + offset, b + offset, d + offset, Vector3.One(), Color.ColorName(ColorKeywords.white));
                     face.Normal = normal;
                     face.VertexNormals.Add((Vector3)normal.Clone());
                     face.VertexNormals.Add((Vector3)normal.Clone());
@@ -162,7 +161,7 @@ namespace ThreeJs4Net.Geometries
                         this.FaceVertexUvs[0].Add(uvs);
                     }
 
-                    face = new Face3(b + offset, c + offset, d + offset, Vector3.One(), Color.White);
+                    face = new Face3(b + offset, c + offset, d + offset, Vector3.One(), Color.ColorName(ColorKeywords.white));
                     face.Normal = normal;
                     face.VertexNormals.Add((Vector3)normal.Clone());
                     face.VertexNormals.Add((Vector3)normal.Clone());

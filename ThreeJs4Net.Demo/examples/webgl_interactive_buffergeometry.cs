@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -45,15 +45,15 @@ namespace ThreeJs4Net.Demo.examples
             camera.Position.Z = 2750;
 
             scene = new Scene();
-            scene.Fog = new Fog((Color)colorConvertor.ConvertFromString("#050505"), 2000, 3500);
+            scene.Fog = new Fog(new Color(0x050505), 2000, 3500);
  
-            scene.Add( new AmbientLight( (Color)colorConvertor.ConvertFromString("#444444") ) );
+            scene.Add( new AmbientLight( new Color(0x444444) ) );
 
-            var light1 = new DirectionalLight( Color.White, 0.5f );
+            var light1 = new DirectionalLight(Color.ColorName(ColorKeywords.white), 0.5f );
             light1.Position = new Vector3( 1, 1, 1 );
             scene.Add( light1 );
 
-            var light2 = new DirectionalLight( Color.White, 1.5f );
+            var light2 = new DirectionalLight(Color.ColorName(ColorKeywords.white), 1.5f );
             light2.Position = new Vector3( 0, -1, 0 );
             scene.Add( light2 );
 
@@ -162,9 +162,9 @@ namespace ThreeJs4Net.Demo.examples
 
 			var material = new MeshPhongMaterial()
             {
-				Color = (Color)colorConvertor.ConvertFromString("#aaaaaa"), 
-                Ambient = (Color)colorConvertor.ConvertFromString("#aaaaaa"), 
-                Specular = Color.White, 
+				Color = new Color(0xaaaaaa), 
+                Ambient = new Color(0xaaaaaa), 
+                Specular = Color.ColorName(ColorKeywords.white), 
                 Shininess = 250,
 				Side = Three.DoubleSide, VertexColors = Three.VertexColors,
 			};
@@ -182,7 +182,7 @@ namespace ThreeJs4Net.Demo.examples
 			var geometry2 = new BufferGeometry();
             geometry2.AddAttribute("position", new BufferAttribute<float>(new float[4 * 3], 3));
 
-            var material2 = new LineBasicMaterial() { Color = Color.White, Linewidth = 2, Transparent = true };
+            var material2 = new LineBasicMaterial() { Color = Color.ColorName(ColorKeywords.white), Linewidth = 2, Transparent = true };
 
             line = new Line(geometry2, material2);
             scene.Add(line);

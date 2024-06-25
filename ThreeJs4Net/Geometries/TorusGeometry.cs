@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Math;
 
@@ -6,89 +7,128 @@ namespace ThreeJs4Net.Geometries
 {
     public class TorusGeometry : Geometry
     {
-        public float Radius;
-
-        public float Tube;
-
-        public int RadialSegments;
-
-        public int TubularSegments;
-
-        public float Arc;
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="radius"></param>
-        /// <param name="tube"></param>
-        /// <param name="radialSegments"></param>
-        /// <param name="tubularSegments"></param>
-        /// <param name="arc"></param>
-        public TorusGeometry(float radius = 100, float tube = 40, int radialSegments = 8, int tubularSegments = 6, float arc = (float)Mat.PI2)
+        public Hashtable parameters;
+        public TorusGeometry(float? radius = null, float? tube = null, float? radialSegments = null, float? tubularSegments = null, float? arc = null) : base()
         {
-            this.Radius = radius;
-            this.Tube = tube;
-            this.RadialSegments = radialSegments;
-            this.TubularSegments = tubularSegments;
-            this.Arc = arc;
-
-            var center = new Vector3(); var uvs = new List<Vector2>(); var normals = new List<Vector3>();
-
-            for ( var j = 0; j <= radialSegments; j ++ ) 
+            parameters = new Hashtable()
             {
-                for ( var i = 0; i <= tubularSegments; i ++ )
+                {"radius",radius },
+                {"tube",radius },
+                {"radialSegments",radius },
+                {"tubularSegments",radius },
+                {"arc",radius },
+            };
+
+            this.FromBufferGeometry(new TorusBufferGeometry(radius, tube, radialSegments, tubularSegments, arc));
+            this.MergeVertices();
+        }
+
+    }
+
+    public class TorusBufferGeometry : BufferGeometry
+    {
+        public Hashtable parameters;
+
+        public TorusBufferGeometry(float? radius = null, float? tube = null, float? radialSegments = null, float? tubularSegments = null, float? arc = null) : base()
+        {
+            radius = radius != null ? radius : 1;
+            tube = tube != null ? tube : 1;
+            radialSegments = radialSegments != null ? (float)Mathf.Floor(radialSegments.Value) : 8;
+            tubularSegments = tubularSegments != null ? (float)Mathf.Floor(tubularSegments.Value) : 6;
+            arc = arc != null ? arc : (float)Mathf.PI * 2;
+            parameters = new Hashtable()
+            {
+                {"radius",radius },
+                {"tube",radius },
+                {"radialSegments",radius },
+                {"tubularSegments",radius },
+                {"arc",radius },
+            };
+
+            List<uint> indices = new List<uint>();
+            List<float> vertices = new List<float>();
+            List<float> normals = new List<float>();
+            List<float> uvs = new List<float>();
+
+            // helper variables
+
+            var center = new Vector3();
+            var vertex = new Vector3();
+            var normal = new Vector3();
+
+            int j, i;
+
+            // generate vertices, normals and uvs
+
+            for (j = 0; j <= radialSegments; j++)
+            {
+
+                for (i = 0; i <= tubularSegments; i++)
                 {
-                    var u = i / (float)tubularSegments * arc;
-                    var v = j / (float)radialSegments * System.Math.PI * 2;
 
-                    center.X = radius * (float)System.Math.Cos(u);
-                    center.Y = radius * (float)System.Math.Sin(u);
+                    float u = i / (float)tubularSegments * (float)arc;
+                    float v = j / (float)radialSegments * (float)Mathf.PI * 2;
 
-                    var vertex = new Vector3();
-                    vertex.X = (radius + tube * (float)System.Math.Cos(v)) * (float)System.Math.Cos(u);
-                    vertex.Y = (radius + tube * (float)System.Math.Cos(v)) * (float)System.Math.Sin(u);
-                    vertex.Z = tube * (float)System.Math.Sin(v);
+                    // vertex
 
-                    this.Vertices.Add( vertex );
+                    vertex.X = (float)((radius + tube * Mathf.Cos(v)) * Mathf.Cos(u));
+                    vertex.Y = (float)((radius + tube * Mathf.Cos(v)) * Mathf.Sin(u));
+                    vertex.Z = (float)(tube * Mathf.Sin(v));
 
-                    uvs.Add( new Vector2( i / (float)tubularSegments, j / (float)radialSegments ) );
-                    normals.Add( ((Vector3)vertex.Clone()).Sub( center ).Normalize() );
+                    vertices.Add(vertex.X, vertex.Y, vertex.Z);
+
+                    // normal
+
+                    center.X = radius.Value * (float)Mathf.Cos(u);
+                    center.Y = radius.Value * (float)Mathf.Sin(u);
+                    normal.SubVectors(vertex, center).Normalize();
+
+                    normals.Add(normal.X, normal.Y, normal.Z);
+
+                    // uv
+
+                    uvs.Add(i / tubularSegments.Value);
+                    uvs.Add(j / radialSegments.Value);
+
+                }
+
+            }
+
+            // generate indices
+
+            for (j = 1; j <= radialSegments; j++)
+            {
+
+                for (i = 1; i <= tubularSegments; i++)
+                {
+
+                    // indices
+
+                    int a = ((int)tubularSegments + 1) * j + i - 1;
+                    int b = ((int)tubularSegments + 1) * (j - 1) + i - 1;
+                    int c = ((int)tubularSegments + 1) * (j - 1) + i;
+                    int d = ((int)tubularSegments + 1) * j + i;
+
+                    // faces
+
+                    indices.Add((uint)a);
+                    indices.Add((uint)b);
+                    indices.Add((uint)d);
+                    indices.Add((uint)b);
+                    indices.Add((uint)c);
+                    indices.Add((uint)d);
                 }
             }
 
-            for ( var j = 1; j <= radialSegments; j ++ ) 
-            {
-                for ( var i = 1; i <= tubularSegments; i ++ )
-                {
-                    var a = (tubularSegments + 1) * j + i - 1;
-                    var b = (tubularSegments + 1) * (j - 1) + i - 1;
-                    var c = (tubularSegments + 1) * (j - 1) + i;
-                    var d = (tubularSegments + 1) * j + i;
+            // build geometry
 
-                    {
-                        var face = new Face3(a, b, d);
-                        face.VertexNormals.Add((Vector3)normals[a].Clone());
-                        face.VertexNormals.Add((Vector3)normals[b].Clone());
-                        face.VertexNormals.Add((Vector3)normals[d].Clone());
-                        this.Faces.Add(face);
-                        this.FaceVertexUvs[0].Add(new List<Vector2> { (Vector2)uvs[a].Clone(), (Vector2)uvs[b].Clone(), (Vector2)uvs[d].Clone() });
-                        
-                    }
+            this.SetIndex(new BufferAttribute<uint>(indices.ToArray(), 1));
 
-                    {
-                        var face = new Face3(b, c, d);
-                        face.VertexNormals.Add((Vector3)normals[b].Clone());
-                        face.VertexNormals.Add((Vector3)normals[c].Clone());
-                        face.VertexNormals.Add((Vector3)normals[d].Clone());
-                        this.Faces.Add(face);
-                        this.FaceVertexUvs[0].Add(new List<Vector2> { (Vector2)uvs[b].Clone(), (Vector2)uvs[c].Clone(), (Vector2)uvs[d].Clone() });
-                        
-                    }
-                }
-            }
+            this.SetAttribute("position", new BufferAttribute<float>(vertices.ToArray(), 3));
 
-            this.ComputeFaceNormals();
+            this.SetAttribute("normal", new BufferAttribute<float>(normals.ToArray(), 3));
+
+            this.SetAttribute("uv", new BufferAttribute<float>(uvs.ToArray(), 2));
         }
     }
 }

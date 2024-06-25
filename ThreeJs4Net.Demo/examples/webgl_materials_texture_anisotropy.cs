@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Extras;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Materials;
@@ -35,17 +35,17 @@ namespace ThreeJs4Net.Demo.examples
             scene1 = new Scene();
             scene2 = new Scene();
 
-            scene1.Fog = new Fog((Color)colorConvertor.ConvertFromString("#f2f7ff"), 1, 25000);
+            scene1.Fog = new Fog(new Color(0xf2f7ff), 1, 25000);
             scene2.Fog = scene1.Fog;
 
-            scene1.Add(new AmbientLight((Color)colorConvertor.ConvertFromString("#eef0ff")));
-            scene2.Add(new AmbientLight((Color)colorConvertor.ConvertFromString("#eef0ff")));
+            scene1.Add(new AmbientLight(new Color(0xeef0ff)));
+            scene2.Add(new AmbientLight(new Color(0xeef0ff)));
 
-            var light1 = new DirectionalLight(Color.White, 2);
+            var light1 = new DirectionalLight(Color.ColorName(ColorKeywords.white), 2);
             light1.Position = new Vector3(1, 1, 1);
             scene1.Add(light1);
 
-            var light2 = new DirectionalLight(Color.White, 2);
+            var light2 = new DirectionalLight(Color.ColorName(ColorKeywords.white), 2);
             light2.Position = new Vector3(1, 1, 1);
             scene2.Add(light2);
 
@@ -54,14 +54,14 @@ namespace ThreeJs4Net.Demo.examples
             var maxAnisotropy = renderer.MaxAnisotropy;
 
             var texture1 = ImageUtils.LoadTexture("examples/textures/crate.jpg");
-            var material1 = new MeshPhongMaterial() { Color = Color.White, Map = texture1 };
+            var material1 = new MeshPhongMaterial() { Color = Color.ColorName(ColorKeywords.white), Map = texture1 };
 
             texture1.Anisotropy = maxAnisotropy;
             texture1.WrapS = texture1.WrapT = Three.RepeatWrapping;
             texture1.Repeat = new Vector2(512, 512);
 
             var texture2 = ImageUtils.LoadTexture("examples/textures/crate.jpg");
-            var material2 = new MeshPhongMaterial() { Color = Color.White, Map = texture2 };
+            var material2 = new MeshPhongMaterial() { Color = Color.ColorName(ColorKeywords.white), Map = texture2 };
 
             texture2.Anisotropy = 1;
             texture2.WrapS = texture2.WrapT = Three.RepeatWrapping;

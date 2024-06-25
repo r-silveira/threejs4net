@@ -102,7 +102,7 @@ namespace ThreeJs4Net.Demo.examples
 			scene.Children.Reverse();
 
             renderer.SortObjects = false;
-            renderer.SetClearColor((Color)colorConvertor.ConvertFromString("#003300"));
+            renderer.SetClearColor(new Color(0x003300));
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if USE_WINDOWS
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -492,3 +493,4 @@ namespace ThreeJs4Net.Renderers.WebGL
         }
     }
 }
+#endif

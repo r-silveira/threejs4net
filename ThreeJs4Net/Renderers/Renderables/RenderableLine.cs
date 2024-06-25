@@ -1,5 +1,5 @@
-﻿using System.Drawing;
-using ThreeJs4Net.Materials;
+﻿using ThreeJs4Net.Materials;
+using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Renderers.Renderables
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ThreeJs4Net.Math;
 
@@ -30,7 +28,7 @@ namespace ThreeJs4Net.Core
             this.B = b;
             this.C = c;
             this.Normal = Vector3.One();
-            this.Color = Color.White;
+            this.Color = Color.ColorName(ColorKeywords.white);
             this.MaterialIndex = 0;
         }
 
@@ -51,7 +49,7 @@ namespace ThreeJs4Net.Core
             this.C = c;
             this.Normal = new Vector3();
             this.VertexNormals = normals.ToList();
-            this.Color = Color.White;
+            this.Color = Color.ColorName(ColorKeywords.white);
             this.VertexColors = colors.ToArray();
             this.MaterialIndex = materialIndex;
         }

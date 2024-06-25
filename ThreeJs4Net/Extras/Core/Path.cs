@@ -1,142 +1,187 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ThreeJs4Net.Extras.Core;
+﻿using System.Collections.Generic;
 using ThreeJs4Net.Extras.Curves;
 using ThreeJs4Net.Math;
-using EllipseCurve = ThreeJs4Net.Extras.Curves.EllipseCurve;
 
 namespace ThreeJs4Net.Extras.Core
 {
     public class Path : CurvePath
     {
-        public Vector2 CurrentPoint;
+        public Vector3 CurrentPoint = new Vector3();
 
-        public Path() : base()
+        public Path(List<Vector3> points = null)
         {
-            CurrentPoint = new Vector2();
-        }
-
-        public Path(IEnumerable<Vector2> points) : base()
-        {
-            CurrentPoint = new Vector2();
-            if (points != null && points.Any())
+            if (points != null)
             {
-                this.SetFromPoints(points.ToArray());
+                this.SetFromPoints(points);
             }
         }
 
-        public Path SetFromPoints(Vector2[] points) 
+        protected Path(Path source)
         {
-            this.MoveTo(points[0].X, points[0].Y);
-            for (var i = 1; i < points.Length; i++)
+            this.CurrentPoint.Copy(source.CurrentPoint);
+        }
+
+        public new object Clone()
+        {
+            return new Path(this);
+        }
+        public Path SetFromPoints(List<Vector3> points)
+        {
+            this.MoveTo(points[0].X, points[0].Y, points[0].Z);
+
+            for (var i = 1; i < points.Count; i++)
             {
-                this.LineTo(points[i].X, points[i].Y);
+
+                this.LineTo(points[i].X, points[i].Y, points[i].Z);
+
             }
+
             return this;
         }
 
-        public Path MoveTo(float x, float y) 
+        public Path MoveTo(float x, float y, float z)
         {
-            this.CurrentPoint.Set(x, y); // TODO consider referencing vectors instead of copying?
+            this.CurrentPoint.Set(x, y, z);
+
             return this;
         }
-
-        public Path LineTo(float x, float y) 
+        public Path MoveTo(float x, float y)
         {
-            var curve = new LineCurve(this.CurrentPoint.Clone(), new Vector2(x, y));
+            this.CurrentPoint.Set(x, y, 0);
+            return this;
+        }
+        public Path LineTo(float x, float y, float z)
+        {
+
+            var curve = new LineCurve3(this.CurrentPoint.Clone() as Vector3, new Vector3(x, y, z));
             this.Curves.Add(curve);
-            this.CurrentPoint.Set(x, y);
+
+            this.CurrentPoint.Set(x, y, z);
+
             return this;
         }
+        public Path LineTo(float x, float y)
+        {
+            var curve = new LineCurve3(this.CurrentPoint.Clone() as Vector3, new Vector3(x, y, 0));
+            this.Curves.Add(curve);
 
+            this.CurrentPoint.Set(x, y, 0);
+
+            return this;
+        }
         public Path QuadraticCurveTo(float aCPx, float aCPy, float aX, float aY)
         {
-            var curve = new QuadraticBezierCurve(
-                this.CurrentPoint.Clone(),
-                new Vector2(aCPx, aCPy),
-                new Vector2(aX, aY)
+
+            var curve = new QuadraticBezierCurve3(
+                this.CurrentPoint.Clone() as Vector3,
+                new Vector3(aCPx, aCPy, 0),
+                new Vector3(aX, aY, 0)
             );
 
             this.Curves.Add(curve);
-            this.CurrentPoint.Set(aX, aY);
+
+            this.CurrentPoint.Set(aX, aY, 0);
+
             return this;
+
         }
 
         public Path BezierCurveTo(float aCP1x, float aCP1y, float aCP2x, float aCP2y, float aX, float aY)
         {
-            var curve = new CubicBezierCurve(
-                this.CurrentPoint.Clone(),
-                new Vector2(aCP1x, aCP1y),
-                new Vector2(aCP2x, aCP2y),
-                new Vector2(aX, aY)
+
+            var curve = new CubicBezierCurve3(
+                this.CurrentPoint.Clone() as Vector3,
+                new Vector3(aCP1x, aCP1y, 0),
+                new Vector3(aCP2x, aCP2y, 0),
+                new Vector3(aX, aY, 0)
             );
 
             this.Curves.Add(curve);
-            this.CurrentPoint.Set(aX, aY);
+
+            this.CurrentPoint.Set(aX, aY, 0);
+
             return this;
+
         }
 
-        public Path SplineThru(Vector2[] pts)
+        public Path SplineThru(List<Vector3> pts /*Array of Vector*/ )
         {
-            var npts = new List<Vector2>();
-            npts.Add(this.CurrentPoint.Clone());
+
+            var npts = new List<Vector3>() { this.CurrentPoint.Clone() as Vector3 };
             npts.AddRange(pts);
+            //[this.currentPoint.clone()].concat(pts);
+
             var curve = new SplineCurve(npts);
             this.Curves.Add(curve);
-            this.CurrentPoint.Copy(pts[pts.Length - 1]);
+
+            this.CurrentPoint.Copy(pts[pts.Count - 1]);
+
             return this;
+
         }
 
         public Path Arc(float aX, float aY, float aRadius, float aStartAngle, float aEndAngle, bool aClockwise)
         {
+
             var x0 = this.CurrentPoint.X;
             var y0 = this.CurrentPoint.Y;
 
-            this.Absarc(aX + x0, aY + y0, aRadius, aStartAngle, aEndAngle, aClockwise);
+            this.AbsArc(aX + x0, aY + y0, aRadius,
+                aStartAngle, aEndAngle, aClockwise);
 
             return this;
+
         }
 
-        public Path Absarc(float aX, float aY, float aRadius, float aStartAngle, float aEndAngle, bool aClockwise)
+        public Path AbsArc(float aX, float aY, float aRadius, float aStartAngle, float aEndAngle, bool aClockwise)
         {
-            this.Absellipse(aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise, 0);
+
+            this.AbsEllipse(aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise);
+
             return this;
+
         }
 
-        public Path Ellipse(float aX, float aY, float xRadius, float yRadius, float aStartAngle, float aEndAngle, bool aClockwise, float aRotation) 
+        public Path Ellipse(float aX, float aY, float xRadius, float yRadius, float aStartAngle, float aEndAngle, bool aClockwise, float aRotation)
         {
+
             var x0 = this.CurrentPoint.X;
             var y0 = this.CurrentPoint.Y;
-            this.Absellipse(aX + x0, aY + y0, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
+
+            this.AbsEllipse(aX + x0, aY + y0, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
+
             return this;
+
         }
 
-        public Path Absellipse(float aX, float aY, float xRadius, float yRadius, float aStartAngle, float aEndAngle, bool aClockwise , float aRotation = 0)
+        public Path AbsEllipse(float aX, float aY, float xRadius, float yRadius, float aStartAngle, float aEndAngle, bool aClockwise, float? aRotation = null)
         {
+
             var curve = new EllipseCurve(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);
+
             if (this.Curves.Count > 0)
             {
+
                 // if a previous curve is present, attempt to join
-                var firstPoint = curve.GetPoint(0, new Vector2());
+                var firstPoint = curve.GetPoint(0);
+
                 if (!firstPoint.Equals(this.CurrentPoint))
                 {
-                    this.LineTo(firstPoint.X, firstPoint.Y);
+
+                    this.LineTo(firstPoint.X, firstPoint.Y, 0);
+
                 }
+
             }
 
             this.Curves.Add(curve);
-            var lastPoint = curve.GetPoint(1, new Vector2());
+
+            var lastPoint = curve.GetPoint(1);
             this.CurrentPoint.Copy(lastPoint);
+
             return this;
+
         }
 
-        public Path Copy(Path source) {
-            base.Copy(source);
-            this.CurrentPoint.Copy(source.CurrentPoint);
-            return this;
-        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Math;
 using Xunit;
@@ -23,57 +24,231 @@ namespace ThreeJs4Net.Tests.Math
         }
 
         [Fact()]
+        public void OpDivTest()
+        {
+            var a = new Vector3(x, y, z);
+            var b = new Vector3(-x, -y, -z);
+            var c = new Vector3(x*2, y*3, 0);
+
+            var r1 = c / a;
+            var r2 = a / c;
+            var r3 = b / c;
+
+            Assert.Equal(r1.X, 2f);
+            Assert.Equal(r1.Y, 3f);
+            Assert.Equal(r1.Z, 0f);
+
+            Assert.Equal(r2.X, 0.5f);
+            Assert.True(r2.Y - 0.33333 <= MathUtils.EPS);
+            Assert.True(float.IsInfinity(r2.Z));
+
+            Assert.Equal(r3.X, -0.5f);
+            Assert.True(r3.Y - (-0.33333) <= MathUtils.EPS);
+            Assert.True(float.IsInfinity(r3.Z));
+        }
+
+        [Fact()]
+        public void OpSubTest()
+        {
+            var a = new Vector3(x, y, z);
+            var b = new Vector3(-x, -y, -z);
+            var c = new Vector3(x * 2, y * 3, 0);
+
+            var r1 = c - a;
+            var r2 = a - b;
+            var r3 = b - c;
+
+            Assert.Equal(r1.X, 2f);
+            Assert.Equal(r1.Y, 6f);
+            Assert.Equal(r1.Z, -4f);
+
+            Assert.Equal(r2.X, 4f);
+            Assert.Equal(r2.Y, 6f);
+            Assert.Equal(r2.Z, 8f);
+
+            Assert.Equal(r3.X, -6f);
+            Assert.Equal(r3.Y, -12f);
+            Assert.Equal(r3.Z, -4f);
+        }
+
+        [Fact()]
+        public void OpAddTest()
+        {
+            var a = new Vector3(x, y, z);
+            var b = new Vector3(-x, -y, -z);
+            var c = new Vector3(x * 2, y * 3, 0);
+
+            var r1 = c + a;
+            var r2 = a + b;
+            var r3 = b + c;
+
+            Assert.Equal(r1.X, 6f);
+            Assert.Equal(r1.Y, 12f);
+            Assert.Equal(r1.Z, 4f);
+
+            Assert.Equal(r2.X, 0f);
+            Assert.Equal(r2.Y, 0f);
+            Assert.Equal(r2.Z, 0f);
+
+            Assert.Equal(r3.X, 2f);
+            Assert.Equal(r3.Y, 6f);
+            Assert.Equal(r3.Z, -4f);
+        }
+
+        [Fact()]
+        public void OpMulTest()
+        {
+            var a = new Vector3(x, y, z);
+            var b = new Vector3(-x, -y, -z);
+            var c = new Vector3(x * 2, y * 3, 0);
+
+            var r1 = c * a;
+            var r2 = a * b;
+            var r3 = b * c;
+
+            Assert.Equal(r1.X, 8);
+            Assert.Equal(r1.Y, 27);
+            Assert.Equal(r1.Z, 0);
+
+            Assert.Equal(r2.X, -4f);
+            Assert.Equal(r2.Y, -9f);
+            Assert.Equal(r2.Z, -16f);
+
+            Assert.Equal(r3.X, -8f);
+            Assert.Equal(r3.Y, -27f);
+            Assert.Equal(r3.Z, 0f);
+        }
+
+        [Fact()]
+        public void ToVector2Test()
+        {
+            var a = new Vector3(5, 4, -6);
+            var b = a.ToVector2();
+
+            Assert.True(b.X == a.X);
+            Assert.True(b.Y == a.Y);
+        }
+
+        [Fact()]
+        public void ToVector4Test()
+        {
+            var a = new Vector3(5, 4, -6);
+            var b = a.ToVector4();
+
+            Assert.True(b.X == a.X);
+            Assert.True(b.Y == a.Y);
+            Assert.True(b.Z == a.Z);
+            Assert.True(b.W == 1);
+
+            b = a.ToVector4(4);
+            Assert.True(b.X == a.X);
+            Assert.True(b.Y == a.Y);
+            Assert.True(b.Z == a.Z);
+            Assert.True(b.W == 4);
+        }
+
+        [Fact()]
+        public void IndexedAccessTest()
+        {
+            var a = new Vector3(5, 4, -6);
+
+            Assert.True(a[0] == a.X);
+            Assert.True(a[1] == a.Y);
+            Assert.True(a[2] == a.Z);
+
+            a[0] = 17;
+            a[1] = 16;
+            a[2] = 15;
+
+            Assert.True(a.X == 17);
+            Assert.True(a.Y == 16);
+            Assert.True(a.Z == 15);
+        }
+
+        [Fact()]
+        public void IndexedAccessExceptionTest()
+        {
+            var a = new Vector3(5, 4, -6);
+
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                a[5] = 10;
+            });
+
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                var n = a[5];
+            });
+        }
+
+        [Fact()]
+        public void UnitXTest()
+        {
+            var a = Vector3.UnitX();
+
+            Assert.True(a.X == 1);
+            Assert.True(a.Y == 0);
+            Assert.True(a.Z == 0);
+        }
+
+        [Fact()]
         public void UnitYTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = Vector3.UnitY();
+
+            Assert.True(a.X == 0);
+            Assert.True(a.Y == 1);
+            Assert.True(a.Z == 0);
         }
 
         [Fact()]
         public void UnitZTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = Vector3.UnitZ();
+
+            Assert.True(a.X == 0);
+            Assert.True(a.Y == 0);
+            Assert.True(a.Z == 1);
         }
 
         [Fact()]
         public void ZeroTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = Vector3.Zero();
+
+            Assert.True(a.X == 0);
+            Assert.True(a.Y == 0);
+            Assert.True(a.Z == 0);
         }
 
         [Fact()]
         public void OneTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = Vector3.One();
+
+            Assert.True(a.X == 1);
+            Assert.True(a.Y == 1);
+            Assert.True(a.Z == 1);
         }
 
         [Fact()]
-        public void Vector3Test()
+        public void InfinityTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = Vector3.Infinity();
+
+            Assert.True(a.X == float.PositiveInfinity);
+            Assert.True(a.Y == float.PositiveInfinity);
+            Assert.True(a.Z == float.PositiveInfinity);
         }
 
         [Fact()]
-        public void Vector3Test1()
+        public void NegativeInfinityTest()
         {
-            Assert.True(false, "This test needs an implementation");
-        }
+            var a = Vector3.NegativeInfinity();
 
-        [Fact()]
-        public void Vector3Test2()
-        {
-            Assert.True(false, "This test needs an implementation");
-        }
-
-        [Fact()]
-        public void Vector3Test3()
-        {
-            Assert.True(false, "This test needs an implementation");
-        }
-
-        [Fact()]
-        public void Vector3Test4()
-        {
-            Assert.True(false, "This test needs an implementation");
+            Assert.True(a.X == float.NegativeInfinity);
+            Assert.True(a.Y == float.NegativeInfinity);
+            Assert.True(a.Z == float.NegativeInfinity);
         }
 
         [Fact()]
@@ -221,10 +396,23 @@ namespace ThreeJs4Net.Tests.Math
         }
 
         [Fact()]
-        public void GetComponentTest()
+        public void SetGetComponentExceptionTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3();
+            a.SetComponent(0, 1);
+            a.SetComponent(1, 2);
+
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                a.SetComponent(5, 4);
+            });
+
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                a.GetComponent(5);
+            });
         }
+
 
         [Fact()]
         public void CopyTest()
@@ -247,7 +435,6 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void AddScaledVectorTest()
         {
-
             var a = new Vector3(x, y, z);
             var b = new Vector3(2, 3, 4);
             var s = 3;
@@ -256,25 +443,60 @@ namespace ThreeJs4Net.Tests.Math
             Assert.StrictEqual(a.X, x + b.X * s);
             Assert.StrictEqual(a.Y, y + b.Y * s);
             Assert.StrictEqual(a.Z, z + b.Z * s);
-
         }
 
         [Fact()]
-        public void AddVectorsTest()
+        public void Vector3PropAccessTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3();
+
+            a.X = 1;
+            a.Y = 2;
+            a.Z = 3;
+
+            Assert.Equal(a.X, 1);
+            Assert.Equal(a.Y, 2);
+            Assert.Equal(a.Z, 3);
         }
 
         [Fact()]
         public void SubVectorsTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3(x, y, z);
+            var b = new Vector3(2 * x, 2 * y, 2 * z);
+            var c = new Vector3(4 * x, 4 * y, 4 * z);
+
+            a.SubVectors(a, b);
+
+            Assert.StrictEqual(a.X, -2);
+            Assert.StrictEqual(a.Y, -3);
+            Assert.StrictEqual(a.Z, -4);
+
+            a = new Vector3(x, y, z);
+            c.SubVectors(c, a);
+
+            Assert.StrictEqual(c.X, 6);
+            Assert.StrictEqual(c.Y, 9);
+            Assert.StrictEqual(c.Z, 12);
         }
 
         [Fact()]
         public void SubtractVectorsTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3(x, y, z);
+            var b = new Vector3(2 * x, 2 * y, 2 * z);
+            var c = new Vector3(4 * x, 4 * y, 4 * z);
+
+            var s1 = Vector3.SubtractVectors(a, b);
+            var s2 = Vector3.SubtractVectors(c, a);
+
+            Assert.StrictEqual(s1.X, -2);
+            Assert.StrictEqual(s1.Y, -3);
+            Assert.StrictEqual(s1.Z, -4);
+
+            Assert.StrictEqual(s2.X, 6);
+            Assert.StrictEqual(s2.Y, 9);
+            Assert.StrictEqual(s2.Z, 12);
         }
 
         [Fact()]
@@ -348,48 +570,48 @@ namespace ThreeJs4Net.Tests.Math
         }
 
         [Fact()]
-        public void ApplyMatrix4Test()
-        {
-            //var A = new Vector3( x, y, z );
-            //var B = new Vector4( x, y, z, 1 );
-
-            //var m = new Matrix4().MakeRotationX( Math.PI );
-            //A.ApplyMatrix4( m );
-            //B.ApplyMatrix4( m );
-            //Assert.True( A.X == B.X / B.w);
-            //Assert.True( A.Y == B.Y / B.w);
-            //Assert.True( A.Z == B.Z / B.w);
-
-            //var m = new Matrix4().makeTranslation( 3, 2, 1 );
-            //A.ApplyMatrix4( m );
-            //B.ApplyMatrix4( m );
-            //Assert.True( A.X == B.X / B.w);
-            //Assert.True( A.Y == B.Y / B.w);
-            //Assert.True( A.Z == B.Z / B.w);
-
-            //var m = new Matrix4().Set(
-            //    1, 0, 0, 0,
-            //    0, 1, 0, 0,
-            //    0, 0, 1, 0,
-            //    0, 0, 1, 0
-            //);
-            //A.ApplyMatrix4( m );
-            //B.ApplyMatrix4( m );
-            //Assert.True( A.X == B.X / B.w);
-            //Assert.True( A.Y == B.Y / B.w);
-            //Assert.True( A.Z == B.Z / B.w);
-        }
-
-        [Fact()]
         public void ApplyNormalMatrixTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3(x, y, z);
+            var m = new Matrix3().Set(2, 3, 5, 7, 11, 13, 17, 19, 23);
+
+            a.ApplyNormalMatrix(m);
+            Assert.True(a.X - 0.156664 <= MathUtils.EPS);
+            Assert.True(a.Y - 0.469944 <= MathUtils.EPS);
+            Assert.True(a.Z - 0.868685 <= MathUtils.EPS);
         }
 
         [Fact()]
-        public void ApplyProjectionTest()
+        public void ApplyMatrix4Test()
         {
-            Assert.True(false, "This test needs an implementation");
+            var A = new Vector3(x, y, z);
+            var B = new Vector4(x, y, z, 1);
+
+            var m1 = new Matrix4().MakeRotationX(Mathf.PI);
+            A.ApplyMatrix4(m1);
+            B.ApplyMatrix4(m1);
+            Assert.True(A.X == B.X / B.W);
+            Assert.True(A.Y == B.Y / B.W);
+            Assert.True(A.Z == B.Z / B.W);
+
+            var m2 = new Matrix4().MakeTranslation(3, 2, 1);
+            A.ApplyMatrix4(m2);
+            B.ApplyMatrix4(m2);
+            Assert.True(A.X == B.X / B.W);
+            Assert.True(A.Y == B.Y / B.W);
+            Assert.True(A.Z == B.Z / B.W);
+
+            var m3 = new Matrix4().Set(
+                1, 0, 0, 0,
+                0, 1, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 1, 0
+            );
+            A.ApplyMatrix4(m3);
+            B.ApplyMatrix4(m3);
+            Assert.True(A.X == B.X / B.W);
+            Assert.True(A.Y == B.Y / B.W);
+            Assert.True(A.Z == B.Z / B.W);
         }
 
         [Fact()]
@@ -458,18 +680,6 @@ namespace ThreeJs4Net.Tests.Math
         }
 
         [Fact()]
-        public void DivideTest()
-        {
-            Assert.True(false, "This test needs an implementation");
-        }
-
-        [Fact()]
-        public void DivideScalarTest()
-        {
-            Assert.True(false, "This test needs an implementation");
-        }
-
-        [Fact()]
         public void MinMaxClampTest()
         {
             var a = new Vector3(x, y, z);
@@ -496,7 +706,13 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void ClampLengthTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3((float)-0.01, (float)10.5, (float)7.5);
+
+            var clamp = a.ClampLength(1, 3);
+
+            Assert.True(clamp.X - (-0.002324) <= MathUtils.EPS);
+            Assert.True(clamp.Y - (2.441199) <= MathUtils.EPS);
+            Assert.True(clamp.Z - (1.743714) <= MathUtils.EPS);
         }
 
         [Fact()]
@@ -515,41 +731,80 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void FloorTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3(0.3f, 0.5f, 0.7f);
+            var b = new Vector3(-0.9f, 2.3f, 3.6f);
+
+            var ceil1 = a.Floor();
+            var ceil2 = b.Floor();
+
+            Assert.Equal(ceil1.X, 0f);
+            Assert.Equal(ceil1.Y, 0f);
+            Assert.Equal(ceil1.Z, 0f);
+
+            Assert.Equal(ceil2.X, -1f);
+            Assert.Equal(ceil2.Y, 2f);
+            Assert.Equal(ceil2.Z, 3f);
         }
 
         [Fact()]
         public void CeilTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3(0.3f, 0.5f, 0.7f);
+            var b = new Vector3(-0.9f, 2.3f, 3.6f);
+
+            var ceil1 = a.Ceil();
+            var ceil2 = b.Ceil();
+
+            Assert.Equal(ceil1.X, 1);
+            Assert.Equal(ceil1.Y, 1);
+            Assert.Equal(ceil1.Z, 1);
+
+            Assert.Equal(ceil2.X, 0);
+            Assert.Equal(ceil2.Y, 3);
+            Assert.Equal(ceil2.Z, 4);
+
         }
 
-        [Fact()]
-        public void RoundTest()
-        {
+        //[Fact()]
+        //public void RoundTest()
+        //{
 
-            //NOTE: Needs more tests. It looks like rounding in javascript is different from C#
+        //    //NOTE: Needs more tests. It looks like rounding in javascript is different from C#
 
-            //var a = new Vector3((float)-0.01, (float)0.5, (float)1.5);
-            //a.Round();
+        //    //var a = new Vector3((float)-0.01, (float)0.5, (float)1.5);
+        //    //a.Round();
 
-            //Assert.Equal(System.Math.Round((float)0), a.X);
-            //Assert.Equal(System.Math.Round((float)0), a.Y);
-            //Assert.Equal(System.Math.Round((float)2), a.Z);
+        //    //Assert.Equal(System.Math.Round((float)0), a.X);
+        //    //Assert.Equal(System.Math.Round((float)0), a.Y);
+        //    //Assert.Equal(System.Math.Round((float)2), a.Z);
 
-            //a.SetX((float)0.6);
-            //a.SetY((float)-0.6);
-            //a.Round();
-            //Assert.Equal(System.Math.Round((float)1), a.X);
-            //Assert.Equal(System.Math.Round((float)-1), a.Y);
+        //    //a.SetX((float)0.6);
+        //    //a.SetY((float)-0.6);
+        //    //a.Round();
+        //    //Assert.Equal(System.Math.Round((float)1), a.X);
+        //    //Assert.Equal(System.Math.Round((float)-1), a.Y);
 
-            Assert.True(false, "This test needs an implementation");
-        }
+        //    Assert.True(false, "This test needs an implementation");
+        //}
 
         [Fact()]
         public void RoundToZeroTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3(0.1f, 2f, 0.9f);
+
+            var round = a.RoundToZero();
+            
+            Assert.True(round.X == 0);
+            Assert.True(round.Y == 2);
+            Assert.True(round.Z == 0);
+
+            var b = new Vector3(-0.1f, -2f, -0.9f);
+
+            round = b.RoundToZero();
+
+            Assert.True(round.X == 0);
+            Assert.True(round.Y == -2);
+            Assert.True(round.Z == 0);
         }
 
         [Fact()]
@@ -594,13 +849,20 @@ namespace ThreeJs4Net.Tests.Math
 
             a.Set(x, y, z);
             Assert.True(a.ManhattanLength() == MathF.Abs(x) + MathF.Abs(y) + MathF.Abs(z), "All components");
-
         }
 
         [Fact()]
         public void ManhattanDistanceToTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3(x, 0, 0);
+            var b = new Vector3(0, -y, 0);
+            var c = new Vector3(0, 0, z);
+            var d = new Vector3();
+
+            Assert.Equal(a.ManhattanDistanceTo(b), 5);
+            Assert.Equal(a.ManhattanDistanceTo(c), 6);
+            Assert.Equal(b.ManhattanDistanceTo(a), 5);
+            Assert.Equal(c.ManhattanDistanceTo(b), 7);
         }
 
         [Fact()]
@@ -645,7 +907,19 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void LerpVectorsTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3(x, y, z);
+            var b = new Vector3(2 * x, -y, (float)0.5 * z);
+
+            var l1 = a.LerpVectors(a, b, 0.5f);
+            var l2 = a.LerpVectors(b, a, 1.5f);
+
+            Assert.True(l1.X == 3);
+            Assert.True(l1.Y == 0);
+            Assert.True(l1.Z == 3);
+
+            Assert.True(l2.X == 1);
+            Assert.True(l2.Y == 6);
+            Assert.True(l2.Z == 5);
         }
 
         [Fact()]
@@ -725,12 +999,6 @@ namespace ThreeJs4Net.Tests.Math
             Assert.StrictEqual(a.X, 7);
             Assert.StrictEqual(a.Y, 19);
             Assert.StrictEqual(a.Z, 37);
-        }
-
-        [Fact()]
-        public void SetValueTest()
-        {
-            Assert.True(false, "This test needs an implementation");
         }
 
         [Fact()]
@@ -847,12 +1115,12 @@ namespace ThreeJs4Net.Tests.Math
             Assert.StrictEqual(array[2], y);
             Assert.StrictEqual(array[3], z);
 
-        }
+            float[] arr = null;
+            a.ToArray(ref arr, 1);
+            Assert.StrictEqual(array[1], x);
+            Assert.StrictEqual(array[2], y);
+            Assert.StrictEqual(array[3], z);
 
-        [Fact()]
-        public void ToArrayTest1()
-        {
-            Assert.True(false, "This test needs an implementation");
         }
 
         [Fact()]
@@ -873,6 +1141,8 @@ namespace ThreeJs4Net.Tests.Math
             a.Set(-1, 0, 0);
             Assert.True(b.Copy(a).ProjectOnVector(normal).Equals(new Vector3(-1, 0, 0)));
 
+            a.Set(3, 4, 5);
+            Assert.True(b.Copy(a).ProjectOnVector(new Vector3(0,0,0)).Equals(new Vector3(0, 0, 0)));
         }
 
         [Fact()]
@@ -926,15 +1196,30 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void RandomTest()
         {
-            Assert.True(false, "This test needs an implementation");
+            var a = new Vector3();
+            a.Random();
         }
 
         [Fact()]
-        public void GetHashCodeTest()
+        public void Vector3FromVector2Test()
         {
-            Assert.True(false, "This test needs an implementation");
+            var v2 = new Vector2(2, 3);
+            var a = new Vector3(v2, 10);
+
+            Assert.Equal(a.X, v2.X);
+            Assert.Equal(a.Y, v2.Y);
+            Assert.Equal(a.Z, 10);
         }
 
+        [Fact()]
+        public void Vector3FromScalarTest()
+        {
+            var a = new Vector3(5);
+
+            Assert.Equal(a.X, 5f);
+            Assert.Equal(a.Y, 5f);
+            Assert.Equal(a.Z, 5f);
+        }
 
         [Fact()]
         public void FromBufferAttributeTest()

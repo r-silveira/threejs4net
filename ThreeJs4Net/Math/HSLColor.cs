@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 
 namespace ThreeJs4Net.Math
 {
@@ -87,7 +86,7 @@ namespace ThreeJs4Net.Math
                     b = GetColorComponent(temp1, temp2, hslColor.hue - 1.0 / 3.0);
                 }
             }
-            return Color.FromArgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
+            return new Color((int)(255 * r), (int)(255 * g), (int)(255 * b));
         }
 
         private static double GetColorComponent(double temp1, double temp2, double temp3)
@@ -128,7 +127,7 @@ namespace ThreeJs4Net.Math
 
         public void SetRGB(int red, int green, int blue)
         {
-            HSLColor hslColor = (HSLColor)Color.FromArgb(red, green, blue);
+            HSLColor hslColor = (HSLColor)new Color(red, green, blue);
             this.hue = hslColor.hue;
             this.saturation = hslColor.saturation;
             this.luminosity = hslColor.luminosity;
@@ -140,7 +139,7 @@ namespace ThreeJs4Net.Math
 
         public HSLColor(Color color)
         {
-            SetRGB(color.R, color.G, color.B);
+            SetRGB((int)color.R, (int)color.G, (int)color.B);
         }
 
         public HSLColor(int red, int green, int blue)

@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
-using ThreeJs4Net.Geometries;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -37,7 +36,7 @@ namespace ThreeJs4Net.Demo.examples
             camera.Position.Set(0, 0, 0);
             camera.LookAt(scene.Position);
 
-            var light = new PointLight(Color.White);
+            var light = new PointLight(Color.ColorName(ColorKeywords.white));
             light.Position.Set(0, 10, 0);
             scene.Add(light);
 
@@ -49,7 +48,7 @@ namespace ThreeJs4Net.Demo.examples
             lineGeometry.SetAttribute("position", new BufferAttribute<float>(vertices, 3));
             var lineMaterial = new LineBasicMaterial()
             {
-                Color = Color.Red
+                Color = Color.ColorName(ColorKeywords.red)
             };
             var line = new Line(lineGeometry, lineMaterial);
             line.ComputeLineDistances();
@@ -68,7 +67,7 @@ namespace ThreeJs4Net.Demo.examples
             scene.Add(line);
 
 
-            renderer.SetClearColor((Color) colorConvertor.ConvertFromString("#f0f0f0"));
+            renderer.SetClearColor(new Color(0xf0f0f0));
             renderer.SortObjects = false;
         }
 

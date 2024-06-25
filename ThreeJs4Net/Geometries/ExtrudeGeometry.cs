@@ -1,99 +1,191 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Security.Cryptography;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Extras;
 using ThreeJs4Net.Extras.Core;
+using ThreeJs4Net.Extras.Curves;
 using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Geometries
 {
     public class ExtrudeGeometry : Geometry
     {
-        public ExtrudeGeometry(Shape[] shapes, Hashtable options = null)
+        public Hashtable parameters;
+
+        public ExtrudeGeometry(List<Shape> shapes, Hashtable options)
         {
+            this.type = "ExtrudeGeometry";
+
+            parameters = new Hashtable()
+            {
+                {"shapes",shapes },
+                {"options",options }
+            };
+
+            this.FromBufferGeometry(new ExtrudeBufferGeometry(shapes, options));
+
+            this.MergeVertices();
+        }
+        public ExtrudeGeometry(Shape shape, Hashtable options) : this(new List<Shape>() { shape }, options)
+        {
+
         }
     }
 
 
-    public sealed class ExtrudeBufferGeometry : BufferGeometry
+    [Serializable]
+    public class ExtrudeBufferGeometry : BufferGeometry
     {
-        private Dictionary<string, object> parameters = new Dictionary<string, object>();
-        private readonly Hashtable _options = new Hashtable();
-        private readonly List<float> _verticesArray = new List<float>();
-        private readonly List<float> _uvArray = new List<float>();
+        public Hashtable parameters;
 
-        public ExtrudeBufferGeometry(Shape[] shapes, Hashtable options = null) : base()
+        private Hashtable options;
+
+        private List<float> verticesArray = new List<float>();
+
+        private List<float> uvArray = new List<float>();
+
+        private List<float> placeholder = new List<float>();
+
+        private int? curveSegments;
+
+        private int? steps;
+
+        private float? depth;
+
+        private bool? bevelEnabled;
+
+        private int? bevelThickness;
+
+        private float? bevelSize;
+
+        private int? bevelOffset;
+
+        private int? bevelSegments;
+
+        private Curve<Vector3> extrudePath;
+
+        private IUVGenerator uvgen;
+
+        private List<Vector3> contour = new List<Vector3>();
+
+        List<List<int>> faces = null;
+
+        int vlen, flen;
+
+        private List<List<Vector3>> holes;
+
+
+        public ExtrudeBufferGeometry() : base()
         {
-            this._options = options ?? this._options;
 
-            //parameters.Add("shapes", shapes);
-            //         parameters.Add("shapes", options);
+        }
+        public ExtrudeBufferGeometry(Shape shape, Hashtable options) : this(new List<Shape>() { shape }, options)
+        {
+        }
 
-            _verticesArray = new List<float>();
-            _uvArray = new List<float>();
+        public ExtrudeBufferGeometry(List<Shape> shapes, Hashtable options)
+        {
+            this.type = "ExtrudeBufferGeometry";
 
-            foreach (var shape in shapes)
+            Init(shapes, options);
+
+        }
+
+        public void Init(List<Shape> shapes, Hashtable options)
+        {
+            parameters = new Hashtable()
             {
+                {"shapes",shapes },
+                {"options",options }
+            };
+
+            this.options = options;
+
+            for (int i = 0; i < shapes.Count; i++)
+            {
+                var shape = shapes[i];
                 AddShape(shape);
             }
 
-            // build geometry
-            this.SetAttribute("position", new BufferAttribute<float>(_verticesArray.ToArray(), 3));
-            this.SetAttribute("uv", new BufferAttribute<float>(_uvArray.ToArray(), 2));
+            this.SetAttribute("position", new BufferAttribute<float>(verticesArray.ToArray(), 3));
+
+            this.SetAttribute("uv", new BufferAttribute<float>(uvArray.ToArray(), 2));
+
             this.ComputeVertexNormals();
         }
 
         private void AddShape(Shape shape)
         {
-            var placeholder = new List<float>();
+            placeholder.Clear();
 
-            // options
-            var curveSegments = _options.ContainsKey("curveSegments") ? (int) _options["curveSegments"] : 12;
-            var steps = _options.ContainsKey("steps") ? (int) _options["steps"] : 1;
-            var depth = _options.ContainsKey("depth") ? Convert.ToSingle(_options["depth"]) : 100f;
-            var bevelEnabled = _options.ContainsKey("bevelEnabled") ? (bool) _options["bevelEnabled"] : true;
-            var bevelThickness = _options.ContainsKey("bevelThickness") ? (float) _options["bevelThickness"] : 6f;
-            var bevelSize = _options.ContainsKey("bevelSize") ? (float) _options["bevelSize"] : bevelThickness - 2f;
-            var bevelOffset = _options.ContainsKey("bevelOffset") ? (float) _options["bevelOffset"] : 0f;
-            var bevelSegments = _options.ContainsKey("bevelSegments") ? (int) _options["bevelSegments"] : 3;
-
-            var extrudePath = _options["extrudePath"] as Curve<Vector3>;
-
-            IUVGenerator uvgen = _options.ContainsKey("UVGenerator") ? (IUVGenerator)_options["UVGenerator"] : new WorldUVGenerator();
-
-            // deprecated options
-            if (_options.ContainsKey("amount"))
+            if (options != null)
             {
-                depth = (int) _options["amount"];
+
+                curveSegments = options.ContainsKey("curveSegments") ? (int)options["curveSegments"] : 12;
+
+                steps = options.ContainsKey("steps") ? (int)options["steps"] : 1;
+
+                depth = options.ContainsKey("depth") ? Convert.ToSingle(options["depth"]) : 100f;
+
+                bevelEnabled = options.ContainsKey("bevelEnabled") ? (bool)options["bevelEnabled"] : true;
+
+                bevelThickness = options.ContainsKey("bevelThickness") ? (int)options["bevelThickness"] : 6;
+
+                bevelSize = options.ContainsKey("bevelSize") ? (float)options["bevelSize"] : (float)(bevelThickness - 2);
+
+                bevelOffset = options.ContainsKey("bevelOffset") ? (int)options["bevelOffset"] : 0;
+                bevelSegments = options.ContainsKey("bevelSegments") ? (int)options["bevelSegments"] : 3;
+                extrudePath = options.ContainsKey("extrudePath") ? (Curve<Vector3>)options["extrudePath"] : null;
+
+                uvgen = options.ContainsKey("UVGenerator") ? (IUVGenerator)options["UVGenerator"] : new WorldUVGenerator();
+
+                // deprecated options
+
+                if (options.ContainsKey("amount"))
+                {
+                    Debug.WriteLine("THREE.Geometries.ExtrudeBufferGeometry: amount has been renamed to depth.");
+                    depth = Convert.ToSingle(options["amount"]);
+                }
             }
 
-            var extrudePts = new List<Vector3>();
-            var extrudeByPath = false;
-            var splineTube = new Curve<Vector3>.TenetFrames();
-            var binormal = new Vector3();
-            var normal = new Vector3();
-            var position2 = new Vector3();
+            bool extrudeByPath = false;
+
+            List<Vector3> extrudePts = null;
+
+            Hashtable splineTube = null;
+
+            Vector3 binormal = new Vector3();
+            Vector3 normal = new Vector3();
+            Vector3 position2 = new Vector3();
 
             if (extrudePath != null)
             {
-                extrudePts = extrudePath.GetSpacedPoints(steps);
+
+                extrudePts = extrudePath.GetSpacedPoints(steps ?? 5);
+
                 extrudeByPath = true;
+
                 bevelEnabled = false; // bevels not supported for path extrusion
 
                 // SETUP TNB variables
+
                 // TODO1 - have a .isClosed in spline?
-                splineTube = extrudePath.ComputeFrenetFrames(steps, false);
+
+                splineTube = extrudePath.ComputeFrenetFrames((int)steps, false);
 
                 // console.log(splineTube, 'splineTube', splineTube.normals.length, 'steps', steps, 'extrudePts', extrudePts.length);
+
                 binormal = new Vector3();
                 normal = new Vector3();
                 position2 = new Vector3();
-            }
 
-            // Safeguards if bevels are not enabled
-            if (!bevelEnabled)
+            }
+            if (!bevelEnabled.Value)
             {
                 bevelSegments = 0;
                 bevelThickness = 0;
@@ -102,457 +194,612 @@ namespace ThreeJs4Net.Geometries
             }
 
             // Variables initialization
-            List<Vector2> ahole;
 
-            var shapePoints = shape.ExtractPoints(curveSegments);
-            var vertices = shapePoints.shape;
-            var holes = shapePoints.holes;
-            var reverse = !ShapeUtils.isClockWise(vertices);
+
+
+            Hashtable shapePoints = shape.ExtractPoints(curveSegments.Value);
+
+            var vertices = (List<Vector3>)shapePoints["shape"];
+            this.holes = (List<List<Vector3>>)shapePoints["holes"];
+
+            var reverse = !ShapeUtils.IsClockWise(vertices);
 
             if (reverse)
             {
+
                 vertices.Reverse();
+
                 // Maybe we should also check if holes are in the opposite direction, just to be safe ...
-                for (var h = 0; h < holes.Count; h++)
+
+                for (int h = 0, hl = holes.Count; h < hl; h++)
                 {
-                    ahole = holes[h].ToList();
-                    if (ShapeUtils.isClockWise(ahole))
+
+                    List<Vector3> ahole = holes[h];
+
+                    if (ShapeUtils.IsClockWise(ahole))
                     {
                         ahole.Reverse();
-                        holes[h] = ahole.ToArray();
+                        holes[h] = ahole;
                     }
                 }
             }
 
-            var faces = ShapeUtils.TriangulateShape(vertices.ToArray(), holes);
-            /* Vertices */
-            var contour = vertices; // vertices has all points but contour has only points of circumference
-            foreach (var t in holes)
+            faces = ShapeUtils.TriangulateShape(vertices, holes);
+
+            this.contour.Clear();
+            this.contour.Concat(vertices); // vertices has all points but contour has only points of circumference
+
+
+
+            for (int h = 0, hl = holes.Count; h < hl; h++)
             {
-                ahole = t.ToList();
-                vertices.AddRange(ahole);
+
+                List<Vector3> ahole = holes[h];
+
+                vertices = vertices.Concat(ahole).ToList();
+
             }
 
-            Vector2 scalePt2(Vector2 pt, Vector2 vec, float size)
+            vlen = vertices.Count;
+
+            flen = faces.Count;
+
+            float t, bs, z;
+
+            List<Vector2> contourMovements = new List<Vector2>();
+
+            for (int i = 0, il = contour.Count, j = il - 1, k = i + 1; i < il; i++, j++, k++)
             {
-                if (vec == null)
-                {
-                    throw new Exception("THREE.ExtrudeGeometry: vec does not exist");
-                }
 
-                return vec.Clone().MultiplyScalar(size).Add(pt);
-            }
-
-            float bs;
-            //var b, bs, t, z, face, vert;
-            var vlen = vertices.Count;
-            var flen = faces.Count;
-
-            // Find directions for point movement
-            Vector2 getBevelVec(Vector2 inPt, Vector2 inPrev, Vector2 inNext)
-            {
-                // computes for inPt the corresponding point inPt' on a new contour
-                //   shifted by 1 unit (length of normalized vector) to the left
-                // if we walk along contour clockwise, this new contour is outside the old one
-                //
-                // inPt' is the intersection of the two lines parallel to the two
-                //  adjacent edges of inPt at a distance of 1 unit on the left side.
-
-                float v_trans_x, v_trans_y, shrink_by; // resulting translation vector for inPt
-
-                // good reading for geometry algorithms (here: line-line intersection)
-                // http://geomalgorithms.com/a05-_intersect-1.html
-
-                float v_prev_x = inPt.X - inPrev.X;
-                float v_prev_y = inPt.Y - inPrev.Y;
-                float v_next_x = inNext.X - inPt.X;
-                float v_next_y = inNext.Y - inPt.Y;
-
-                float v_prev_lensq = (v_prev_x * v_prev_x + v_prev_y * v_prev_y);
-
-                // check for collinear edges
-                var collinear0 = (v_prev_x * v_next_y - v_prev_y * v_next_x);
-
-                if (Mathf.Abs(collinear0) > MathUtils.EPS5)
-                {
-                    // not collinear
-                    // length of vectors for normalizing
-                    var v_prev_len = Mathf.Sqrt(v_prev_lensq);
-                    var v_next_len = Mathf.Sqrt(v_next_x * v_next_x + v_next_y * v_next_y);
-
-                    // shift adjacent points by unit vectors to the left
-
-                    var ptPrevShift_x = (inPrev.X - v_prev_y / v_prev_len);
-                    var ptPrevShift_y = (inPrev.Y + v_prev_x / v_prev_len);
-
-                    var ptNextShift_x = (inNext.X - v_next_y / v_next_len);
-                    var ptNextShift_y = (inNext.Y + v_next_x / v_next_len);
-
-                    // scaling factor for v_prev to intersection point
-
-                    var sf = ((ptNextShift_x - ptPrevShift_x) * v_next_y -
-                              (ptNextShift_y - ptPrevShift_y) * v_next_x) /
-                             (v_prev_x * v_next_y - v_prev_y * v_next_x);
-
-                    // vector from inPt to intersection point
-
-                    v_trans_x = (ptPrevShift_x + v_prev_x * sf - inPt.X);
-                    v_trans_y = (ptPrevShift_y + v_prev_y * sf - inPt.Y);
-
-                    // Don't normalize!, otherwise sharp corners become ugly
-                    //  but prevent crazy spikes
-                    var v_trans_lensq = (v_trans_x * v_trans_x + v_trans_y * v_trans_y);
-                    if (v_trans_lensq <= 2)
-                    {
-                        return new Vector2(v_trans_x, v_trans_y);
-                    }
-                    else
-                    {
-                        shrink_by = Mathf.Sqrt(v_trans_lensq / 2);
-                    }
-                }
-                else
-                {
-                    // handle special case of collinear edges
-                    var direction_eq = false; // assumes: opposite
-                    if (v_prev_x > MathUtils.EPS5)
-                    {
-                        if (v_next_x > MathUtils.EPS5)
-                        {
-                            direction_eq = true;
-                        }
-                    }
-                    else
-                    {
-                        if (v_prev_x < -MathUtils.EPS5)
-                        {
-                            if (v_next_x < -MathUtils.EPS5)
-                            {
-                                direction_eq = true;
-                            }
-                        }
-                        else
-                        {
-                            if (Mathf.Sign(v_prev_y) == Mathf.Sign(v_next_y))
-                            {
-                                direction_eq = true;
-                            }
-                        }
-                    }
-
-                    if (direction_eq)
-                    {
-                        // console.log("Warning: lines are a straight sequence");
-                        v_trans_x = -v_prev_y;
-                        v_trans_y = v_prev_x;
-                        shrink_by = Mathf.Sqrt(v_prev_lensq);
-                    }
-                    else
-                    {
-                        // console.log("Warning: lines are a straight spike");
-                        v_trans_x = v_prev_x;
-                        v_trans_y = v_prev_y;
-                        shrink_by = Mathf.Sqrt(v_prev_lensq / 2);
-                    }
-                }
-
-                return new Vector2(v_trans_x / shrink_by, v_trans_y / shrink_by);
-            }
-
-            var contourMovements = new List<Vector2>();
-
-            var i = 0;
-            var il = contour.Count;
-            var j = il - 1;
-            var k = 1;
-            for (i = 0; i < contour.Count; i++, j++, k++)
-            {
                 if (j == il) j = 0;
                 if (k == il) k = 0;
 
                 //  (j)---(i)---(k)
                 // console.log('i,j,k', i, j , k)
-                contourMovements.Add(getBevelVec(contour[i], contour[j], contour[k]));
+
+                contourMovements.Add(GetBevelVec(contour[i], contour[j], contour[k]));
+
             }
 
             var holesMovements = new List<List<Vector2>>();
-            ;
-            List<Vector2> oneHoleMovements = new List<Vector2>();
-            List<Vector2> verticesMovements = new List<Vector2>();
-            verticesMovements.AddRange(contourMovements);
 
-            for (var h = 0; h < holes.Count; h++)
+
+
+            List<Vector2> verticesMovements = contourMovements;
+
+            for (int h = 0, hl = holes.Count; h < hl; h++)
             {
-                ahole = holes[h].ToList();
-                oneHoleMovements = new List<Vector2>();
-                for (i = 0, il = ahole.Count, j = il - 1, k = i + 1; i < il; i++, j++, k++)
+
+                List<Vector3> ahole = holes[h];
+
+                var oneHoleMovements = new List<Vector2>();
+
+                for (int i = 0, il = ahole.Count, j = il - 1, k = i + 1; i < il; i++, j++, k++)
                 {
+
                     if (j == il) j = 0;
                     if (k == il) k = 0;
+
                     //  (j)---(i)---(k)
-                    oneHoleMovements.Add(getBevelVec(ahole[i], ahole[j], ahole[k]));
+                    oneHoleMovements.Add(GetBevelVec(ahole[i], ahole[j], ahole[k]));
+
                 }
 
                 holesMovements.Add(oneHoleMovements);
-                verticesMovements.AddRange(oneHoleMovements);
+                verticesMovements = verticesMovements.Concat(oneHoleMovements).ToList();
+
             }
 
+
             // Loop bevelSegments, 1 for the front, 1 for the back
-            for (var b = 0; b < bevelSegments; b++)
+
+            for (int b = 0; b < bevelSegments; b++)
             {
+
                 //for ( b = bevelSegments; b > 0; b -- ) {
-                var t = b / bevelSegments;
-                var z = bevelThickness * Mathf.Cos(t * Mathf.PI / 2);
-                bs = (float)(bevelSize * Mathf.Sin(t * Mathf.PI / 2) + bevelOffset);
+
+                t = b / bevelSegments.Value;
+                z = bevelThickness.Value * (float)System.Math.Cos(t * System.Math.PI / 2);
+                bs = bevelSize.Value * (float)System.Math.Sin(t * System.Math.PI / 2) + bevelOffset.Value;
 
                 // contract shape
-                for (i = 0, il = contour.Count; i < il; i++)
+
+                for (int i = 0, il = contour.Count; i < il; i++)
                 {
-                    var vert = scalePt2(contour[i], contourMovements[i], bs);
-                    v(vert.X, vert.Y, -z);
+
+                    Vector2 vert = ScalePt2(contour[i], contourMovements[i], bs);
+
+                    V(vert.X, vert.Y, -z);
+
                 }
 
                 // expand holes
-                for (var h = 0; h < holes.Count; h++)
+
+                for (int h = 0, hl = holes.Count; h < hl; h++)
                 {
-                    ahole = holes[h].ToList();
-                    oneHoleMovements = holesMovements[h];
-                    for (i = 0, il = ahole.Count; i < il; i++)
+
+                    List<Vector3> ahole = holes[h];
+                    List<Vector2> oneHoleMovements = holesMovements[h];
+
+                    for (int i = 0, il = ahole.Count; i < il; i++)
                     {
-                        var vert = scalePt2(ahole[i], oneHoleMovements[i], bs);
-                        v(vert.X, vert.Y, -z);
+
+                        Vector2 vert = ScalePt2(ahole[i], oneHoleMovements[i], bs);
+
+                        V(vert.X, vert.Y, -z);
+
                     }
+
                 }
+
             }
 
-            bs = bevelSize + bevelOffset;
+            bs = bevelSize.Value + bevelOffset.Value;
 
             // Back facing vertices
 
-            for (i = 0; i < vlen; i++)
+            for (int i = 0; i < vlen; i++)
             {
-                var vert = bevelEnabled ? scalePt2(vertices[i], verticesMovements[i], bs) : vertices[i];
+
+                Vector2 vert = bevelEnabled.Value ? ScalePt2(vertices[i], verticesMovements[i], bs) : vertices[i].ToVector2();
+
                 if (!extrudeByPath)
                 {
-                    v(vert.X, vert.Y, 0);
+
+                    V(vert.X, vert.Y, 0);
+
                 }
                 else
                 {
+
                     // v( vert.x, vert.y + extrudePts[ 0 ].y, extrudePts[ 0 ].x );
-                    normal.Copy(splineTube.normals[0]).MultiplyScalar(vert.X);
-                    binormal.Copy(splineTube.binormals[0]).MultiplyScalar(vert.Y);
+
+                    normal.Copy((splineTube["normals"] as List<Vector3>)[0]).MultiplyScalar(vert.X);
+                    binormal.Copy((splineTube["binormals"] as List<Vector3>)[0]).MultiplyScalar(vert.Y);
+
                     position2.Copy(extrudePts[0]).Add(normal).Add(binormal);
-                    v(position2.X, position2.Y, position2.Z);
+
+                    V(position2.X, position2.Y, position2.Z);
+
                 }
+
             }
 
             // Add stepped vertices...
-            // Including front facing vertices
-            for (var s = 1; s <= steps; s++)
+            // Including front facing vertices          
+
+            for (int s = 1; s <= steps; s++)
             {
-                for (i = 0; i < vlen; i++)
+
+                for (int i = 0; i < vlen; i++)
                 {
-                    var vert = bevelEnabled ? scalePt2(vertices[i], verticesMovements[i], bs) : vertices[i];
+
+                    Vector2 vert = bevelEnabled.Value ? ScalePt2(vertices[i], verticesMovements[i], bs) : vertices[i].ToVector2();
+
                     if (!extrudeByPath)
                     {
-                        v(vert.X, vert.Y, depth / steps * s);
+
+                        V(vert.X, vert.Y, depth.Value / (float)steps.Value * s);
+
                     }
                     else
                     {
+
                         // v( vert.x, vert.y + extrudePts[ s - 1 ].y, extrudePts[ s - 1 ].x );
-                        normal.Copy(splineTube.normals[s]).MultiplyScalar(vert.X);
-                        binormal.Copy(splineTube.binormals[s]).MultiplyScalar(vert.Y);
+
+                        normal.Copy((splineTube["normals"] as List<Vector3>)[s]).MultiplyScalar(vert.X);
+                        binormal.Copy((splineTube["binormals"] as List<Vector3>)[s]).MultiplyScalar(vert.Y);
+
                         position2.Copy(extrudePts[s]).Add(normal).Add(binormal);
-                        v(position2.X, position2.Y, position2.Z);
+
+                        V(position2.X, position2.Y, position2.Z);
+
                     }
+
                 }
+
             }
 
+
             // Add bevel segments planes
+
             //for ( b = 1; b <= bevelSegments; b ++ ) {
-            for (var b = bevelSegments - 1; b >= 0; b--)
+            for (int b = bevelSegments.Value - 1; b >= 0; b--)
             {
-                var t = b / bevelSegments;
-                var z = bevelThickness * Mathf.Cos(t * Mathf.PI / 2);
-                bs = bevelSize * Mathf.Sin(t * Mathf.PI / 2) + bevelOffset;
+
+                t = b / (float)bevelSegments.Value;
+                z = bevelThickness.Value * (float)System.Math.Cos(t * System.Math.PI / 2);
+                bs = bevelSize.Value * (float)System.Math.Sin(t * System.Math.PI / 2) + bevelOffset.Value;
+
                 // contract shape
-                for (i = 0, il = contour.Count; i < il; i++)
+
+                for (int i = 0, il = contour.Count; i < il; i++)
                 {
-                    var vert = scalePt2(contour[i], contourMovements[i], bs);
-                    v(vert.X, vert.Y, depth + z);
+
+                    Vector2 vert = ScalePt2(contour[i], contourMovements[i], bs);
+                    V(vert.X, vert.Y, depth.Value + z);
+
                 }
 
                 // expand holes
-                for (var h = 0; h < holes.Count; h++)
+
+                for (int h = 0, hl = holes.Count; h < hl; h++)
                 {
-                    ahole = holes[h].ToList();
-                    oneHoleMovements = holesMovements[h];
-                    for (i = 0, il = ahole.Count; i < il; i++)
+
+                    List<Vector3> ahole = holes[h];
+
+                    List<Vector2> oneHoleMovements = holesMovements[h];
+
+                    for (int i = 0, il = ahole.Count; i < il; i++)
                     {
-                        var vert = scalePt2(ahole[i], oneHoleMovements[i], bs);
+
+                        Vector2 vert = ScalePt2(ahole[i], oneHoleMovements[i], bs);
+
                         if (!extrudeByPath)
                         {
-                            v(vert.X, vert.Y, depth + z);
+
+                            V(vert.X, vert.Y, depth.Value + z);
+
                         }
                         else
                         {
-                            v(vert.X, vert.Y + extrudePts[steps - 1].Y, extrudePts[steps - 1].X + z);
+
+                            V(vert.X, vert.Y + extrudePts[(int)steps - 1].Y, extrudePts[(int)steps - 1].X + z);
+
                         }
+
                     }
+
                 }
             }
 
             /* Faces */
+
             // Top and bottom faces
+
             BuildLidFaces();
+
             // Sides faces
+
             BuildSideFaces();
+        }
 
+        private void BuildLidFaces()
+        {
 
-            /////  Internal functions
-            void BuildLidFaces()
+            var start = verticesArray.Count / 3;
+
+            if (bevelEnabled.Value)
             {
-                var start = _verticesArray.Count / 3;
-                if (bevelEnabled)
-                {
-                    var layer = 0; // steps + 1
-                    var offset = vlen * layer;
-                    // Bottom faces
-                    for (i = 0; i < flen; i++)
-                    {
-                        var face = faces[i];
-                        f3(face[2] + offset, face[1] + offset, face[0] + offset);
-                    }
 
-                    layer = steps + bevelSegments * 2;
-                    offset = vlen * layer;
-                    // Top faces
-                    for (i = 0; i < flen; i++)
-                    {
-                        var face = faces[i];
-                        f3(face[0] + offset, face[1] + offset, face[2] + offset);
-                    }
+                int layer = 0; // steps + 1
+                var offset = vlen * layer;
+
+                // Bottom faces
+
+                for (int i = 0; i < flen; i++)
+                {
+
+                    var face = faces[i];
+                    F3(face[2] + offset, face[1] + offset, face[0] + offset);
+
+                }
+
+                layer = (int)steps + (int)bevelSegments * 2;
+                offset = vlen * layer;
+
+                // Top faces
+
+                for (int i = 0; i < flen; i++)
+                {
+
+                    var face = faces[i];
+                    F3(face[0] + offset, face[1] + offset, face[2] + offset);
+
+                }
+
+            }
+            else
+            {
+
+                // Bottom faces
+
+                for (int i = 0; i < flen; i++)
+                {
+
+                    var face = faces[i];
+                    F3(face[2], face[1], face[0]);
+
+                }
+
+                // Top faces
+
+                for (int i = 0; i < flen; i++)
+                {
+
+                    var face = faces[i];
+                    F3(face[0] + vlen * (int)steps, face[1] + vlen * (int)steps, face[2] + vlen * (int)steps);
+
+                }
+
+            }
+
+            this.AddGroup(start, verticesArray.Count / 3 - start, 0);
+
+        }
+
+        // Create faces for the z-sides of the shape
+
+        private void BuildSideFaces()
+        {
+
+            var start = verticesArray.Count / 3;
+            var layeroffset = 0;
+            Sidewalls(this.contour, layeroffset);
+            layeroffset += contour.Count;
+
+            for (int h = 0, hl = holes.Count; h < hl; h++)
+            {
+
+                List<Vector3> ahole = holes[h];
+                Sidewalls(ahole, layeroffset);
+
+                //, true
+                layeroffset += ahole.Count;
+
+            }
+
+
+            this.AddGroup(start, verticesArray.Count / 3 - start, 1);
+
+
+        }
+
+        private Vector2 GetBevelVec(Vector3 inPt, Vector3 inPrev, Vector3 inNext)
+        {
+
+            // computes for inPt the corresponding point inPt' on a new contour
+            //   shifted by 1 unit (length of normalized vector) to the left
+            // if we walk along contour clockwise, this new contour is outside the old one
+            //
+            // inPt' is the intersection of the two lines parallel to the two
+            //  adjacent edges of inPt at a distance of 1 unit on the left side.
+
+            float v_trans_x, v_trans_y, shrink_by; // resulting translation vector for inPt
+
+            // good reading for geometry algorithms (here: line-line intersection)
+            // http://geomalgorithms.com/a05-_intersect-1.html
+
+            float v_prev_x = inPt.X - inPrev.X,
+                v_prev_y = inPt.Y - inPrev.Y,
+                v_next_x = inNext.X - inPt.X,
+                v_next_y = inNext.Y - inPt.Y;
+
+            var v_prev_lensq = (v_prev_x * v_prev_x + v_prev_y * v_prev_y);
+
+            // check for collinear edges
+            var collinear0 = (v_prev_x * v_next_y - v_prev_y * v_next_x);
+
+            if (System.Math.Abs(collinear0) > float.Epsilon)
+            {
+
+                // not collinear
+
+                // length of vectors for normalizing
+
+                var v_prev_len = System.Math.Sqrt(v_prev_lensq);
+                var v_next_len = System.Math.Sqrt(v_next_x * v_next_x + v_next_y * v_next_y);
+
+                // shift adjacent points by unit vectors to the left
+
+                var ptPrevShift_x = (inPrev.X - v_prev_y / v_prev_len);
+                var ptPrevShift_y = (inPrev.Y + v_prev_x / v_prev_len);
+
+                var ptNextShift_x = (inNext.X - v_next_y / v_next_len);
+                var ptNextShift_y = (inNext.Y + v_next_x / v_next_len);
+
+                // scaling factor for v_prev to intersection point
+
+                var sf = ((ptNextShift_x - ptPrevShift_x) * v_next_y -
+                        (ptNextShift_y - ptPrevShift_y) * v_next_x) /
+                    (v_prev_x * v_next_y - v_prev_y * v_next_x);
+
+                // vector from inPt to intersection point
+
+                v_trans_x = (float)(ptPrevShift_x + v_prev_x * sf - inPt.X);
+                v_trans_y = (float)(ptPrevShift_y + v_prev_y * sf - inPt.Y);
+
+                // Don't normalize!, otherwise sharp corners become ugly
+                //  but prevent crazy spikes
+                var v_trans_lensq = (v_trans_x * v_trans_x + v_trans_y * v_trans_y);
+                if (v_trans_lensq <= 2)
+                {
+
+                    return new Vector2(v_trans_x, v_trans_y);
+
                 }
                 else
                 {
-                    // Bottom faces
-                    for (i = 0; i < flen; i++)
-                    {
-                        var face = faces[i];
-                        f3(face[2], face[1], face[0]);
-                    }
 
-                    // Top faces
-                    for (i = 0; i < flen; i++)
-                    {
-                        var face = faces[i];
-                        f3(face[0] + vlen * steps, face[1] + vlen * steps, face[2] + vlen * steps);
-                    }
+                    shrink_by = (float)System.Math.Sqrt(v_trans_lensq / 2);
+
                 }
 
-                this.AddGroup(start, _verticesArray.Count / 3 - start, 0);
             }
-
-            // Create faces for the z-sides of the shape
-
-            void BuildSideFaces()
+            else
             {
-                var start = _verticesArray.Count / 3;
-                var layeroffset = 0;
-                Sidewalls(contour, layeroffset);
-                layeroffset += contour.Count;
 
-                for (var h = 0; h < holes.Count; h++)
+                // handle special case of collinear edges
+
+                var direction_eq = false; // assumes: opposite
+                if (v_prev_x > float.Epsilon)
                 {
-                    ahole = holes[h].ToList();
-                    Sidewalls(ahole, layeroffset);
-                    //, true
-                    layeroffset += ahole.Count;
+
+                    if (v_next_x > float.Epsilon)
+                    {
+
+                        direction_eq = true;
+
+                    }
+
                 }
-
-                this.AddGroup(start, _verticesArray.Count / 3 - start, 1);
-            }
-
-            void Sidewalls(List<Vector2> contour, int layeroffset)
-            {
-                var i = contour.Count;
-                while (--i >= 0)
+                else
                 {
-                    j = i;
-                    k = i - 1;
-                    if (k < 0)
+
+                    if (v_prev_x < -float.Epsilon)
                     {
-                        k = contour.Count - 1;
+
+                        if (v_next_x < -float.Epsilon)
+                        {
+
+                            direction_eq = true;
+
+                        }
+
                     }
-                    //console.log('b', i,j, i-1, k,vertices.length);
-                    var s = 0;
-                    var sl = steps + bevelSegments * 2;
-                    for (s = 0; s < sl; s++)
+                    else
                     {
-                        var slen1 = vlen * s;
-                        var slen2 = vlen * (s + 1);
-                        var a = layeroffset + j + slen1;
-                        var b = layeroffset + k + slen1;
-                        var c = layeroffset + k + slen2;
-                        var d = layeroffset + j + slen2;
-                        f4(a, b, c, d);
+
+                        if (System.Math.Sign(v_prev_y) == System.Math.Sign(v_next_y))
+                        {
+
+                            direction_eq = true;
+
+                        }
+
                     }
+
                 }
+
+                if (direction_eq)
+                {
+
+                    // console.log("Warning: lines are a straight sequence");
+                    v_trans_x = -v_prev_y;
+                    v_trans_y = v_prev_x;
+                    shrink_by = (float)System.Math.Sqrt(v_prev_lensq);
+
+                }
+                else
+                {
+
+                    // console.log("Warning: lines are a straight spike");
+                    v_trans_x = v_prev_x;
+                    v_trans_y = v_prev_y;
+                    shrink_by = (float)System.Math.Sqrt(v_prev_lensq / 2);
+
+                }
+
             }
 
-            void v(float x, float y, float z)
+            return new Vector2(v_trans_x / shrink_by, v_trans_y / shrink_by);
+
+        }
+        private Vector2 ScalePt2(Vector3 pt, Vector2 vec, float size)
+        {
+
+            return (vec.Clone() as Vector2).MultiplyScalar(size).Add(pt.ToVector2());
+
+        }
+
+        private void Sidewalls(List<Vector3> contour, int layeroffset)
+        {
+
+            int j, k;
+            int i = contour.Count;
+
+            while (--i >= 0)
             {
-                placeholder.Add(x);
-                placeholder.Add(y);
-                placeholder.Add(z);
+
+                j = i;
+                k = i - 1;
+                if (k < 0) k = contour.Count - 1;
+
+                //console.log('b', i,j, i-1, k,vertices.length);
+
+                int s = 0,
+                    sl = (int)steps + (int)bevelSegments * 2;
+
+                for (s = 0; s < sl; s++)
+                {
+
+                    var slen1 = vlen * s;
+                    var slen2 = vlen * (s + 1);
+
+                    int a = layeroffset + j + slen1,
+                        b = layeroffset + k + slen1,
+                        c = layeroffset + k + slen2,
+                        d = layeroffset + j + slen2;
+
+                    F4(a, b, c, d);
+
+                }
+
             }
 
+        }
 
-            void f3(int a, int b, int c)
-            {
-                addVertex(a);
-                addVertex(b);
-                addVertex(c);
+        private void V(float x, float y, float z)
+        {
+            placeholder.Add(x, y, z);
+        }
+        private void F3(int a, int b, int c)
+        {
 
-                var nextIndex = _verticesArray.Count / 3;
-                var uvs = uvgen.GenerateTopUV(this, _verticesArray, nextIndex - 3, nextIndex - 2, nextIndex - 1);
+            AddVertex(a);
+            AddVertex(b);
+            AddVertex(c);
 
-                addUV(uvs[0]);
-                addUV(uvs[1]);
-                addUV(uvs[2]);
-            }
+            var nextIndex = verticesArray.Count / 3;
+            var uvs = uvgen.GenerateTopUV(this, verticesArray, nextIndex - 3, nextIndex - 2, nextIndex - 1);
 
-            void f4(int a, int b, int c, int d)
-            {
-                addVertex(a);
-                addVertex(b);
-                addVertex(d);
-                addVertex(b);
-                addVertex(c);
-                addVertex(d);
-                var nextIndex = _verticesArray.Count / 3;
-                var uvs = uvgen.GenerateSideWallUV(this, _verticesArray, nextIndex - 6, nextIndex - 3, nextIndex - 2,
-                    nextIndex - 1);
-                addUV(uvs[0]);
-                addUV(uvs[1]);
-                addUV(uvs[3]);
-                addUV(uvs[1]);
-                addUV(uvs[2]);
-                addUV(uvs[3]);
-            }
+            AddUV(uvs[0]);
+            AddUV(uvs[1]);
+            AddUV(uvs[2]);
 
-            void addVertex(int index)
-            {
-                _verticesArray.Add(placeholder[index * 3 + 0]);
-                _verticesArray.Add(placeholder[index * 3 + 1]);
-                _verticesArray.Add(placeholder[index * 3 + 2]);
-            }
+        }
 
-            void addUV(Vector2 vector2)
-            {
-                _uvArray.Add(vector2.X);
-                _uvArray.Add(vector2.Y);
-            }
+        private void F4(int a, int b, int c, int d)
+        {
+
+            AddVertex(a);
+            AddVertex(b);
+            AddVertex(d);
+
+            AddVertex(b);
+            AddVertex(c);
+            AddVertex(d);
+
+
+            var nextIndex = verticesArray.Count / 3;
+            var uvs = uvgen.GenerateSideWallUV(this, verticesArray, nextIndex - 6, nextIndex - 3, nextIndex - 2, nextIndex - 1);
+
+            AddUV(uvs[0]);
+            AddUV(uvs[1]);
+            AddUV(uvs[3]);
+
+            AddUV(uvs[1]);
+            AddUV(uvs[2]);
+            AddUV(uvs[3]);
+
+        }
+
+        private void AddVertex(int index)
+        {
+
+            verticesArray.Add(placeholder[index * 3 + 0]);
+            verticesArray.Add(placeholder[index * 3 + 1]);
+            verticesArray.Add(placeholder[index * 3 + 2]);
+
+        }
+
+
+        private void AddUV(Vector2 vector2)
+        {
+
+            uvArray.Add(vector2.X);
+            uvArray.Add(vector2.Y);
+
         }
     }
 

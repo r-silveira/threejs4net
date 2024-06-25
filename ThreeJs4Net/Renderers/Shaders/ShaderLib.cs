@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using ThreeJs4Net.Math;
@@ -178,8 +177,8 @@ namespace ThreeJs4Net.Renderers.Shaders
                                     this.UniformsLib["lights"],
                                     this.UniformsLib["shadowmap"],
 
-                                    new Uniforms { { "ambient",  new Uniform() { {"type", "c"},  {"value", Color.White} } }},
-                                    new Uniforms { { "emissive", new Uniform() { {"type", "c"},  {"value", Color.Black} } }},
+                                    new Uniforms { { "ambient",  new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.white) } } }},
+                                    new Uniforms { { "emissive", new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.black) } } }},
                                     new Uniforms { { "wrapRGB",  new Uniform() { {"type", "v3"}, {"value", new Vector3(1,1,1)} }}}});
             #endregion
 
@@ -310,7 +309,7 @@ namespace ThreeJs4Net.Renderers.Shaders
 
             #region construct uniform variables
 
-            var tt = new Uniforms { { "ambient", new Uniform() { {"type", "c"}, {"value", Color.White } }} };
+            var tt = new Uniforms { { "ambient", new Uniform() { {"type", "c"}, {"value", Color.ColorName(ColorKeywords.white) } }} };
 
             shader.Uniforms =
                 UniformsUtils.Merge(new List<Uniforms>
@@ -322,9 +321,9 @@ namespace ThreeJs4Net.Renderers.Shaders
                                       this.UniformsLib["lights"],
                                       this.UniformsLib["shadowmap"],
 
-                                      new Uniforms { { "ambient",   new Uniform() { {"type", "c"},  {"value", Color.White} } }},
-                                      new Uniforms { { "emissive",  new Uniform() { {"type", "c"},  {"value", Color.Black} } }},
-                                      new Uniforms { { "specular",  new Uniform() { {"type", "c"},  {"value", Color.DimGray} } }},
+                                      new Uniforms { { "ambient",   new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.white) } } }},
+                                      new Uniforms { { "emissive",  new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.black) } } }},
+                                      new Uniforms { { "specular",  new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.dimgray) } } }},
                                       new Uniforms { { "shininess", new Uniform() { {"type", "f"},  {"value", 30.0f} }} },
                                       new Uniforms { { "wrapRGB",   new Uniform() { {"type", "v3"}, {"value", new Vector3(1,1,1)} }}}});
 

@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
@@ -114,7 +114,7 @@ namespace ThreeJs4Net.Demo.examples
             mesh = new Mesh(geometry, material);
             scene.Add(mesh);
 
-            renderer.SetClearColor((Color)colorConvertor.ConvertFromString("#101010"));
+            renderer.SetClearColor(new Color(0x101010));
         }
 
         /// <summary>

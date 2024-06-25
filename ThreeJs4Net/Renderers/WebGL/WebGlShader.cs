@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if USE_WINDOWS
+using System;
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using ThreeJs4Net.Renderers.Shaders;
@@ -60,3 +61,4 @@ namespace ThreeJs4Net.Renderers.WebGL
         }
     }
 }
+#endif

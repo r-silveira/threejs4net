@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using ThreeJs4Net.Core;
-using ThreeJs4Net.Materials;
+﻿using ThreeJs4Net.Core;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
 
@@ -8,7 +6,7 @@ namespace ThreeJs4Net.Helpers
 {
     public class BoxHelper : LineSegments
     {
-        private Color Color = System.Drawing.Color.Wheat;
+        private Color Color = Color.ColorName(ColorKeywords.wheat);
         private uint[] Indices;
         private float[] Positions;
         private BufferGeometry Geometry;

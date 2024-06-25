@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Extras;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
@@ -118,7 +118,7 @@ namespace ThreeJs4Net.Demo.examples
             uniforms = new Uniforms
             {
                 { "amplitude", new Uniform() { {"type", "f"},  {"value", 1.0f}} },
-                { "color",     new Uniform() { {"type", "c"},  {"value", Color.White}} },
+                { "color",     new Uniform() { {"type", "c"},  {"value", Color.ColorName(ColorKeywords.white) } } },
                 { "texture",   new Uniform() { {"type", "t"},  {"value", ImageUtils.LoadTexture(@"examples\textures/sprites/ball.png")} }},
             };
 
@@ -192,19 +192,19 @@ namespace ThreeJs4Net.Demo.examples
 			for ( var v = 0; v < vertices.Count; v ++ )
 			{
 			    values_size[v] = 10.0f;
-			    values_color[v] = Color.White;
+			    values_color[v] = Color.ColorName(ColorKeywords.white);
 
 				if ( v < vc1 )
 				{
 				    //values_color[v].setHSL(0.5 + 0.2 * (v / (float)vc1), 1, 0.5);
-                    values_color[v] = Color.Red;
+                    values_color[v] = Color.ColorName(ColorKeywords.red) ;
 				
                 } 
                 else
 				{
 				    values_size[v] = 55.0f;
 				    //values_color[v].setHSL(0.1, 1, 0.5);
-				    values_color[v] = Color.DeepSkyBlue;
+				    values_color[v] = Color.ColorName(ColorKeywords.deepskyblue);
 				}
 			}
 

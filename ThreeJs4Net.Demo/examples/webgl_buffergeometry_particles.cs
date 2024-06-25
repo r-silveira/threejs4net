@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
@@ -31,7 +31,7 @@ namespace ThreeJs4Net.Demo.examples
             this.camera.Position.Z = 2750;
 
             scene = new Scene();
-            scene.Fog = new Fog((Color)colorConvertor.ConvertFromString("#050505"), 2000, 3500);
+            scene.Fog = new Fog(new Color(0x050505), 2000, 3500);
 
             //
 

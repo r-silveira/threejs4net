@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using OpenTK.Graphics.ES11;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
 

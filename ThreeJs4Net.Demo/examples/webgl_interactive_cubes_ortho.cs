@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
-using System.Drawing;
 using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
+using ThreeJs4Net.Extras.Core;
 using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Materials;
@@ -74,7 +74,7 @@ namespace ThreeJs4Net.Demo.examples
 
             raycaster = new Raycaster();
 
-            renderer.SetClearColor((Color)colorConvertor.ConvertFromString("#f0f0f0"));
+            renderer.SetClearColor(new Color(0xf0f0f0));
             renderer.SortObjects = false;
         }
 

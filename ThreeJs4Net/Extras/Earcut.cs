@@ -187,7 +187,7 @@
 //            return FilterPoints(p, null);
 //        }
 
-//        // link every hole into the outer loop, producing a single-ring polygon without holes
+//        // link every hole into the outer loop, producing a single-ring polygon without Holes
 //        private static Node EliminateHoles(List<float> data, List<int> holeIndices, Node outerNode, int dim)
 //        {
 //            List<Node> queue = new List<Node>();
@@ -214,7 +214,7 @@
 //                return 1;
 //            });
 
-//            // process holes from left to right
+//            // process Holes from left to right
 //            for (var i = 0; i < queue.Count; i++)
 //            {
 //                EliminateHole(queue[i], outerNode);

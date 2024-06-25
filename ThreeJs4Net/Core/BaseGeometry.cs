@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using ThreeJs4Net.Math;
+using Color = ThreeJs4Net.Math.Color;
 
 namespace ThreeJs4Net.Core
 {

@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿
+
+using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Lights
 {

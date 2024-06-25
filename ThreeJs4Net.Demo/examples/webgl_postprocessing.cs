@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Demo.examples.cs.postprocessing;
@@ -56,9 +55,9 @@ namespace ThreeJs4Net.Demo.examples
                 object3D.Add(mesh);
             }
 
-            scene.Add(new AmbientLight((Color)colorConvertor.ConvertFromString("#222222")));
+            scene.Add(new AmbientLight(new Color(0x222222)));
 
-            light = new DirectionalLight(Color.White);
+            light = new DirectionalLight(Color.ColorName(ColorKeywords.white));
             light.Position.Set(1, 1, 1);
             scene.Add(light);
 

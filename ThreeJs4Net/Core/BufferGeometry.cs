@@ -104,6 +104,11 @@ namespace ThreeJs4Net.Core
             this.Index = index;
         }
 
+        public void SetIndex(List<int> index, int itemSize = 1)
+        {
+            this.Index = new BufferAttribute<uint>(index.Select(h=>(uint)h).ToArray(), itemSize);
+        }
+
         public BufferGeometry DeleteAttribute(string name)
         {
             this.Attributes.Remove(name);

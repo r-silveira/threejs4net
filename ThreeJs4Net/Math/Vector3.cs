@@ -881,7 +881,7 @@ namespace ThreeJs4Net.Math
                     case 0: return x;
                     case 1: return y;
                     case 2: return z;
-                    default: throw new Exception("index is out of range: " + key);
+                    default: throw new IndexOutOfRangeException("index is out of range: " + key);
                 }
             }
             set
@@ -897,7 +897,7 @@ namespace ThreeJs4Net.Math
                     case 2:
                         z = value;
                         break;
-                    default: throw new Exception("index is out of range: " + key);
+                    default: throw new IndexOutOfRangeException("index is out of range: " + key);
                 }
             }
         }
@@ -1008,9 +1008,9 @@ namespace ThreeJs4Net.Math
                 Array.Resize(ref array, offset + 3);
             }
 
-            array[offset] = this.X;
-            array[offset + 1] = this.Y;
-            array[offset + 2] = this.Z;
+            array[offset] = X;
+            array[offset + 1] = Y;
+            array[offset + 2] = Z;
 
             return array;
         }
@@ -1103,22 +1103,14 @@ namespace ThreeJs4Net.Math
         }
 
 
-
-
-        [Obsolete("Will be removed as soon as we update Camera")]
-        public Vector3 ApplyProjectionCustom(Matrix4 matrix)
+        public Vector2 ToVector2()
         {
-            //REMOVE
-            float X = this.X, Y = this.Y, Z = this.Z;
+            return new Vector2(X, Y);
+        }
 
-            var e = matrix.Elements;
-            var w = (e[3] * X + e[7] * Y + e[11] * Z + e[15]); // perspective divide
-
-            this.X = (e[0] * X + e[4] * Y + e[8] * Z + e[12]) * w;
-            this.Y = (e[1] * X + e[5] * Y + e[9] * Z + e[13]) * w;
-            this.Z = (e[2] * X + e[6] * Y + e[10] * Z + e[14]) * w;
-
-            return this;
+        public Vector4 ToVector4(float w = 1)
+        {
+            return new Vector4(X, Y, Z, w);
         }
     }
 
