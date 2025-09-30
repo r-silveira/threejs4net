@@ -9,13 +9,13 @@ namespace ThreeJs4Net.Math
     [DebuggerDisplay("X = {X}, Y = {Y}")]
     public class Vector2 : IEquatable<Vector2>, IVector<Vector2>
     {
-        public float Width
+        public double Width
         {
             get => this.X;
             set => this.X = value;
         }
 
-        public float Height
+        public double Height
         {
             get => this.Y;
             set => this.Y = value;
@@ -31,15 +31,15 @@ namespace ThreeJs4Net.Math
             return new Vector2(0, 1);
         }
 
-        public float X;
-        public float Y;
+        public double X;
+        public double Y;
 
         public Vector2()
         {
             this.X = this.Y = 0;
         }
 
-        public Vector2(float x, float y)
+        public Vector2(double x, double y)
         {
             this.X = x;
             this.Y = y;
@@ -97,14 +97,14 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 AddScalar(float scalar)
+        public Vector2 AddScalar(double scalar)
         {
             this.X += scalar;
             this.Y += scalar;
             return this;
         }
 
-        public Vector2 AddScaledVector(Vector2 v, float s)
+        public Vector2 AddScaledVector(Vector2 v, double s)
         {
             this.X += v.X * s;
             this.Y += v.Y * s;
@@ -119,7 +119,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float Angle()
+        public double Angle()
         {
             // computes the angle in radians with respect to the positive x-axis
             var angle = Mathf.Atan2(-this.Y, -this.X) + Mathf.PI;
@@ -128,7 +128,7 @@ namespace ThreeJs4Net.Math
 
         public Vector2 ApplyMatrix3(Matrix3 m)
         {
-            float x = this.X, y = this.Y;
+            double x = this.X, y = this.Y;
             var e = m.Elements;
 
             this.X = e[0] * x + e[3] * y + e[6];
@@ -139,8 +139,8 @@ namespace ThreeJs4Net.Math
 
         public Vector2 Ceil()
         {
-            this.X = Mathf.Ceiling(this.X);
-            this.Y = Mathf.Ceiling(this.Y);
+            this.X = Math.Ceiling(this.X);
+            this.Y = Math.Ceiling(this.Y);
 
             return this;
         }
@@ -154,14 +154,14 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 ClampLength(float min, float max)
+        public Vector2 ClampLength(double min, double max)
         {
             var length = this.Length();
 
             return this.DivideScalar(length == 0 ? 1 : length).MultiplyScalar(Math.Max(min, Math.Min(max, length)));
         }
 
-        public Vector2 ClampScalar(float minVal, float maxVal)
+        public Vector2 ClampScalar(double minVal, double maxVal)
         {
             this.X = Math.Max(minVal, Math.Min(maxVal, this.X));
             this.Y = Math.Max(minVal, Math.Min(maxVal, this.Y));
@@ -175,7 +175,7 @@ namespace ThreeJs4Net.Math
             return new Vector2(this.X, this.Y);
         }
 
-        public float Cross(Vector2 v)
+        public double Cross(Vector2 v)
         {
             return this.X * v.Y - this.Y * v.X;
         }
@@ -192,12 +192,12 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public float DistanceTo(Vector2 vector)
+        public double DistanceTo(Vector2 vector)
         {
-            return Mathf.Sqrt(this.DistanceToSquared(vector));
+            return Math.Sqrt(this.DistanceToSquared(vector));
         }
 
-        public float DistanceToSquared(Vector2 vector)
+        public double DistanceToSquared(Vector2 vector)
         {
             var dx = this.X - vector.X;
             var dy = this.Y - vector.Y;
@@ -212,12 +212,12 @@ namespace ThreeJs4Net.Math
         }
 
 
-        public Vector2 DivideScalar(float scalar)
+        public Vector2 DivideScalar(double scalar)
         {
-            return this.MultiplyScalar(1 / scalar);
+            return this.MultiplyScalar(1.0 / scalar);
         }
 
-        public float Dot(Vector2 v)
+        public double Dot(Vector2 v)
         {
             return this.X * v.X + this.Y * v.Y;
         }
@@ -227,7 +227,7 @@ namespace ThreeJs4Net.Math
             return ((v.X == this.X) && (v.Y == this.Y));
         }
 
-        public Vector2 FromArray(float[] array, int offset = 0)
+        public Vector2 FromArray(double[] array, int offset = 0)
         {
             this.X = array[offset];
             this.Y = array[offset + 1];
@@ -235,7 +235,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 FromBufferAttribute(BufferAttribute<float> attribute, int index)
+        public Vector2 FromBufferAttribute(BufferAttribute<double> attribute, int index)
         {
             this.X = attribute.GetX(index);
             this.Y = attribute.GetY(index);
@@ -245,13 +245,13 @@ namespace ThreeJs4Net.Math
 
         public Vector2 Floor()
         {
-            this.X = Mathf.Floor(this.X);
-            this.Y = Mathf.Floor(this.Y);
+            this.X = Math.Floor(this.X);
+            this.Y = Math.Floor(this.Y);
 
             return this;
         }
 
-        public float GetComponent(int index)
+        public double GetComponent(int index)
         {
             return index switch
             {
@@ -261,17 +261,17 @@ namespace ThreeJs4Net.Math
             };
         }
 
-        public float Length()
+        public double Length()
         {
-            return Mathf.Sqrt(this.X * this.X + this.Y * this.Y);
+            return Math.Sqrt(this.X * this.X + this.Y * this.Y);
         }
 
-        public float LengthSq()
+        public double LengthSq()
         {
             return this.X * this.X + this.Y * this.Y;
         }
 
-        public Vector2 Lerp(Vector2 v, float alpha)
+        public Vector2 Lerp(Vector2 v, double alpha)
         {
             this.X += (v.X - this.X) * alpha;
             this.Y += (v.Y - this.Y) * alpha;
@@ -279,14 +279,14 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 LerpVectors(Vector2 v1, Vector2 v2, float alpha)
+        public Vector2 LerpVectors(Vector2 v1, Vector2 v2, double alpha)
         {
             return this.SubVectors(v2, v1).MultiplyScalar(alpha).Add(v1);
         }
 
-        public float ManhattanLength()
+        public double ManhattanLength()
         {
-            return Mathf.Abs(this.X) + Mathf.Abs(this.Y);
+            return Math.Abs(this.X) + Math.Abs(this.Y);
         }
 
         public Vector2 Normalize()
@@ -296,9 +296,9 @@ namespace ThreeJs4Net.Math
         }
 
 
-        public float ManhattanDistanceTo(Vector2 v)
+        public double ManhattanDistanceTo(Vector2 v)
         {
-            return Mathf.Abs(this.X - v.X) + Mathf.Abs(this.Y - v.Y);
+            return Math.Abs(this.X - v.X) + Math.Abs(this.Y - v.Y);
         }
 
         public Vector2 Max(Vector2 v)
@@ -324,7 +324,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 MultiplyScalar(float scalar)
+        public Vector2 MultiplyScalar(double scalar)
         {
             this.X *= scalar;
             this.Y *= scalar;
@@ -341,23 +341,23 @@ namespace ThreeJs4Net.Math
 
         public Vector2 Round()
         {
-            this.X = Mathf.Round(this.X);
-            this.Y = Mathf.Round(this.Y);
+            this.X = Math.Round(this.X);
+            this.Y = Math.Round(this.Y);
 
             return this;
         }
 
         public Vector2 RoundToZero()
         {
-            this.X = (this.X < 0) ? Mathf.Ceiling(this.X) : Mathf.Floor(this.X);
-            this.Y = (this.Y < 0) ? Mathf.Ceiling(this.Y) : Mathf.Floor(this.Y);
+            this.X = (this.X < 0) ? Math.Ceiling(this.X) : Math.Floor(this.X);
+            this.Y = (this.Y < 0) ? Math.Ceiling(this.Y) : Math.Floor(this.Y);
 
             return this;
         }
 
-        public Vector2 RotateAround(Vector2 center, float angle)
+        public Vector2 RotateAround(Vector2 center, double angle)
         {
-            float c = Mathf.Cos(angle), s = Mathf.Sin(angle);
+            double c = Math.Cos(angle), s = Math.Sin(angle);
 
             var x = this.X - center.X;
             var y = this.Y - center.Y;
@@ -376,7 +376,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 Set(float X, float Y)
+        public Vector2 Set(double X, double Y)
         {
             this.X = X;
             this.Y = Y;
@@ -384,7 +384,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 SetComponent(int index, float value)
+        public Vector2 SetComponent(int index, double value)
         {
             switch (index)
             {
@@ -397,7 +397,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 SetScalar(float scalar)
+        public Vector2 SetScalar(double scalar)
         {
             this.X = scalar;
             this.Y = scalar;
@@ -405,18 +405,18 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 SetLength(float length)
+        public Vector2 SetLength(double length)
         {
             return this.Normalize().MultiplyScalar(length);
         }
 
-        public Vector2 SetX(float x)
+        public Vector2 SetX(double x)
         {
             this.X = x;
             return this;
         }
 
-        public Vector2 SetY(float y)
+        public Vector2 SetY(double y)
         {
             this.Y = y;
             return this;
@@ -430,7 +430,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector2 SubScalar(float s)
+        public Vector2 SubScalar(double s)
         {
             this.X -= s;
             this.Y -= s;
@@ -446,11 +446,11 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float[] ToArray(ref float[] array, int offset = 0)
+        public double[] ToArray(ref double[] array, int offset = 0)
         {
             if (array == null)
             {
-                array = new float[2];
+                array = new double[2];
             }
 
             if (array.Length < offset + 2)

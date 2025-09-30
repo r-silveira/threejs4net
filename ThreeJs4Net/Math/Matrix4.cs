@@ -12,7 +12,7 @@ namespace ThreeJs4Net.Math
         private Vector3 _v1 = new Vector3();
 
         [NotNull]
-        public float[] elements = new float[16];
+        public double[] elements = new double[16];
 
         /// <summary>
         /// 
@@ -37,12 +37,12 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <param name="values"></param>
-        public Matrix4(float[] values)
+        public Matrix4(double[] values)
         {
             this.Set(values);
         }
 
-        public float[] Elements
+        public double[] Elements
         {
             get => elements;
             set { elements = value; this.OnPropertyChanged(); }
@@ -53,7 +53,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        private bool CheckParamArray(float[] values)
+        private bool CheckParamArray(double[] values)
         {
             if (values.Length == 16)
             {
@@ -64,7 +64,7 @@ namespace ThreeJs4Net.Math
             return false;
         }
 
-        public Matrix4 Set(float n11, float n12, float n13, float n14, float n21, float n22, float n23, float n24, float n31, float n32, float n33, float n34, float n41, float n42, float n43, float n44)
+        public Matrix4 Set(double n11, double n12, double n13, double n14, double n21, double n22, double n23, double n24, double n31, double n32, double n33, double n34, double n41, double n42, double n43, double n44)
         {
             var te = this.elements;
 
@@ -80,7 +80,7 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <param name="values"></param>
-        public Matrix4 Set(float[] values)
+        public Matrix4 Set(double[] values)
         {
             if (this.CheckParamArray(values))
             {
@@ -93,9 +93,9 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Matrix4 MakeScale(float x, float y, float z)
+        public Matrix4 MakeScale(double x, double y, double z)
         {
-            Set(new float[]{x,0,0,0,
+            Set(new double[]{x,0,0,0,
                             0,y,0,0,
                             0,0,z,0,
                             0,0,0,1});
@@ -115,7 +115,7 @@ namespace ThreeJs4Net.Math
 
         public Matrix4 Identity()
         {
-            Set(new float[]{1,0,0,0,
+            Set(new double[]{1,0,0,0,
                             0,1,0,0,
                             0,0,1,0,
                             0,0,0,1});
@@ -247,7 +247,7 @@ namespace ThreeJs4Net.Math
         /// <param name="te"></param>
         /// <param name="s"></param>
         /// <returns></returns>
-        public Matrix4 MultiplyScalar(float s)
+        public Matrix4 MultiplyScalar(double s)
         {
             this.Elements[0] *= s; this.Elements[4] *= s; this.Elements[8] *= s; this.Elements[12] *= s;
             this.Elements[1] *= s; this.Elements[5] *= s; this.Elements[9] *= s; this.Elements[13] *= s;
@@ -303,7 +303,7 @@ namespace ThreeJs4Net.Math
         /// <param name="bottom"></param>
         /// <param name="near"></param>
         /// <param name="far"></param>
-        public Matrix4 MakeOrthographic(float left, float right, float top, float bottom, float near, float far)
+        public Matrix4 MakeOrthographic(double left, double right, double top, double bottom, double near, double far)
         {
             var te = this.elements;
             var w = right - left;
@@ -332,7 +332,7 @@ namespace ThreeJs4Net.Math
         /// <param name="near"></param>
         /// <param name="far"></param>
         /// <returns></returns>
-        public Matrix4 MakeFrustum(float left, float right, float bottom, float top, float near, float far)
+        public Matrix4 MakeFrustum(double left, double right, double bottom, double top, double near, double far)
         {
             var x = 2 * near / (right - left);
             var y = 2 * near / (top - bottom);
@@ -351,7 +351,7 @@ namespace ThreeJs4Net.Math
         }
 
 
-        public Matrix4 MakePerspective(float left, float right, float top, float bottom, float near, float far)
+        public Matrix4 MakePerspective(double left, double right, double top, double bottom, double near, double far)
         {
             var te = this.elements;
             var x = 2 * near / (right - left);
@@ -389,7 +389,7 @@ namespace ThreeJs4Net.Math
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public float[] ApplyToVector3Array(float[] array, int offset, int length)
+        public double[] ApplyToVector3Array(double[] array, int offset, int length)
         {
             var v1 = new Vector3();
 
@@ -416,7 +416,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
-        public float[] ApplyToVector3Array(float[] array)
+        public double[] ApplyToVector3Array(double[] array)
         {
             var offset = 0;
             var length = array.Length;
@@ -508,7 +508,7 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <param name="PositionArray"></param>
-        public void MultiplyVector3Array(List<float> PositionArray)
+        public void MultiplyVector3Array(List<double> PositionArray)
         {
             throw new NotImplementedException();
         }
@@ -521,9 +521,9 @@ namespace ThreeJs4Net.Math
         {
             var x = euler.X; var y = euler.Y; var z = euler.Z;
 
-            var a = (float)System.Math.Cos(x); var b = (float)System.Math.Sin(x);
-            var c = (float)System.Math.Cos(y); var d = (float)System.Math.Sin(y);
-            var e = (float)System.Math.Cos(z); var f = (float)System.Math.Sin(z);
+            var a = (double)System.Math.Cos(x); var b = (double)System.Math.Sin(x);
+            var c = (double)System.Math.Cos(y); var d = (double)System.Math.Sin(y);
+            var e = (double)System.Math.Cos(z); var f = (double)System.Math.Sin(z);
 
             if (euler.Order == Euler.RotationOrder.XYZ)
             {
@@ -703,7 +703,7 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <returns></returns>
-        public float GetMaxScaleOnAxis()
+        public double GetMaxScaleOnAxis()
         {
             var te = this.elements;
 
@@ -711,7 +711,7 @@ namespace ThreeJs4Net.Math
             var scaleYSq = te[4] * te[4] + te[5] * te[5] + te[6] * te[6];
             var scaleZSq = te[8] * te[8] + te[9] * te[9] + te[10] * te[10];
 
-            return (float)System.Math.Sqrt(System.Math.Max(scaleXSq, System.Math.Max(scaleYSq, scaleZSq)));
+            return (double)System.Math.Sqrt(System.Math.Max(scaleXSq, System.Math.Max(scaleYSq, scaleZSq)));
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -735,7 +735,7 @@ namespace ThreeJs4Net.Math
             return new Matrix4().Copy(this);
         }
 
-        public Matrix4 MakeTranslation(float x, float y, float z)
+        public Matrix4 MakeTranslation(double x, double y, double z)
         {
             this.Set(
                 1, 0, 0, x,
@@ -746,9 +746,9 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Matrix4 MakeRotationX(float theta)
+        public Matrix4 MakeRotationX(double theta)
         {
-            float c = Mathf.Cos(theta), s = Mathf.Sin(theta);
+            double c = Mathf.Cos(theta), s = Mathf.Sin(theta);
 
             this.Set(
                 1, 0, 0, 0,
@@ -761,9 +761,9 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public Matrix4 MakeRotationY(float theta)
+        public Matrix4 MakeRotationY(double theta)
         {
-            float c = Mathf.Cos(theta), s = Mathf.Sin(theta);
+            double c = Mathf.Cos(theta), s = Mathf.Sin(theta);
 
             this.Set(
                 c, 0, s, 0,
@@ -776,9 +776,9 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public Matrix4 MakeRotationZ(float theta)
+        public Matrix4 MakeRotationZ(double theta)
         {
-            float c = Mathf.Cos(theta), s = Mathf.Sin(theta);
+            double c = Mathf.Cos(theta), s = Mathf.Sin(theta);
             this.Set(
                 c, -s, 0, 0,
                 s, c, 0, 0,
@@ -794,9 +794,9 @@ namespace ThreeJs4Net.Math
             var x = vec3.X;
             var y = vec3.Y;
             var z = vec3.Z;
-            float a00, a01, a02, a03;
-            float a10, a11, a12, a13;
-            float a20, a21, a22, a23;
+            double a00, a01, a02, a03;
+            double a10, a11, a12, a13;
+            double a20, a21, a22, a23;
 
             var a = this.elements;
 
@@ -818,10 +818,10 @@ namespace ThreeJs4Net.Math
             return b;
         }
 
-        public Matrix4 Rotate(Matrix4 mat, float rad, Vector3 axis)
+        public Matrix4 Rotate(Matrix4 mat, double rad, Vector3 axis)
         {
-            float x = axis.X, y = axis.Y, z = axis.Z;
-            float len = Mathf.Sqrt(x * x + y * y + z * z);
+            double x = axis.X, y = axis.Y, z = axis.Z;
+            double len = Mathf.Sqrt(x * x + y * y + z * z);
 
             if (Mathf.Abs(len) < 0.00001) { return null; }
 
@@ -872,14 +872,14 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float Determinant()
+        public double Determinant()
         {
             var te = this.Elements;
 
-            float n11 = te[0], n12 = te[4], n13 = te[8], n14 = te[12];
-            float n21 = te[1], n22 = te[5], n23 = te[9], n24 = te[13];
-            float n31 = te[2], n32 = te[6], n33 = te[10], n34 = te[14];
-            float n41 = te[3], n42 = te[7], n43 = te[11], n44 = te[15];
+            double n11 = te[0], n12 = te[4], n13 = te[8], n14 = te[12];
+            double n21 = te[1], n22 = te[5], n23 = te[9], n24 = te[13];
+            double n31 = te[2], n32 = te[6], n33 = te[10], n34 = te[14];
+            double n41 = te[3], n42 = te[7], n43 = te[11], n44 = te[15];
 
             //TODO: make this more efficient
             //( based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm )
@@ -926,21 +926,21 @@ namespace ThreeJs4Net.Math
         {
             // based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
             var te = this.elements;
-            float n11 = te[0], n21 = te[1], n31 = te[2], n41 = te[3];
-            float n12 = te[4], n22 = te[5], n32 = te[6], n42 = te[7];
-            float n13 = te[8], n23 = te[9], n33 = te[10], n43 = te[11];
-            float n14 = te[12], n24 = te[13], n34 = te[14], n44 = te[15];
+            double n11 = te[0], n21 = te[1], n31 = te[2], n41 = te[3];
+            double n12 = te[4], n22 = te[5], n32 = te[6], n42 = te[7];
+            double n13 = te[8], n23 = te[9], n33 = te[10], n43 = te[11];
+            double n14 = te[12], n24 = te[13], n34 = te[14], n44 = te[15];
 
-            float t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44;
-            float t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44;
-            float t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44;
-            float t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
+            double t11 = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44;
+            double t12 = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44;
+            double t13 = n13 * n24 * n42 - n14 * n23 * n42 + n14 * n22 * n43 - n12 * n24 * n43 - n13 * n22 * n44 + n12 * n23 * n44;
+            double t14 = n14 * n23 * n32 - n13 * n24 * n32 - n14 * n22 * n33 + n12 * n24 * n33 + n13 * n22 * n34 - n12 * n23 * n34;
 
-            float det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
+            double det = n11 * t11 + n21 * t12 + n31 * t13 + n41 * t14;
 
             if (det == 0) return this.Set(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-            float detInv = 1 / det;
+            double detInv = 1 / det;
 
             te[0] = t11 * detInv;
             te[1] = (n24 * n33 * n41 - n23 * n34 * n41 - n24 * n31 * n43 + n21 * n34 * n43 + n23 * n31 * n44 - n21 * n33 * n44) * detInv;
@@ -979,9 +979,9 @@ namespace ThreeJs4Net.Math
         }
         #endregion
 
-        public float[] ToArray(ref float[] array, int offset = 0)
+        public double[] ToArray(ref double[] array, int offset = 0)
         {
-            array ??= new float[16];
+            array ??= new double[16];
 
             if (array.Length < offset + 4)
             {
@@ -1014,14 +1014,14 @@ namespace ThreeJs4Net.Math
         }
 
         #region --- Already in R125 ---
-        public Matrix4 MakeRotationAxis(Vector3 axis, float angle)
+        public Matrix4 MakeRotationAxis(Vector3 axis, double angle)
         {
             // Based on http://www.gamedev.net/reference/articles/article1199.asp
             var c = Mathf.Cos(angle);
             var s = Mathf.Sin(angle);
             var t = 1 - c;
-            float x = axis.X, y = axis.Y, z = axis.Z;
-            float tx = t * x, ty = t * y;
+            double x = axis.X, y = axis.Y, z = axis.Z;
+            double tx = t * x, ty = t * y;
 
             this.Set(
                 tx * x + c, tx * y - s * z, tx * z + s * y, 0,

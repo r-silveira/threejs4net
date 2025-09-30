@@ -5,69 +5,69 @@ namespace ThreeJs4Net.Math
 {
     public static class Mathf
     {
-        public const float Tau = 6.2831853071795864769252f;
-        public const float PI = Tau / 2;
-        public const float NaturalLog2 = 0.69314718056f;
+        public const double Tau = 6.2831853071795864769252;
+        public const double PI = Tau / 2.0;
+        public const double NaturalLog2 = 0.69314718056;
 
-        public static float Sign(float value) { return (float)System.Math.Sign(value); }
-        public static float Cos(float value) { return (float)System.Math.Cos(value); }
-        public static float Sin(float value) { return (float)System.Math.Sin(value); }
-        public static float Tan(float value) { return (float)System.Math.Tan(value); }
+        public static double Sign(double value) { return (double)System.Math.Sign(value); }
+        public static double Cos(double value) { return (double)System.Math.Cos(value); }
+        public static double Sin(double value) { return (double)System.Math.Sin(value); }
+        public static double Tan(double value) { return (double)System.Math.Tan(value); }
 
-        public static float Acos(float value) { return (float)System.Math.Acos(value); }
-        public static float Asin(float value) { return (float)System.Math.Asin(value); }
-        public static float Atan(float value) { return (float)System.Math.Atan(value); }
-        public static float Atan2(float y, float x) { return (float)System.Math.Atan2(y, x); }
+        public static double Acos(double value) { return (double)System.Math.Acos(value); }
+        public static double Asin(double value) { return (double)System.Math.Asin(value); }
+        public static double Atan(double value) { return (double)System.Math.Atan(value); }
+        public static double Atan2(double y, double x) { return (double)System.Math.Atan2(y, x); }
 
-        public static float Clamp(float x, float a, float b) { return (x < a) ? a : ((x > b) ? b : x); }
+        public static double Clamp(double x, double a, double b) { return (x < a) ? a : ((x > b) ? b : x); }
 
-        public static float DegreesToRadians(float degree) { return degree * Tau / 360; }
-        public static float RadiansToDegrees(float radians) { return radians * 360 / Tau; }
+        public static double DegreesToRadians(double degree) { return degree * Tau / 360; }
+        public static double RadiansToDegrees(double radians) { return radians * 360 / Tau; }
 
         public static int Abs(int value) { return System.Math.Abs(value); }
-        public static float Abs(float value) { return System.Math.Abs(value); }
+        public static double Abs(double value) { return System.Math.Abs(value); }
 
-        public static float Sqrt(float value) { return (float)System.Math.Sqrt(value); }
+        public static double Sqrt(double value) { return (double)System.Math.Sqrt(value); }
 
         public static int Min(int a, int b) { return System.Math.Min(a, b); }
-        public static float Min(float a, float b) { return System.Math.Min(a, b); }
+        public static double Min(double a, double b) { return System.Math.Min(a, b); }
         public static int Max(int a, int b) { return System.Math.Max(a, b); }
-        public static float Max(float a, float b) { return System.Math.Max(a, b); }
+        public static double Max(double a, double b) { return System.Math.Max(a, b); }
 
 
         public static bool IsPowerOfTwo(int value) { return (value & (value - 1)) == 0 && value != 0; }
 
         internal static int Pow(int x, int y) { return (int)System.Math.Pow(x, y); }
-        internal static float Pow(float x, float y) { return (float)System.Math.Pow(x, y); }
+        internal static double Pow(double x, double y) { return (double)System.Math.Pow(x, y); }
 
-        public static int Round(float value, MidpointRounding midpoint = MidpointRounding.ToEven) { return (int)System.Math.Round(value, midpoint); }
-        public static int Round(float value, int decimals) { return (int)System.Math.Round(value, decimals); }
+        public static int Round(double value, MidpointRounding midpoint = MidpointRounding.ToEven) { return (int)System.Math.Round(value, midpoint); }
+        public static int Round(double value, int decimals) { return (int)System.Math.Round(value, decimals); }
 
-        internal static int Floor(float value) { return (int)System.Math.Floor(value); }
-        internal static int Ceiling(float value) { return (int)System.Math.Ceiling(value); }
+        internal static int Floor(double value) { return (int)System.Math.Floor(value); }
+        internal static int Ceiling(double value) { return (int)System.Math.Ceiling(value); }
 
-        internal static float Log(float value) { return (float)System.Math.Log(value); }
+        internal static double Log(double value) { return (double)System.Math.Log(value); }
 
         public static Random Random = new Random();
 
-        public static float RandomF(float a, float b)
+        public static double RandomF(double a, double b)
         {
-            return (float)(a + Random.NextDouble() * (b - a));
+            return (double)(a + Random.NextDouble() * (b - a));
         }
 
-        public static float RandomF(float a)
+        public static double RandomF(double a)
         {
             return RandomF() * a;
         }
 
-        public static float RandomF()
+        public static double RandomF()
         {
-            return (float)Random.NextDouble();
+            return (double)Random.NextDouble();
         }
 
         public static bool RandomBool => RandomF() > 0.5f;
 
-        public static List<Vector3> Hilbert3D(Vector3 center, float size = 10, int iterations = 1, int v0 = 0, int v1 = 1, int v2 = 2, int v3 = 3, int v4 = 4, int v5 = 5, int v6 = 6, int v7 = 7)
+        public static List<Vector3> Hilbert3D(Vector3 center, double size = 10, int iterations = 1, int v0 = 0, int v1 = 1, int v2 = 2, int v3 = 3, int v4 = 4, int v5 = 5, int v6 = 6, int v7 = 7)
         {
             var half = size / 2;
 
@@ -112,7 +112,7 @@ namespace ThreeJs4Net.Math
             return vec; // Return complete Hilbert Curve.
         }
 
-        public static float Fit(float value, float oldMin, float oldMax, float newMin, float newMax)
+        public static double Fit(double value, double oldMin, double oldMax, double newMin, double newMax)
         {
             if (oldMin > oldMax)
             {

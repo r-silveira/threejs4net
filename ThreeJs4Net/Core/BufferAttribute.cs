@@ -241,9 +241,9 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> CopyVector4sArray(IEnumerable<Vector4> vectors)
         {
-            if (typeof(T) != typeof(float))
+            if (typeof(T) != typeof(double))
             {
-                throw new Exception("BufferAttribute is not a float buffer. Can't copy Vector4 into it");
+                throw new Exception("BufferAttribute is not a double buffer. Can't copy Vector4 into it");
             }
 
             int targetLength = vectors.Count() * 4;
@@ -265,9 +265,9 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> CopyVector3sArray(IEnumerable<Vector3> vectors)
         {
-            if (typeof(T) != typeof(float))
+            if (typeof(T) != typeof(double))
             {
-                throw new Exception("BufferAttribute is not a float buffer. Can't copy Vector3 into it");
+                throw new Exception("BufferAttribute is not a double buffer. Can't copy Vector3 into it");
             }
 
             int targetLength = vectors.Count() * 3;
@@ -288,9 +288,9 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> CopyVector2sArray(IEnumerable<Vector2> vectors)
         {
-            if (typeof(T) != typeof(float))
+            if (typeof(T) != typeof(double))
             {
-                throw new Exception("BufferAttribute is not a float buffer. Can't copy Vector2 into it");
+                throw new Exception("BufferAttribute is not a double buffer. Can't copy Vector2 into it");
             }
 
             int targetLength = vectors.Count() * 2;
@@ -310,18 +310,18 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> ApplyMatrix3(Matrix3 m)
         {
-            if (typeof(T) != typeof(float))
+            if (typeof(T) != typeof(double))
             {
-                throw new Exception("BufferAttribute is not a float buffer. Can't apply Matrix3 to it");
+                throw new Exception("BufferAttribute is not a double buffer. Can't apply Matrix3 to it");
             }
 
             for (var i = 0; i < this.Count; i++)
             {
                 var vector = new Vector3
                 {
-                    X = (float)(object)this.GetX(i),
-                    Y = (float)(object)this.GetY(i),
-                    Z = (float)(object)this.GetZ(i)
+                    X = (double)(object)this.GetX(i),
+                    Y = (double)(object)this.GetY(i),
+                    Z = (double)(object)this.GetZ(i)
                 };
 
                 vector.ApplyMatrix3(m);
@@ -334,18 +334,18 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> ApplyMatrix4(Matrix4 m)
         {
-            if (typeof(T) != typeof(float))
+            if (typeof(T) != typeof(double))
             {
-                throw new Exception("BufferAttribute is not a float buffer. Can't apply Matrix4 to it");
+                throw new Exception("BufferAttribute is not a double buffer. Can't apply Matrix4 to it");
             }
 
             for (var i = 0; i < this.Count; i++)
             {
                 var vector = new Vector3
                 {
-                    X = (float)(object)this.GetX(i),
-                    Y = (float)(object)this.GetY(i),
-                    Z = (float)(object)this.GetZ(i)
+                    X = (double)(object)this.GetX(i),
+                    Y = (double)(object)this.GetY(i),
+                    Z = (double)(object)this.GetZ(i)
                 };
 
                 vector.ApplyMatrix4(m);
@@ -358,18 +358,18 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> ApplyNormalMatrix(Matrix3 m)
         {
-            if (typeof(T) != typeof(float))
+            if (typeof(T) != typeof(double))
             {
-                throw new Exception("BufferAttribute is not a float buffer. Can't apply Normal Matrix to it");
+                throw new Exception("BufferAttribute is not a double buffer. Can't apply Normal Matrix to it");
             }
 
             for (var i = 0; i < this.Count; i++)
             {
                 var vector = new Vector3
                 {
-                    X = (float)(object)this.GetX(i),
-                    Y = (float)(object)this.GetY(i),
-                    Z = (float)(object)this.GetZ(i)
+                    X = (double)(object)this.GetX(i),
+                    Y = (double)(object)this.GetY(i),
+                    Z = (double)(object)this.GetZ(i)
                 };
 
                 vector.ApplyNormalMatrix(m);
@@ -382,18 +382,18 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> TransformDirection(Matrix4 m)
         {
-            if (typeof(T) != typeof(float))
+            if (typeof(T) != typeof(double))
             {
-                throw new Exception("BufferAttribute is not a float buffer. Can't apply Normal Matrix to it");
+                throw new Exception("BufferAttribute is not a double buffer. Can't apply Normal Matrix to it");
             }
 
             for (var i = 0; i < this.Count; i++)
             {
                 var vector = new Vector3
                 {
-                    X = (float)(object)this.GetX(i),
-                    Y = (float)(object)this.GetY(i),
-                    Z = (float)(object)this.GetZ(i)
+                    X = (double)(object)this.GetX(i),
+                    Y = (double)(object)this.GetY(i),
+                    Z = (double)(object)this.GetZ(i)
                 };
 
                 vector.TransformDirection(m);

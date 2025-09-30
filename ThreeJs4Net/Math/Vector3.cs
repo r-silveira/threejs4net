@@ -12,12 +12,12 @@ namespace ThreeJs4Net.Math
     {
         public static Vector3 Infinity()
         {
-            return new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            return new Vector3(double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity);
         }
 
         public static Vector3 NegativeInfinity()
         {
-            return new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+            return new Vector3(double.NegativeInfinity, double.NegativeInfinity, double.NegativeInfinity);
         }
 
         public static Vector3 UnitX()
@@ -45,9 +45,9 @@ namespace ThreeJs4Net.Math
             return new Vector3(1, 1, 1);
         }
 
-        private float x;
-        private float y;
-        private float z;
+        private double x;
+        private double y;
+        private double z;
 
         public object UserData;
 
@@ -63,7 +63,7 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <param name="scalar"></param>
-        public Vector3(float scalar)
+        public Vector3(double scalar)
         {
             this.X = this.Y = this.Z = scalar;
         }
@@ -81,14 +81,14 @@ namespace ThreeJs4Net.Math
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <param name="z"></param>
-        public Vector3(float x, float y, float z)
+        public Vector3(double x, double y, double z)
         {
             this.X = x;
             this.Y = y;
             this.Z = z;
         }
 
-        public Vector3(Vector2 v, float z)
+        public Vector3(Vector2 v, double z)
         {
             this.X = v.X;
             this.Y = v.Y;
@@ -100,12 +100,12 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="length"></param>
         /// <returns></returns>
-        public Vector3 SetLength(float length)
+        public Vector3 SetLength(double length)
         {
             return Normalize().MultiplyScalar(length);
         }
 
-        public Vector3 SetScalar(float scalar)
+        public Vector3 SetScalar(double scalar)
         {
             x = scalar;
             y = scalar;
@@ -114,31 +114,31 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector3 SetX(float xValue)
+        public Vector3 SetX(double xValue)
         {
             this.X = xValue;
 
             return this;
         }
 
-        public Vector3 SetY(float yValue)
+        public Vector3 SetY(double yValue)
         {
             this.y = yValue;
             return this;
         }
 
-        public Vector3 SetZ(float zValue)
+        public Vector3 SetZ(double zValue)
         {
             this.z = zValue;
             return this;
         }
 
-        public float Length()
+        public double Length()
         {
             return Mathf.Sqrt(LengthSq());
         }
 
-        public float X
+        public double X
         {
             get => x;
             set
@@ -148,7 +148,7 @@ namespace ThreeJs4Net.Math
             }
         }
 
-        public float Y
+        public double Y
         {
             get => y;
             set
@@ -158,7 +158,7 @@ namespace ThreeJs4Net.Math
             }
         }
 
-        public float Z
+        public double Z
         {
             get => z;
             set
@@ -184,7 +184,7 @@ namespace ThreeJs4Net.Math
         /// <param name="Y"></param>
         /// <param name="Z"></param>
         /// <returns></returns>
-        public Vector3 Set(float X, float Y, float Z)
+        public Vector3 Set(double X, double Y, double Z)
         {
             this.X = X;
             this.Y = Y;
@@ -217,7 +217,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector3 SubScalar(float s)
+        public Vector3 SubScalar(double s)
         {
             x -= s;
             y -= s;
@@ -231,7 +231,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="index"></param>
         /// <param name="value"></param>
-        public Vector3 SetComponent(int index, float value)
+        public Vector3 SetComponent(int index, double value)
         {
             switch (index)
             {
@@ -257,7 +257,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public float GetComponent(int index)
+        public double GetComponent(int index)
         {
             switch (index)
             {
@@ -336,7 +336,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public Vector3 AddScalar(float scalar)
+        public Vector3 AddScalar(double scalar)
         {
             this.X += scalar;
             this.Y += scalar;
@@ -345,7 +345,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector3 AddScaledVector(Vector3 v, float s)
+        public Vector3 AddScaledVector(Vector3 v, double s)
         {
             this.X += v.X * s;
             this.Y += v.Y * s;
@@ -407,7 +407,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public Vector3 MultiplyScalar(float scalar)
+        public Vector3 MultiplyScalar(double scalar)
         {
             this.X *= scalar;
             this.Y *= scalar;
@@ -484,7 +484,7 @@ namespace ThreeJs4Net.Math
         public Vector3 ApplyProjection(Matrix4 matrix)
         {
             //REMOVE
-            float X = this.X, Y = this.Y, Z = this.Z;
+            double X = this.X, Y = this.Y, Z = this.Z;
 
             var e = matrix.Elements;
             var d = 1 / (e[3] * X + e[7] * Y + e[11] * Z + e[15]); // perspective divide
@@ -546,9 +546,9 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public Vector3 TransformDirection(Matrix4 matrix)
         {
-            float lX = this.X;
-            float lY = this.Y;
-            float lZ = this.Z;
+            double lX = this.X;
+            double lY = this.Y;
+            double lZ = this.Z;
 
             var e = matrix.Elements;
 
@@ -575,9 +575,9 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public Vector3 DivideScalar(float scalar)
+        public Vector3 DivideScalar(double scalar)
         {
-            return MultiplyScalar(1 / (scalar == 0 ? 1 : scalar));
+            return MultiplyScalar(1.0 / (scalar == 0 ? 1 : scalar));
         }
 
         /// <summary>
@@ -647,13 +647,13 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector3 ClampLength(float minVal, float maxVal)
+        public Vector3 ClampLength(double minVal, double maxVal)
         {
             var length = Length();
             return DivideScalar(length).MultiplyScalar(Mathf.Max(minVal, Mathf.Min(maxVal, length)));
         }
 
-        public Vector3 ClampScalar(float minVal, float maxVal)
+        public Vector3 ClampScalar(double minVal, double maxVal)
         {
             var min = new Vector3(minVal, minVal, minVal);
             var max = new Vector3(maxVal, maxVal, maxVal);
@@ -714,7 +714,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public float Dot(Vector3 vector)
+        public double Dot(Vector3 vector)
         {
             return (this.X * vector.X + this.Y * vector.Y + this.Z * vector.Z);
         }
@@ -723,7 +723,7 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <returns></returns>
-        public float LengthSq()
+        public double LengthSq()
         {
             return (this.X * this.X + this.Y * this.Y + this.Z * this.Z);
         }
@@ -732,12 +732,12 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <returns></returns>
-        public float ManhattanLength()
+        public double ManhattanLength()
         {
             return (Mathf.Abs(this.X) + Mathf.Abs(this.Y) + Mathf.Abs(this.Z));
         }
 
-        public float ManhattanDistanceTo(Vector3 v)
+        public double ManhattanDistanceTo(Vector3 v)
         {
             return Mathf.Abs(this.X - v.X) + Mathf.Abs(this.Y - v.Y) + Mathf.Abs(this.Z - v.Z);
         }
@@ -757,7 +757,7 @@ namespace ThreeJs4Net.Math
         /// <param name="vector"></param>
         /// <param name="alpha"></param>
         /// <returns></returns>
-        public Vector3 Lerp(Vector3 vector, float alpha)
+        public Vector3 Lerp(Vector3 vector, double alpha)
         {
             this.X += (vector.X - this.X) * alpha;
             this.Y += (vector.Y - this.Y) * alpha;
@@ -766,7 +766,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector3 LerpVectors(Vector3 v1, Vector3 v2, float alpha)
+        public Vector3 LerpVectors(Vector3 v1, Vector3 v2, double alpha)
         {
             return new Vector3().SubVectors(v2, v1).MultiplyScalar(alpha).Add(v1);
         }
@@ -789,8 +789,8 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public Vector3 CrossVectors(Vector3 left, Vector3 right)
         {
-            float aX = left.X, aY = left.Y, aZ = left.Z;
-            float bX = right.X, bY = right.Y, bZ = right.Z;
+            double aX = left.X, aY = left.Y, aZ = left.Z;
+            double bX = right.X, bY = right.Y, bZ = right.Z;
 
             this.X = aY * bZ - aZ * bY;
             this.Y = aZ * bX - aX * bZ;
@@ -804,7 +804,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public float AngleTo(Vector3 vector)
+        public double AngleTo(Vector3 vector)
         {
             var denominator = Mathf.Sqrt(LengthSq() * vector.LengthSq());
             if (denominator == 0)
@@ -812,7 +812,7 @@ namespace ThreeJs4Net.Math
                 return Mathf.PI / 2;
             }
 
-            var theta = Dot(vector) / (float)denominator;
+            var theta = Dot(vector) / (double)denominator;
 
             // clamp, to handle numerical problems
             return Mathf.Acos(MathUtils.Clamp(theta, -1, 1));
@@ -823,7 +823,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public float DistanceTo(Vector3 vector)
+        public double DistanceTo(Vector3 vector)
         {
             return Mathf.Sqrt(this.DistanceToSquared(vector));
         }
@@ -833,7 +833,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public float DistanceToSquared(Vector3 vector)
+        public double DistanceToSquared(Vector3 vector)
         {
             var dX = this.X - vector.X;
             var dY = this.Y - vector.Y;
@@ -856,7 +856,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float this[int key]
+        public double this[int key]
         {
             get
             {
@@ -891,7 +891,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <returns></returns>
         [Obsolete("Will be removed as soon as we update BoxGeometry")]
-        public Vector3 SetValue(string i, float value)
+        public Vector3 SetValue(string i, double value)
         {
             switch (i)
             {
@@ -962,7 +962,7 @@ namespace ThreeJs4Net.Math
         /// <param name="source"></param>
         /// <param name="offset"></param>
         /// <returns></returns>
-        public Vector3 FromArray(float[] source, int offset = 0)
+        public Vector3 FromArray(double[] source, int offset = 0)
         {
             this.X = source[offset];
             this.Y = source[offset + 1];
@@ -975,16 +975,16 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <returns></returns>
-        public float[] ToArray()
+        public double[] ToArray()
         {
             return new[] { this.X, this.Y, this.Z };
         }
 
-        public float[] ToArray(ref float[] array, int offset = 0)
+        public double[] ToArray(ref double[] array, int offset = 0)
         {
             if (array == null)
             {
-                array = new float[3];
+                array = new double[3];
             }
 
             if (array.Length < offset + 3)
@@ -1034,7 +1034,7 @@ namespace ThreeJs4Net.Math
         /// <param name="axis"></param>
         /// <param name="angle"></param>
         /// <returns></returns>
-        public Vector3 ApplyAxisAngle(Vector3 axis, float angle)
+        public Vector3 ApplyAxisAngle(Vector3 axis, double angle)
         {
             return this.ApplyQuaternion(new Quaternion().SetFromAxisAngle(axis, angle));
         }
@@ -1059,7 +1059,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector3 FromBufferAttribute(BufferAttribute<float> attribute, int index)
+        public Vector3 FromBufferAttribute(BufferAttribute<double> attribute, int index)
         {
             this.x = attribute.GetX(index);
             this.y = attribute.GetY(index);
@@ -1092,7 +1092,7 @@ namespace ThreeJs4Net.Math
             return new Vector2(X, Y);
         }
 
-        public Vector4 ToVector4(float w = 1)
+        public Vector4 ToVector4(double w = 1)
         {
             return new Vector4(X, Y, Z, w);
         }
