@@ -91,18 +91,15 @@ namespace ThreeJs4Net.Materials
 #else
 using System.Collections;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Materials
 {
-    public class MeshBasicMaterial : Material, IWireframe, IMorphTargets
+    public class MeshBasicMaterial : Material
     {
         // IMap
         public object Map { get; set; }
         public object AlphaMap { get; set; }
         public object SpecularMap { get; set; }
-        public object NormalMap { get; set; } // TODO: not in ThreeJs, just to be an IMap. Must be NULL
-        public object BumpMap { get; set; } // TODO: not in ThreeJs, just to be an IMap.  Must be NULL
         public object LightMap { get; set; }
 
         //     public Texture EnvMap;
@@ -113,14 +110,12 @@ namespace ThreeJs4Net.Materials
         public bool Fog;
         public int Shading;
 
-        // IWireFrameable
-        public bool Wireframe { get; set; }
-        public float WireframeLinewidth { get; set; }
-        public string WireframeLinecap;
-        public string WireframeLinejoin;
-        public bool Skinning;
-        public bool MorphTargets { get; set; }
-        public int NumSupportedMorphTargets;
+        //// IWireFrameable
+        //public bool Wireframe { get; set; }
+        //public float WireframeLinewidth { get; set; }
+        //public string WireframeLinecap;
+        //public string WireframeLinejoin;
+        //public bool Skinning;
 
         /// <summary>
         /// 
@@ -149,13 +144,13 @@ namespace ThreeJs4Net.Materials
             this.Shading = Three.SmoothShading;
 
             // IWireFrameable
-            this.Wireframe = false;
-            this.WireframeLinewidth = 1;
+            //this.Wireframe = false;
+            //this.WireframeLinewidth = 1;
 
-            this.WireframeLinecap = "round";
-            this.WireframeLinejoin = "round";
+            //this.WireframeLinecap = "round";
+            //this.WireframeLinejoin = "round";
 
-            this.Skinning = false;
+            //this.Skinning = false;
 
             this.SetValues(parameters);
         }

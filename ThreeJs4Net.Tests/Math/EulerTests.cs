@@ -1,7 +1,4 @@
-﻿using System.Numerics;
-using System.Runtime.Intrinsics.X86;
-using ThreeJs4Net.Loaders;
-using ThreeJs4Net.Math;
+﻿using ThreeJs4Net.Math;
 using Xunit;
 using Quaternion = ThreeJs4Net.Math.Quaternion;
 

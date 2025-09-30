@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ThreeJs4Net.Cameras;
+﻿using System.Collections.Generic;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
 
@@ -9,8 +6,7 @@ namespace ThreeJs4Net.Core
 {
     public class Raycaster
     {
-        private Camera camera;
-        public Layers Layers = new Layers();
+        //public Layers Layers = new Layers();
 
         public float Precision = 0.0001f;
         public float LinePrecision = 1;
@@ -31,10 +27,10 @@ namespace ThreeJs4Net.Core
 
         private void CheckIntersectObject(Object3D object3d, Raycaster raycaster, List<Intersect> intersects, bool recursive)
         {
-            if (object3d.Layers.Test(raycaster.Layers))
-            {
-                object3d.Raycast(raycaster, intersects);
-            }
+            //if (object3d.Layers.Test(raycaster.Layers))
+            //{
+            object3d.Raycast(raycaster, intersects);
+            //}
 
             if (recursive)
             {
@@ -72,26 +68,6 @@ namespace ThreeJs4Net.Core
 
             intersects.Sort((left, right) => (int)(left.Distance - right.Distance));
             return intersects;
-        }
-
-        public void SetFromCamera(Vector2 coords, Camera camera)
-        {
-            if (camera is PerspectiveCamera)
-            {
-                this.Ray.Origin.SetFromMatrixPosition(camera.MatrixWorld);
-                this.Ray.Direction.Set(coords.X, coords.Y, (float)0.5).Unproject(camera).Sub(this.Ray.Origin).Normalize();
-                this.camera = camera;
-            }
-            else if (camera is OrthographicCamera orthoCam)
-            {
-                this.Ray.Origin.Set(coords.X, coords.Y, (orthoCam.Near + orthoCam.Far) / (orthoCam.Near - orthoCam.Far)).Unproject(camera); // set origin in plane of camera
-                this.Ray.Direction.Set(0, 0, -1).TransformDirection(camera.MatrixWorld);
-                this.camera = camera;
-            }
-            else
-            {
-                throw new Exception("THREE.Raycaster: Unsupported camera type.");
-            }
         }
 
         #endregion

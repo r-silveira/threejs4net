@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Materials
 {
@@ -20,19 +18,19 @@ namespace ThreeJs4Net.Materials
         public float Opacity = 1;
         public bool Transparent = false;
         public int Blending = Three.NormalBlending;
-        public int BlendSrc = Three.SrcAlphaFactor;
-        public int BlendDst = Three.OneMinusSrcAlphaFactor;
-        public int BlendEquation = Three.AddEquation;
+        //public int BlendSrc = Three.SrcAlphaFactor;
+        //public int BlendDst = Three.OneMinusSrcAlphaFactor;
+        //public int BlendEquation = Three.AddEquation;
         public bool DepthTest = true;
-        public bool DepthWrite = true;
+        //public bool DepthWrite = true;
         public bool PolygonOffset = false;
-        public float PolygonOffsetFactor = 0.0f;
-        public float PolygonOffsetUnits = 0.0f;
-        public float AlphaTest = 0.0f;
-        public int Overdraw = 0; // Overdrawn pixels (typically between 0 and 1) for fixing antialiasing gaps in CanvasRenderer
+        //float PolygonOffsetFactor = 0.0f;
+        //public float PolygonOffsetUnits = 0.0f;
+        //public float AlphaTest = 0.0f;
+        //public int Overdraw = 0; // Overdrawn pixels (typically between 0 and 1) for fixing antialiasing gaps in CanvasRenderer
         public bool Visible = true;
-        public bool NeedsUpdate = true;
-        public List<UniformLocation> UniformsList;
+        //public bool NeedsUpdate = true;
+        //public List<UniformLocation> UniformsList;
         public int VertexColors; // Set to use "Color" attribute stream
 #if USE_WINDOWS
         public Texture EnvMap = null; // Hoort hier eigenlijk niet

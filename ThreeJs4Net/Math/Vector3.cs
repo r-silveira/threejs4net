@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Properties;
 
@@ -538,21 +537,6 @@ namespace ThreeJs4Net.Math
         {
             var vector = new Vector3().Copy(normal).MultiplyScalar(2 * Dot(normal));
             return Sub(vector);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="camera"></param>
-        /// <returns></returns>
-        [Obsolete("Will change when we migrate camera")]
-        public Vector3 Unproject(Camera camera)
-        {
-            //NEEDS TO CHANGE
-            var matrix = new Matrix4();
-
-            matrix.MultiplyMatrices(camera.MatrixWorld, matrix.GetInverse(camera.ProjectionMatrix));
-            return this.ApplyProjection(matrix);
         }
 
         /// <summary>

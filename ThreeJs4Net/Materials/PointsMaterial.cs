@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Materials
 {

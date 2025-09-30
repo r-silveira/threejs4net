@@ -19,7 +19,6 @@ namespace ThreeJs4Net.Core
     public class BufferGeometry : BaseGeometry, IAttributes // Note: in three.js, BufferGeometry is not Geometry
     {
         #region --- Fields ---
-        public bool UcVisible = true;
         public BufferAttribute<uint> Index;
         public Attributes Attributes { get; set; }
         public DrawRange DrawRange = new DrawRange();

@@ -9,7 +9,7 @@ namespace ThreeJs4Net.Objects
     public class Line : Object3D
     {
         public int LineStrip = 0;
-        public int LinePieces = 1;
+        //public int LinePieces = 1;
 
         private Vector3 _start = new Vector3();
         private Vector3 _end = new Vector3();

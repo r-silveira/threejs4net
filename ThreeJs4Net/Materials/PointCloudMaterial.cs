@@ -1,14 +1,12 @@
 ﻿using System.Collections;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Materials
 {
-    public class PointCloudMaterial : Material, IMap
+    public class PointCloudMaterial : Material
     {
         public Color Color = Color.ColorName(ColorKeywords.white);
         public float Size = 1;
-        public bool SizeAttenuation = true;
         public bool Fog = true;
 
 #if USE_WINDOWS
@@ -20,11 +18,6 @@ namespace ThreeJs4Net.Materials
         public Texture LightMap { get; set; }
 #else
         public object Map { get; set; }
-        public object AlphaMap { get; set; }
-        public object SpecularMap { get; set; }
-        public object NormalMap { get; set; }
-        public object BumpMap { get; set; }
-        public object LightMap { get; set; }
 
 #endif
         public PointCloudMaterial(Hashtable parameters = null)

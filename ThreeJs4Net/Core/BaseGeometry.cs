@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using ThreeJs4Net.Math;
-using Color = ThreeJs4Net.Math.Color;
 
 namespace ThreeJs4Net.Core
 {
@@ -14,42 +12,7 @@ namespace ThreeJs4Net.Core
         public string type;
         public Box3 BoundingBox = null;
         public Sphere BoundingSphere = null;
-        public int __webglLineDistanceBuffer = 0;
-        public int __webglVertexBuffer = 0;
-        public int __webglNormalBuffer = 0;
-        public int __webglTangentBuffer = 0;
-        public int __webglColorBuffer = 0;
-        public int __webglUVBuffer = 0;
-        public int __webglUV2Buffer = 0;
-        public int __webglSkinIndicesBuffer = 0;
-        public int __webglSkinWeightsBuffer = 0;
-        public int __webglFaceBuffer = 0;
-        public int __webglLineBuffer = 0;
-        public List<int> __webglMorphTargetsBuffers;
-        public List<int> __webglMorphNormalsBuffers;
-        public object __sortArray;
-        public float[] __vertexArray;
-        public float[] __normalArray;
-        public float[] __tangentArray;
-        public float[] __colorArray;
-        public float[] __uvArray;
-        public float[] __uv2Array;
-        public float[] __skinIndexArray;
-        public float[] __skinWeightArray;
-        public Type __typeArray;
-        public ushort[] __faceArray;
-        public ushort[] __lineArray;
-        public List<float[]> __morphTargetsArrays;
-        public List<float[]> __morphNormalsArrays;
-        public int __webglFaceCount = -1;
-        public int __webglLineCount = -1;
-        public int __webglParticleCount = -1;
-        public List<Renderers.Shaders.Attribute> __webglCustomAttributesList;
-        public bool __inittedArrays;
-        public float[] __lineDistanceArray;
         public object UserData;
-
-        public bool __webglInit { get; set; }
 
         public virtual void ComputeBoundingSphere() { }
         public virtual void ComputeBoundingBox() { }
@@ -101,20 +64,5 @@ namespace ThreeJs4Net.Core
             }
         }
         #endregion
-    }
-
-    public interface IMorphTarget {
-        public string Name { get; set; }
-        public List<Vector3> Vertices { get; set; }
-    }
-
-    public interface IMorphNormals {
-        public string Name { get; set; }
-        public List<Vector3> Normals { get; set; }
-    }
-    
-    public interface IMorphColor {
-        public string Name { get; set; }
-        public List<Color> Colors { get; set; }
     }
 }

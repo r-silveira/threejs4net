@@ -16,25 +16,13 @@ namespace ThreeJs4Net.Core
         public List<Face3> Faces = new List<Face3>();
         public List<List<List<Vector2>>> FaceVertexUvs = new List<List<List<Vector2>>>();
 
-        public List<GeometryGroup> MorphTargets = new List<GeometryGroup>();
-        public List<Vector3> MorphNormals = new List<Vector3>();
-
-        public List<Vector4> SkinWeights = new List<Vector4>();
-        public List<Vector4> SkinIndices = new List<Vector4>();
         public List<float> LineDistances = new List<float>();
 
         public bool HasTangents = false;
-        public bool Dynamic = true; // the intermediate typed arrays will be deleted when Set to false
-        public bool MorphTargetsNeedUpdate;
 
         // update flags
-        public bool ElementsNeedUpdate = false;
         public bool VerticesNeedUpdate = false;
-        public bool UvsNeedUpdate = false;
         public bool NormalsNeedUpdate = false;
-        public bool ColorsNeedUpdate = false;
-        public bool LineDistancesNeedUpdate = false;
-        public bool GroupsNeedUpdate = false;
 
         /// <summary>
         /// Constructor

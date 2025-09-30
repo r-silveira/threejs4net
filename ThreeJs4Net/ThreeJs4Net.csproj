@@ -12,6 +12,26 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <LangVersion>8</LangVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Animation\**" />
+    <Compile Remove="Audio\**" />
+    <Compile Remove="Complement\**" />
+    <Compile Remove="Examples\Jsm\Geometries\**" />
+    <Compile Remove="Extras\Helpers\**" />
+    <Compile Remove="Math\Interpolants\**" />
+    <EmbeddedResource Remove="Animation\**" />
+    <EmbeddedResource Remove="Audio\**" />
+    <EmbeddedResource Remove="Complement\**" />
+    <EmbeddedResource Remove="Examples\Jsm\Geometries\**" />
+    <EmbeddedResource Remove="Extras\Helpers\**" />
+    <EmbeddedResource Remove="Math\Interpolants\**" />
+    <None Remove="Animation\**" />
+    <None Remove="Audio\**" />
+    <None Remove="Complement\**" />
+    <None Remove="Examples\Jsm\Geometries\**" />
+    <None Remove="Extras\Helpers\**" />
+    <None Remove="Math\Interpolants\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
@@ -25,171 +45,5 @@
     </PackageReference>
     <!--<PackageReference Include="OpenTK" Version="3.3.3" />-->
     <!--<PackageReference Include="Microsoft.Windows.Compatibility" Version="7.0.0" />-->
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Animation\" />
-    <Folder Include="Audio\" />
-    <Folder Include="Complement\" />
-    <Folder Include="Examples\Jsm\Geometries\" />
-    <Folder Include="Extras\Helpers\" />
-    <Folder Include="Math\Interpolants\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Renderers\Shaders\ShaderChunk\alphamap_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\alphamap_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\alphatest_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\bumpmap_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\color_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\color_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\color_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\color_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\defaultnormal_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\default_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\envmap_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\envmap_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\envmap_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\envmap_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\fog_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\fog_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lightmap_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lightmap_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lightmap_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lightmap_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lights_lambert_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lights_lambert_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lights_phong_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lights_phong_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lights_phong_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\lights_phong_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\linear_to_gamma_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\logdepthbuf_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\logdepthbuf_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\logdepthbuf_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\logdepthbuf_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\map_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\map_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\map_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\map_particle_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\map_particle_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\map_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\morphnormal_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\morphtarget_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\morphtarget_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\normalmap_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\shadowmap_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\shadowmap_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\shadowmap_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\shadowmap_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\skinbase_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\skinning_pars_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\skinning_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\skinnormal_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\specularmap_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\specularmap_pars_fragment.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Renderers\Shaders\ShaderChunk\worldpos_vertex.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

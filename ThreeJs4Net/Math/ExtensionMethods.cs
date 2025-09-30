@@ -7,12 +7,6 @@ namespace ThreeJs4Net.Math
     {
         private static readonly Random random = new Random();
 
-        public const double PI2 = (2 * 3.14159265358979323846);
-
-        public const double HalfPI = (3.14159265358979323846 / 2.0f);
-
-        public const double SQRT1_2 = (0.7071067811865476); 
-
         public static double RadToDeg(double rad)
         {
             return (rad * 180.0 / System.Math.PI);
@@ -74,25 +68,6 @@ namespace ThreeJs4Net.Math
 
 		    return p;
 		}
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <param name="h"></param>
-        /// <param name="s"></param>
-        /// <param name="l"></param>
-        /// <returns></returns>
-        public static Color OffsetHSL (this Color value, float h, float s, float l)
-        {
-            var hsl = new HSLColor(value);
-
-            hsl.Hue += h; hsl.Saturation += s; hsl.Luminosity += l;
-
-            value = hsl;
-
-            return value;
-        }
 
         public static float Lerp(this float x, float y, float t)
         {

@@ -2,12 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
 using ThreeJs4Net.Properties;
-using ThreeJs4Net.Scenes;
 
 namespace ThreeJs4Net.Core
 {
@@ -17,11 +15,6 @@ namespace ThreeJs4Net.Core
         #region --- Members ---
         protected static int Object3DIdCount;
         private bool _disposed;
-        public bool __webglInit = false;
-        public bool __webglActive = false;
-        public float[] __webglMorphTargetInfluences;
-        public Matrix4 _modelViewMatrix;
-        public Matrix3 _normalMatrix;
         public Vector3 DefaultUp = new Vector3(0, 1, 0);
         public Vector3 Up;
         public string type = "Object3D";
@@ -29,8 +22,6 @@ namespace ThreeJs4Net.Core
         public Euler Rotation = new Euler();
         public Quaternion Quaternion = Quaternion.Identity();
         public Vector3 Scale = new Vector3(1, 1, 1);
-        public int RenderDepth = -1;
-        public bool RotationAutoUpdate = true;
         public Matrix4 Matrix = new Matrix4().Identity();
         public Matrix4 MatrixWorld = new Matrix4().Identity();
         public bool MatrixWorldNeedsUpdate = false;
@@ -41,8 +32,7 @@ namespace ThreeJs4Net.Core
         public BaseGeometry Geometry;
         public Material Material;
         public List<Material> Materials;
-        public Layers Layers = new Layers();
-        public Skeleton Skeleton;
+        //public Layers Layers = new Layers();
         public IList<Object3D> Children = new List<Object3D>();
         public int id = Object3DIdCount++;
         public bool MatrixAutoUpdate = true;
@@ -53,7 +43,6 @@ namespace ThreeJs4Net.Core
         [CanBeNull]
         public Object3D Parent;
         public string Tag;
-        public object UserData;
         public Guid Uuid = Guid.NewGuid();
         private readonly PreventCircularUpdate preventCircularUpdate = new PreventCircularUpdate();
         #endregion
@@ -389,10 +378,6 @@ namespace ThreeJs4Net.Core
             this.Quaternion.SetFromRotationMatrix(m1);
         }
 
-        public void Render(Scene scene, Camera camera, int width, int height)
-        {
-
-        }
 
         public virtual void Raycast(Raycaster raycaster, List<Intersect> intersects)
         {
@@ -548,7 +533,7 @@ namespace ThreeJs4Net.Core
             this.MatrixAutoUpdate = source.MatrixAutoUpdate;
             this.MatrixWorldNeedsUpdate = source.MatrixWorldNeedsUpdate;
 
-            this.Layers.Mask = source.Layers.Mask;
+            //this.Layers.Mask = source.Layers.Mask;
             this.Visible = source.Visible;
 
             this.CastShadow = source.CastShadow;

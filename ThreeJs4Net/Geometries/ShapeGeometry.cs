@@ -5,7 +5,6 @@ using System.Linq;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Extras;
 using ThreeJs4Net.Extras.Core;
-using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Geometries

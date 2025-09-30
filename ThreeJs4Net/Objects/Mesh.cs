@@ -24,17 +24,12 @@ namespace ThreeJs4Net.Objects
 
     public class Mesh : Object3D
     {
-        public List<float> MorphTargetInfluences;
-        public Dictionary<string, float> MorphTargetDictionary;
-
         public Mesh(BaseGeometry geometry = null, Material material = null)
         {
             this.type = "Mesh";
 
             this.Geometry = geometry ?? new Geometry();
             this.Material = material ?? new MeshBasicMaterial() { Color = new Color().Random() };
-
-            UpdateMorphTargets();
         }
 
         protected Mesh()
@@ -45,46 +40,6 @@ namespace ThreeJs4Net.Objects
             : base(other)
         {
 
-        }
-
-
-
-        public void UpdateMorphTargets()
-        {
-            //string m, ml, name;
-
-            //if (this.Geometry is BufferGeometry)
-            //{
-            //    var geometry = (BufferGeometry)this.Geometry;
-            //    var morphAttributes = geometry.morphAttributes;
-            //    var keys = Object.keys(morphAttributes);
-
-            //    if (keys.length > 0)
-            //    {
-            //        var morphAttribute = morphAttributes[keys[0]];
-            //        if (morphAttribute !== undefined)
-            //        {
-            //            this.morphTargetInfluences = [];
-            //            this.morphTargetDictionary = { };
-
-            //            for (m = 0, ml = morphAttribute.length; m < ml; m++)
-            //            {
-            //                name = morphAttribute[m].name || String(m);
-            //                this.morphTargetInfluences.push(0);
-            //                this.morphTargetDictionary[name] = m;
-            //            }
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    var geometry = (Geometry)this.Geometry;
-            //    var morphTargets = geometry.MorphTargets;
-            //    if (morphTargets != null && morphTargets.Count > 0)
-            //    {
-            //        throw new Exception("THREE.Mesh.updateMorphTargets() no longer supports THREE.Geometry. Use THREE.BufferGeometry instead.");
-            //    }
-            //}
         }
 
         private void Raycast(Raycaster raycaster, Ray ray, Geometry geometry, ref List<Intersect> intersects)
