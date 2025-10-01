@@ -1,3 +1,6 @@
+ 🛠️ *A lightweight version with double-precision support*
+
+ 
 ***IMPORTANT***: This repo was created to provide an updated version of the original codebase (Three.cs) which was abandoned (https://github.com/lathoub/three.cs) by it's original author (https://github.com/lathoub).
 
 =======
