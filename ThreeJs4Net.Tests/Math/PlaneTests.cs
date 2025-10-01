@@ -6,7 +6,7 @@ namespace ThreeJs4Net.Tests.Math
     public class PlaneTests : BaseTests
     {
 
-        private bool comparePlane(Plane a, Plane b, float threshold = 0.0001f)
+        private bool comparePlane(Plane a, Plane b, double threshold = 0.0001)
         {
             return (a.Normal.DistanceTo(b.Normal) < threshold &&
                      Mathf.Abs(a.Constant - b.Constant) < threshold);
@@ -38,7 +38,7 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void CloneTest()
         {
-            var a = new Plane(new Vector3(2.0f, 0.5f, 0.25f));
+            var a = new Plane(new Vector3(2.0, 0.5, 0.25));
             var b = a.Clone();
 
             Assert.True(a.Equals(b), "clones are equal");
@@ -112,9 +112,9 @@ namespace ThreeJs4Net.Tests.Math
         public void SetFromCoplanarPointsTest()
         {
             var a = new Plane();
-            var v1 = new Vector3(2.0f, 0.5f, 0.25f);
-            var v2 = new Vector3(2.0f, -0.5f, 1.25f);
-            var v3 = new Vector3(2.0f, -3.5f, 2.2f);
+            var v1 = new Vector3(2.0, 0.5, 0.25);
+            var v2 = new Vector3(2.0, -0.5, 1.25);
+            var v3 = new Vector3(2.0, -3.5, 2.2);
             var normal = new Vector3(1, 0, 0);
             var constant = -2;
 
@@ -217,14 +217,14 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Box3(zero3.Clone(), one3.Clone());
             var b = new Plane(new Vector3(0, 1, 0), 1);
-            var c = new Plane(new Vector3(0, 1, 0), 1.25f);
-            var d = new Plane(new Vector3(0, -1, 0), 1.25f);
-            var e = new Plane(new Vector3(0, 1, 0), 0.25f);
-            var f = new Plane(new Vector3(0, 1, 0), -0.25f);
-            var g = new Plane(new Vector3(0, 1, 0), -0.75f);
+            var c = new Plane(new Vector3(0, 1, 0), 1.25);
+            var d = new Plane(new Vector3(0, -1, 0), 1.25);
+            var e = new Plane(new Vector3(0, 1, 0), 0.25);
+            var f = new Plane(new Vector3(0, 1, 0), -0.25);
+            var g = new Plane(new Vector3(0, 1, 0), -0.75);
             var h = new Plane(new Vector3(0, 1, 0), -1);
-            var i = new Plane(new Vector3(1, 1, 1).Normalize(), -1.732f);
-            var j = new Plane(new Vector3(1, 1, 1).Normalize(), -1.733f);
+            var i = new Plane(new Vector3(1, 1, 1).Normalize(), -1.732);
+            var j = new Plane(new Vector3(1, 1, 1).Normalize(), -1.733);
 
             Assert.True(!b.IntersectsBox(a));
             Assert.True(!c.IntersectsBox(a));
@@ -242,8 +242,8 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Sphere(zero3.Clone(), 1);
             var b = new Plane(new Vector3(0, 1, 0), 1);
-            var c = new Plane(new Vector3(0, 1, 0), 1.25f);
-            var d = new Plane(new Vector3(0, -1, 0), 1.25f);
+            var c = new Plane(new Vector3(0, 1, 0), 1.25);
+            var d = new Plane(new Vector3(0, -1, 0), 1.25);
 
             Assert.True(b.IntersectsSphere(a));
             Assert.True(!c.IntersectsSphere(a));
@@ -272,7 +272,7 @@ namespace ThreeJs4Net.Tests.Math
             var a = new Plane(new Vector3(1, 0, 0), 0);
 
             var m = new Matrix4();
-            m.MakeRotationZ(Mathf.PI * 0.5f);
+            m.MakeRotationZ(Mathf.PI * 0.5);
 
             Assert.True(comparePlane(a.Clone().ApplyMatrix4(m), new Plane(new Vector3(0, 1, 0), 0)));
 

@@ -46,7 +46,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Vector3 At(float t, Vector3 target)
+        public Vector3 At(double t, Vector3 target)
         {
             return target.Copy(this.Direction).MultiplyScalar(t).Add(this.Origin);
         }
@@ -75,12 +75,12 @@ namespace ThreeJs4Net.Math
             return target.Copy(this.Direction).MultiplyScalar(directionDistance).Add(this.Origin);
         }
 
-        public float DistanceToPoint(Vector3 point)
+        public double DistanceToPoint(Vector3 point)
         {
             return Mathf.Sqrt(this.DistanceSqToPoint(point));
         }
 
-        public float DistanceSqToPoint(Vector3 point)
+        public double DistanceSqToPoint(Vector3 point)
         {
             var vector = new Vector3();
             var directionDistance = vector.SubVectors(point, this.Origin).Dot(this.Direction);
@@ -96,7 +96,7 @@ namespace ThreeJs4Net.Math
             return vector.DistanceToSquared(point);
         }
 
-        public float DistanceSqToSegment(Vector3 v0, Vector3 v1, Vector3 optionalPointOnRay = null, Vector3 optionalPointOnSegment = null)
+        public double DistanceSqToSegment(Vector3 v0, Vector3 v1, Vector3 optionalPointOnRay = null, Vector3 optionalPointOnSegment = null)
         {
             // from http://www.geometrictools.com/LibMathematics/Distance/Wm5DistRay3Segment3.cpp
             // It returns the min distance between the ray and the segment
@@ -105,18 +105,18 @@ namespace ThreeJs4Net.Math
             // - The closest point on the ray
             // - The closest point on the segment
 
-            var segCenter = ((Vector3)v0.Clone()).Add(v1).MultiplyScalar((float)0.5);
+            var segCenter = ((Vector3)v0.Clone()).Add(v1).MultiplyScalar((double)0.5);
             var segDir = ((Vector3)v1.Clone()).Sub(v0).Normalize();
             var diff = ((Vector3)this.Origin.Clone()).Sub(segCenter);
 
-            var segExtent = v0.DistanceTo(v1) * (float)0.5;
+            var segExtent = v0.DistanceTo(v1) * (double)0.5;
             var a01 = -this.Direction.Dot(segDir);
             var b0 = diff.Dot(this.Direction);
             var b1 = -diff.Dot(segDir);
             var c = diff.LengthSq();
             var det = System.Math.Abs(1 - a01 * a01);
 
-            float s0, s1, sqrDist;
+            double s0, s1, sqrDist;
 
             if (det >= 0)
             {
@@ -194,7 +194,7 @@ namespace ThreeJs4Net.Math
             return sqrDist;
         }
 
-        public float? DistanceToPlane(Plane plane)
+        public double? DistanceToPlane(Plane plane)
         {
             var denominator = plane.Normal.Dot(this.Direction);
 
@@ -213,7 +213,7 @@ namespace ThreeJs4Net.Math
             var t = -(this.Origin.Dot(plane.Normal) + plane.Constant) / denominator;
 
             // Return if the ray never intersects the plane
-            return t >= 0 ? t : (float?)null;
+            return t >= 0 ? t : (double?)null;
         }
 
         public bool Equals(Ray ray)
@@ -273,7 +273,7 @@ namespace ThreeJs4Net.Math
                 return null;
             }
 
-            return this.At((float)t, target);
+            return this.At((double)t, target);
         }
 
         public bool IntersectsPlane(Plane plane)
@@ -299,9 +299,9 @@ namespace ThreeJs4Net.Math
 
         public Vector3 IntersectBox(Box3 box, Vector3 target)
         {
-            float tmin, tmax, tymin, tymax, tzmin, tzmax;
+            double tmin, tmax, tymin, tymax, tzmin, tzmax;
 
-            float invdirx = 1 / this.Direction.X,
+            double invdirx = 1 / this.Direction.X,
                 invdiry = 1 / this.Direction.Y,
                 invdirz = 1 / this.Direction.Z;
 
@@ -403,7 +403,7 @@ namespace ThreeJs4Net.Math
             //   |Dot(D,N)|*b2 = sign(Dot(D,N))*Dot(D,Cross(E1,Q))
             //   |Dot(D,N)|*t = -sign(Dot(D,N))*Dot(Q,N)
             var DdN = this.Direction.Dot(normal);
-            float sign;
+            double sign;
 
             if (DdN > 0)
             {
@@ -462,7 +462,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Ray Recast(float t)
+        public Ray Recast(double t)
         {
             var v1 = new Vector3();
             this.Origin.Copy(this.At(t, v1));

@@ -15,18 +15,6 @@ namespace ThreeJs4Net.Tests.Objects
         }
 
         [Fact()]
-        public void CloneTest()
-        {
-            Assert.True(false, "This test needs an implementation");
-        }
-
-        [Fact()]
-        public void UpdateMorphTargetsTest()
-        {
-            Assert.True(false, "This test needs an implementation");
-        }
-
-        [Fact()]
         public void RaycastTest()
         {
             Assert.True(false, "This test needs an implementation");

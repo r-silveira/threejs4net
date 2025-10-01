@@ -124,17 +124,17 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float GetArea()
+        public double GetArea()
         {
             var v0 = new Vector3().SubVectors(this.c, this.b);
             var v1 = new Vector3().SubVectors(this.a, this.b);
 
-            return v0.Cross(v1).Length() * (float)0.5;
+            return v0.Cross(v1).Length() * (double)0.5;
         }
 
         public Vector3 GetMidpoint(Vector3 target)
         {
-            return target.AddVectors(this.a, this.b).Add(this.c).MultiplyScalar((float)1 / (float)3);
+            return target.AddVectors(this.a, this.b).Add(this.c).MultiplyScalar((double)1 / (double)3);
 
         }
 
@@ -175,7 +175,7 @@ namespace ThreeJs4Net.Math
         public Vector3 ClosestPointToPoint(Vector3 p, Vector3 target)
         {
             Vector3 a = this.a, b = this.b, c = this.c;
-            float v, w;
+            double v, w;
 
             // algorithm thanks to Real-Time Collision Detection by Christer Ericson,
             // published by Morgan Kaufmann Publishers, (C) 2005 Elsevier Inc.,

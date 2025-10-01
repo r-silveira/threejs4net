@@ -39,18 +39,18 @@ namespace ThreeJs4Net.Extras.Core
             return this;
         }
 
-        public Path MoveTo(float x, float y, float z)
+        public Path MoveTo(double x, double y, double z)
         {
             this.CurrentPoint.Set(x, y, z);
 
             return this;
         }
-        public Path MoveTo(float x, float y)
+        public Path MoveTo(double x, double y)
         {
             this.CurrentPoint.Set(x, y, 0);
             return this;
         }
-        public Path LineTo(float x, float y, float z)
+        public Path LineTo(double x, double y, double z)
         {
 
             var curve = new LineCurve3(this.CurrentPoint.Clone() as Vector3, new Vector3(x, y, z));
@@ -60,7 +60,7 @@ namespace ThreeJs4Net.Extras.Core
 
             return this;
         }
-        public Path LineTo(float x, float y)
+        public Path LineTo(double x, double y)
         {
             var curve = new LineCurve3(this.CurrentPoint.Clone() as Vector3, new Vector3(x, y, 0));
             this.Curves.Add(curve);
@@ -69,7 +69,7 @@ namespace ThreeJs4Net.Extras.Core
 
             return this;
         }
-        public Path QuadraticCurveTo(float aCPx, float aCPy, float aX, float aY)
+        public Path QuadraticCurveTo(double aCPx, double aCPy, double aX, double aY)
         {
 
             var curve = new QuadraticBezierCurve3(
@@ -86,7 +86,7 @@ namespace ThreeJs4Net.Extras.Core
 
         }
 
-        public Path BezierCurveTo(float aCP1x, float aCP1y, float aCP2x, float aCP2y, float aX, float aY)
+        public Path BezierCurveTo(double aCP1x, double aCP1y, double aCP2x, double aCP2y, double aX, double aY)
         {
 
             var curve = new CubicBezierCurve3(
@@ -120,7 +120,7 @@ namespace ThreeJs4Net.Extras.Core
 
         }
 
-        public Path Arc(float aX, float aY, float aRadius, float aStartAngle, float aEndAngle, bool aClockwise)
+        public Path Arc(double aX, double aY, double aRadius, double aStartAngle, double aEndAngle, bool aClockwise)
         {
 
             var x0 = this.CurrentPoint.X;
@@ -133,7 +133,7 @@ namespace ThreeJs4Net.Extras.Core
 
         }
 
-        public Path AbsArc(float aX, float aY, float aRadius, float aStartAngle, float aEndAngle, bool aClockwise)
+        public Path AbsArc(double aX, double aY, double aRadius, double aStartAngle, double aEndAngle, bool aClockwise)
         {
 
             this.AbsEllipse(aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise);
@@ -142,7 +142,7 @@ namespace ThreeJs4Net.Extras.Core
 
         }
 
-        public Path Ellipse(float aX, float aY, float xRadius, float yRadius, float aStartAngle, float aEndAngle, bool aClockwise, float aRotation)
+        public Path Ellipse(double aX, double aY, double xRadius, double yRadius, double aStartAngle, double aEndAngle, bool aClockwise, double aRotation)
         {
 
             var x0 = this.CurrentPoint.X;
@@ -154,7 +154,7 @@ namespace ThreeJs4Net.Extras.Core
 
         }
 
-        public Path AbsEllipse(float aX, float aY, float xRadius, float yRadius, float aStartAngle, float aEndAngle, bool aClockwise, float? aRotation = null)
+        public Path AbsEllipse(double aX, double aY, double xRadius, double yRadius, double aStartAngle, double aEndAngle, bool aClockwise, double? aRotation = null)
         {
 
             var curve = new EllipseCurve(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation);

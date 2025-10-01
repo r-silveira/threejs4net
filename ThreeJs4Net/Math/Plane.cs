@@ -6,9 +6,9 @@ namespace ThreeJs4Net.Math
     {
 
         public Vector3 Normal;
-        public float Constant;
+        public double Constant;
 
-        public Plane(Vector3? normal = null, float constant = 0)
+        public Plane(Vector3? normal = null, double constant = 0)
         {
             this.Normal = normal != null ? normal.Clone() : new Vector3(1, 0, 0);
             this.Constant = constant;
@@ -30,7 +30,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Plane Set(Vector3 normal, float constant)
+        public Plane Set(Vector3 normal, double constant)
         {
             this.Normal.Copy(normal);
             this.Constant = constant;
@@ -38,7 +38,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Plane SetComponents(float x, float y, float z, float w)
+        public Plane SetComponents(double x, double y, double z, double w)
         {
             this.Normal.Set(x, y, z);
             this.Constant = w;
@@ -79,12 +79,12 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float DistanceToPoint(Vector3 point)
+        public double DistanceToPoint(Vector3 point)
         {
             return this.Normal.Dot(point) + this.Constant;
         }
 
-        public float DistanceToSphere(Sphere sphere)
+        public double DistanceToSphere(Sphere sphere)
         {
             return this.DistanceToPoint(sphere.Center) - sphere.Radius;
         }

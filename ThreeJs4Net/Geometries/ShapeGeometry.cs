@@ -14,7 +14,7 @@ namespace ThreeJs4Net.Geometries
     {
         public Hashtable parameter;
 
-        public ShapeGeometry(List<Shape> shapes, float? curveSegments = null) : base()
+        public ShapeGeometry(List<Shape> shapes, double? curveSegments = null) : base()
         {
             parameter = new Hashtable()
             {
@@ -33,17 +33,17 @@ namespace ThreeJs4Net.Geometries
         public Hashtable parameter;
 
         private List<int> indices = new List<int>();
-        private List<float> vertices = new List<float>();
-        private List<float> normals = new List<float>();
-        private List<float> uvs = new List<float>();
+        private List<double> vertices = new List<double>();
+        private List<double> normals = new List<double>();
+        private List<double> uvs = new List<double>();
 
-        private float CurveSegments;
+        private double CurveSegments;
 
         int groupStart = 0;
 
         int groupCount = 0;
 
-        public ShapeBufferGeometry(Shape shape, float? curveSegments = null) : base()
+        public ShapeBufferGeometry(Shape shape, double? curveSegments = null) : base()
         {
             parameter = new Hashtable()
             {
@@ -57,21 +57,21 @@ namespace ThreeJs4Net.Geometries
 
             this.SetIndex(indices);
 
-            BufferAttribute<float> positions = new BufferAttribute<float>(vertices.ToArray(), 3);
+            BufferAttribute<double> positions = new BufferAttribute<double>(vertices.ToArray(), 3);
 
 
             this.SetAttribute("position", positions);
 
-            BufferAttribute<float> normalAttributes = new BufferAttribute<float>(normals.ToArray(), 3);
+            BufferAttribute<double> normalAttributes = new BufferAttribute<double>(normals.ToArray(), 3);
 
             this.SetAttribute("normal", normalAttributes);
 
-            BufferAttribute<float> uvAttributes = new BufferAttribute<float>(uvs.ToArray(), 2);
+            BufferAttribute<double> uvAttributes = new BufferAttribute<double>(uvs.ToArray(), 2);
 
             this.SetAttribute("uv", uvAttributes);
 
         }
-        public ShapeBufferGeometry(List<Shape> shapes, float? curveSegments = null) : base()
+        public ShapeBufferGeometry(List<Shape> shapes, double? curveSegments = null) : base()
         {
             parameter = new Hashtable()
             {
@@ -104,20 +104,20 @@ namespace ThreeJs4Net.Geometries
 
             this.SetIndex(indices);
 
-            BufferAttribute<float> positions = new BufferAttribute<float>(vertices.ToArray(), 3);
+            BufferAttribute<double> positions = new BufferAttribute<double>(vertices.ToArray(), 3);
             //positions.ItemSize = 3;
-            //positions.Type = typeof(float);
+            //positions.Type = typeof(double);
 
             this.SetAttribute("position", positions);
 
-            BufferAttribute<float> normalAttributes = new BufferAttribute<float>(normals.ToArray(), 3);
+            BufferAttribute<double> normalAttributes = new BufferAttribute<double>(normals.ToArray(), 3);
             //normalAttributes.ItemSize = 3;
-            //normalAttributes.Type = typeof(float);
+            //normalAttributes.Type = typeof(double);
             this.SetAttribute("normal", normalAttributes);
 
-            BufferAttribute<float> uvAttributes = new BufferAttribute<float>(uvs.ToArray(), 2);
+            BufferAttribute<double> uvAttributes = new BufferAttribute<double>(uvs.ToArray(), 2);
             //uvAttributes.ItemSize = 2;
-            //uvAttributes.Type = typeof(float);
+            //uvAttributes.Type = typeof(double);
             this.SetAttribute("uv", uvAttributes);
         }
         private void AddShape(Shape shape)

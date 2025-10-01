@@ -6,7 +6,7 @@ namespace ThreeJs4Net.Tests.Math
 {
     public class QuaternionTests : BaseTests
     {
-        private Euler eulerAngles = new Euler((float)0.1, (float)-0.3, (float)0.25);
+        private Euler eulerAngles = new Euler((double)0.1, (double)-0.3, (double)0.25);
         private Euler.RotationOrder[] orders = new[]
         {
             Euler.RotationOrder.XYZ, Euler.RotationOrder.XZY, Euler.RotationOrder.YXZ,
@@ -133,13 +133,13 @@ namespace ThreeJs4Net.Tests.Math
         public void FromArrayTest()
         {
             var a = new Quaternion();
-            a.FromArray(new float[] { x, y, z, w });
+            a.FromArray(new double[] { x, y, z, w });
             Assert.Equal(x, a.X);
             Assert.Equal(y, a.Y);
             Assert.Equal(z, a.Z);
             Assert.Equal(w, a.W);
 
-            a.FromArray(new float[] { -1, x, y, z, w, -2 }, 1);
+            a.FromArray(new double[] { -1, x, y, z, w, -2 }, 1);
             Assert.Equal(x, a.X);
             Assert.Equal(y, a.Y);
             Assert.Equal(z, a.Z);
@@ -151,7 +151,7 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Quaternion();
 
-            var attribute = new BufferAttribute<float>(new float[] { 0, 0, 0, 1, (float).7, 0, 0, (float).7, 0, (float).7, 0, (float).7, }, 4);
+            var attribute = new BufferAttribute<double>(new double[] { 0, 0, 0, 1, (double).7, 0, 0, (double).7, 0, (double).7, 0, (double).7, }, 4);
 
             a.FromBufferAttribute(attribute, 0);
             Assert.Equal(0, a.X);
@@ -160,16 +160,16 @@ namespace ThreeJs4Net.Tests.Math
             Assert.Equal(1, a.W);
 
             a.FromBufferAttribute(attribute, 1);
-            Assert.True(Mathf.Abs(a.X - (float)0.7) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.X - (double)0.7) <= MathUtils.EPS);
             Assert.Equal(0, a.Y);
             Assert.Equal(0, a.Z);
-            Assert.True(Mathf.Abs(a.W - (float)0.7) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.W - (double)0.7) <= MathUtils.EPS);
 
             a.FromBufferAttribute(attribute, 2);
             Assert.Equal(0, a.X);
-            Assert.True(Mathf.Abs(a.Y - (float)0.7) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Y - (double)0.7) <= MathUtils.EPS);
             Assert.Equal(0, a.Z);
-            Assert.True(Mathf.Abs(a.W - (float)0.7) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.W - (double)0.7) <= MathUtils.EPS);
         }
 
         [Fact()]
@@ -249,7 +249,7 @@ namespace ThreeJs4Net.Tests.Math
             var b = new Quaternion().SetFromEuler(new Euler(0, Mathf.PI, 0));
             var c = new Quaternion();
 
-            float halfPI = Mathf.PI * (float)0.5;
+            double halfPI = Mathf.PI * (double)0.5;
 
             a.RotateTowards(b, 0);
             Assert.True(a.Equals(a) == true);
@@ -342,7 +342,7 @@ namespace ThreeJs4Net.Tests.Math
             var a = new Quaternion();
             var q = new Quaternion(-9, -2, 3, -4).Normalize();
             var m = new Matrix4().MakeRotationFromQuaternion(q);
-            var expected = new Vector4((float)0.8581163303210332, (float)0.19069251784911848, (float)-0.2860387767736777, (float)0.38138503569823695);
+            var expected = new Vector4((double)0.8581163303210332, (double)0.19069251784911848, (double)-0.2860387767736777, (double)0.38138503569823695);
 
             a.SetFromRotationMatrix(m);
             Assert.True(Mathf.Abs(a.X - expected.X) <= MathUtils.EPS, "m11 > m22 && m11 > m33: check x");
@@ -352,7 +352,7 @@ namespace ThreeJs4Net.Tests.Math
 
             q = new Quaternion(-1, -2, 1, -1).Normalize();
             m.MakeRotationFromQuaternion(q);
-            expected = new Vector4((float)0.37796447300922714, (float)0.7559289460184544, (float)-0.37796447300922714, (float)0.37796447300922714);
+            expected = new Vector4((double)0.37796447300922714, (double)0.7559289460184544, (double)-0.37796447300922714, (double)0.37796447300922714);
 
             a.SetFromRotationMatrix(m);
             Assert.True(Mathf.Abs(a.X - expected.X) <= MathUtils.EPS, "m22 > m33: check x");
@@ -400,12 +400,12 @@ namespace ThreeJs4Net.Tests.Math
             Assert.True(b.Equals(d), "Passed");
 
 
-            var D = Mathf.Sqrt((float)1.0 / (float)2.0);
+            var D = Mathf.Sqrt((double)1.0 / (double)2.0);
 
             var e = new Quaternion(1, 0, 0, 0);
             var f = new Quaternion(0, 0, 1, 0);
             var expected = new Quaternion(D, 0, D, 0);
-            var result = e.Clone().Slerp(f, (float)0.5);
+            var result = e.Clone().Slerp(f, (double)0.5);
             Assert.True(Mathf.Abs(result.X - expected.X) <= MathUtils.EPS, "Check x");
             Assert.True(Mathf.Abs(result.Y - expected.Y) <= MathUtils.EPS, "Check y");
             Assert.True(Mathf.Abs(result.Z - expected.Z) <= MathUtils.EPS, "Check z");
@@ -415,7 +415,7 @@ namespace ThreeJs4Net.Tests.Math
             var g = new Quaternion(0, D, 0, D);
             var h = new Quaternion(0, -D, 0, D);
             expected = new Quaternion(0, 0, 0, 1);
-            result = g.Clone().Slerp(h, (float)0.5);
+            result = g.Clone().Slerp(h, (double)0.5);
 
             Assert.True(Mathf.Abs(result.X - expected.X) <= MathUtils.EPS, "Check x");
             Assert.True(Mathf.Abs(result.Y - expected.Y) <= MathUtils.EPS, "Check y");
@@ -434,14 +434,14 @@ namespace ThreeJs4Net.Tests.Math
             Assert.Equal(array[2], z);
             Assert.Equal(array[3], w);
 
-            array = new float[] { };
+            array = new double[] { };
             a.ToArray(ref array);
             Assert.Equal(array[0], x);
             Assert.Equal(array[1], y);
             Assert.Equal(array[2], z);
             Assert.Equal(array[3], w);
 
-            array = new float[] { };
+            array = new double[] { };
             a.ToArray(ref array, 1);
             //Assert.Equal(array[0], null);
             Assert.Equal(array[1], x);

@@ -263,8 +263,8 @@ namespace ThreeJs4Net.Math
             // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
             // q is assumed to be normalized
 
-            this.W = 2 * System.Math.Acos(q.W);
-            var s = System.Math.Sqrt(1 - q.W * q.W);
+            this.W = 2 * Math.Acos(q.W);
+            var s = Math.Sqrt(1 - q.W * q.W);
 
             if (s < 0.0001)
             {
@@ -297,18 +297,18 @@ namespace ThreeJs4Net.Math
             double m21 = te[1], m22 = te[5], m23 = te[9];
             double m31 = te[2], m32 = te[6], m33 = te[10];
 
-            if ((System.Math.Abs(m12 - m21) < epsilon) &&
-                 (System.Math.Abs(m13 - m31) < epsilon) &&
-                 (System.Math.Abs(m23 - m32) < epsilon))
+            if ((Math.Abs(m12 - m21) < epsilon) &&
+                 (Mathf.Abs(m13 - m31) < epsilon) &&
+                 (Math.Abs(m23 - m32) < epsilon))
             {
                 // singularity found
                 // first check for identity matrix which must have +1 for all terms
                 // in leading diagonal and zero in other terms
 
-                if ((System.Math.Abs(m12 + m21) < epsilon2) &&
-                     (System.Math.Abs(m13 + m31) < epsilon2) &&
-                     (System.Math.Abs(m23 + m32) < epsilon2) &&
-                     (System.Math.Abs(m11 + m22 + m33 - 3) < epsilon2))
+                if ((Math.Abs(m12 + m21) < epsilon2) &&
+                     (Math.Abs(m13 + m31) < epsilon2) &&
+                     (Math.Abs(m23 + m32) < epsilon2) &&
+                     (Math.Abs(m11 + m22 + m33 - 3) < epsilon2))
                 {
                     // this singularity is identity matrix so angle = 0
                     this.Set(1, 0, 0, 0);
@@ -316,7 +316,7 @@ namespace ThreeJs4Net.Math
                 }
 
                 // otherwise this singularity is angle = 180
-                angle = System.Math.PI;
+                angle = Math.PI;
 
                 var xx = (m11 + 1) / 2;
                 var yy = (m22 + 1) / 2;
@@ -336,7 +336,7 @@ namespace ThreeJs4Net.Math
                     }
                     else
                     {
-                        x = System.Math.Sqrt(xx);
+                        x = Math.Sqrt(xx);
                         y = xy / x;
                         z = xz / x;
                     }
@@ -352,7 +352,7 @@ namespace ThreeJs4Net.Math
                     }
                     else
                     {
-                        y = System.Math.Sqrt(yy);
+                        y = Math.Sqrt(yy);
                         x = xy / y;
                         z = yz / y;
                     }
@@ -368,7 +368,7 @@ namespace ThreeJs4Net.Math
                     }
                     else
                     {
-                        z = System.Math.Sqrt(zz);
+                        z = Math.Sqrt(zz);
                         x = xz / z;
                         y = yz / z;
                     }
@@ -382,11 +382,11 @@ namespace ThreeJs4Net.Math
 
             // as we have reached here there are no singularities so we can handle normally
 
-            var s = System.Math.Sqrt((m32 - m23) * (m32 - m23) +
+            var s = Math.Sqrt((m32 - m23) * (m32 - m23) +
                                      (m13 - m31) * (m13 - m31) +
                                      (m21 - m12) * (m21 - m12)); // used to normalize
 
-            if (System.Math.Abs(s) < 0.001) s = 1;
+            if (Math.Abs(s) < 0.001) s = 1;
 
             // prevent divide by zero, should not happen if matrix is orthogonal and should be
             // caught by singularity test above, but I've left it in just in case
@@ -394,27 +394,27 @@ namespace ThreeJs4Net.Math
             this.X = (m32 - m23) / s;
             this.Y = (m13 - m31) / s;
             this.Z = (m21 - m12) / s;
-            this.W = System.Math.Acos((m11 + m22 + m33 - 1) / 2);
+            this.W = Math.Acos((m11 + m22 + m33 - 1) / 2);
 
             return this;
         }
 
         public Vector4 Min(Vector4 v)
         {
-            this.X = System.Math.Min(this.X, v.X);
-            this.Y = System.Math.Min(this.Y, v.Y);
-            this.Z = System.Math.Min(this.Z, v.Z);
-            this.W = System.Math.Min(this.W, v.W);
+            this.X = Math.Min(this.X, v.X);
+            this.Y = Math.Min(this.Y, v.Y);
+            this.Z = Math.Min(this.Z, v.Z);
+            this.W = Math.Min(this.W, v.W);
 
             return this;
         }
 
         public Vector4 Max(Vector4 v)
         {
-            this.X = System.Math.Max(this.X, v.X);
-            this.Y = System.Math.Max(this.Y, v.Y);
-            this.Z = System.Math.Max(this.Z, v.Z);
-            this.W = System.Math.Max(this.W, v.W);
+            this.X = Math.Max(this.X, v.X);
+            this.Y = Math.Max(this.Y, v.Y);
+            this.Z = Math.Max(this.Z, v.Z);
+            this.W = Math.Max(this.W, v.W);
 
             return this;
         }
@@ -422,20 +422,20 @@ namespace ThreeJs4Net.Math
         public Vector4 Clamp(Vector4 min, Vector4 max)
         {
             // assumes min < max, componentwise
-            this.X = System.Math.Max(min.X, System.Math.Min(max.X, this.X));
-            this.Y = System.Math.Max(min.Y, System.Math.Min(max.Y, this.Y));
-            this.Z = System.Math.Max(min.Z, System.Math.Min(max.Z, this.Z));
-            this.W = System.Math.Max(min.W, System.Math.Min(max.W, this.W));
+            this.X = Math.Max(min.X, Math.Min(max.X, this.X));
+            this.Y = Math.Max(min.Y, Math.Min(max.Y, this.Y));
+            this.Z = Math.Max(min.Z, Math.Min(max.Z, this.Z));
+            this.W = Math.Max(min.W, Math.Min(max.W, this.W));
 
             return this;
         }
 
         public Vector4 ClampScalar(double minVal, double maxVal)
         {
-            this.X = System.Math.Max(minVal, System.Math.Min(maxVal, this.X));
-            this.Y = System.Math.Max(minVal, System.Math.Min(maxVal, this.Y));
-            this.Z = System.Math.Max(minVal, System.Math.Min(maxVal, this.Z));
-            this.W = System.Math.Max(minVal, System.Math.Min(maxVal, this.W));
+            this.X = Math.Max(minVal, Math.Min(maxVal, this.X));
+            this.Y = Math.Max(minVal, Math.Min(maxVal, this.Y));
+            this.Z = Math.Max(minVal, Math.Min(maxVal, this.Z));
+            this.W = Math.Max(minVal, Math.Min(maxVal, this.W));
 
             return this;
         }
@@ -443,12 +443,12 @@ namespace ThreeJs4Net.Math
         public Vector4 ClampLength(double min, double max)
         {
             var length = this.Length();
-            return this.DivideScalar(length == 0 ? 1 : length).MultiplyScalar(System.Math.Max(min, System.Math.Min(max, length)));
+            return this.DivideScalar(length == 0 ? 1 : length).MultiplyScalar(Mathf.Max(min, Mathf.Min(max, length)));
         }
 
         public double Length()
         {
-            return System.Math.Sqrt(this.X * this.X + this.Y * this.Y + this.Z * this.Z + this.W * this.W);
+            return Mathf.Sqrt(this.X * this.X + this.Y * this.Y + this.Z * this.Z + this.W * this.W);
         }
 
         public double LengthSq()
@@ -458,7 +458,7 @@ namespace ThreeJs4Net.Math
 
         public double ManhattanLength()
         {
-            return System.Math.Abs(this.X) + System.Math.Abs(this.Y) + System.Math.Abs(this.Z) + System.Math.Abs(this.W);
+            return Mathf.Abs(this.X) + Mathf.Abs(this.Y) + Mathf.Abs(this.Z) + Mathf.Abs(this.W);
         }
 
         public Vector4 Normalize()
@@ -489,40 +489,40 @@ namespace ThreeJs4Net.Math
 
         public Vector4 Floor()
         {
-            this.X = System.Math.Floor(this.X);
-            this.Y = System.Math.Floor(this.Y);
-            this.Z = System.Math.Floor(this.Z);
-            this.W = System.Math.Floor(this.W);
+            this.X = Mathf.Floor(this.X);
+            this.Y = Mathf.Floor(this.Y);
+            this.Z = Mathf.Floor(this.Z);
+            this.W = Mathf.Floor(this.W);
 
             return this;
         }
 
         public Vector4 Ceil()
         {
-            this.X = System.Math.Ceiling(this.X);
-            this.Y = System.Math.Ceiling(this.Y);
-            this.Z = System.Math.Ceiling(this.Z);
-            this.W = System.Math.Ceiling(this.W);
+            this.X = Mathf.Ceiling(this.X);
+            this.Y = Mathf.Ceiling(this.Y);
+            this.Z = Mathf.Ceiling(this.Z);
+            this.W = Mathf.Ceiling(this.W);
 
             return this;
         }
 
         public Vector4 Round()
         {
-            this.X = System.Math.Round(this.X);
-            this.Y = System.Math.Round(this.Y);
-            this.Z = System.Math.Round(this.Z);
-            this.W = System.Math.Round(this.W);
+            this.X = Mathf.Round(this.X);
+            this.Y = Mathf.Round(this.Y);
+            this.Z = Mathf.Round(this.Z);
+            this.W = Mathf.Round(this.W);
 
             return this;
         }
 
         public Vector4 RoundToZero()
         {
-            this.X = (this.X < 0) ? System.Math.Ceiling(this.X) : System.Math.Floor(this.X);
-            this.Y = (this.Y < 0) ? System.Math.Ceiling(this.Y) : System.Math.Floor(this.Y);
-            this.Z = (this.Z < 0) ? System.Math.Ceiling(this.Z) : System.Math.Floor(this.Z);
-            this.W = (this.W < 0) ? System.Math.Ceiling(this.W) : System.Math.Floor(this.W);
+            this.X = (this.X < 0) ? Mathf.Ceiling(this.X) : Mathf.Floor(this.X);
+            this.Y = (this.Y < 0) ? Mathf.Ceiling(this.Y) : Mathf.Floor(this.Y);
+            this.Z = (this.Z < 0) ? Mathf.Ceiling(this.Z) : Mathf.Floor(this.Z);
+            this.W = (this.W < 0) ? Mathf.Ceiling(this.W) : Mathf.Floor(this.W);
 
             return this;
         }

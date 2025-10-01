@@ -7,16 +7,16 @@ namespace ThreeJs4Net.Geometries
 {
     public class CylinderGeometry : Geometry
     {
-        public float RadiusTop { get; }
-        public float RadiusBottom { get; }
-        public float Height { get; }
+        public double RadiusTop { get; }
+        public double RadiusBottom { get; }
+        public double Height { get; }
         public int RadialSegments { get; }
         public int HeightSegments { get; }
         public bool OpenEnded { get; }
-        public float ThetaStart { get; }
-        public float ThetaLength { get; }
+        public double ThetaStart { get; }
+        public double ThetaLength { get; }
 
-        public CylinderGeometry(float radiusTop = 20, float radiusBottom = 20, float height = 10, int radialSegments = 8, int heightSegments = 1, bool openEnded = false, float thetaStart = 0, float thetaLength = Mathf.PI * 2)
+        public CylinderGeometry(double radiusTop = 20, double radiusBottom = 20, double height = 10, int radialSegments = 8, int heightSegments = 1, bool openEnded = false, double thetaStart = 0, double thetaLength = Mathf.PI * 2)
             : base()
         {
             RadiusTop = radiusTop;
@@ -38,24 +38,24 @@ namespace ThreeJs4Net.Geometries
 
     public class CylinderBufferGeometry : BufferGeometry
     {
-        public float RadiusTop { get; }
-        public float RadiusBottom { get; }
-        public float Height { get; }
+        public double RadiusTop { get; }
+        public double RadiusBottom { get; }
+        public double Height { get; }
         public int RadialSegments { get; }
         public int HeightSegments { get; }
         public bool OpenEnded { get; }
-        public float ThetaStart { get; }
-        public float ThetaLength { get; }
+        public double ThetaStart { get; }
+        public double ThetaLength { get; }
         private List<uint> indices = new List<uint>();
-        private List<float> vertices = new List<float>();
-        private List<float> normals = new List<float>();
-        private List<float> uvs = new List<float>();
+        private List<double> vertices = new List<double>();
+        private List<double> normals = new List<double>();
+        private List<double> uvs = new List<double>();
         private List<List<int>> indexArray = new List<List<int>>();
-        private float halfHeight;
+        private double halfHeight;
         private int groupStart;
         private int index;
 
-        public CylinderBufferGeometry(float radiusTop = 20, float radiusBottom = 20, float height = 10, int radialSegments = 8, int heightSegments = 1, bool openEnded = false, float thetaStart = 0, float thetaLength = Mathf.PI * 2)
+        public CylinderBufferGeometry(double radiusTop = 20, double radiusBottom = 20, double height = 10, int radialSegments = 8, int heightSegments = 1, bool openEnded = false, double thetaStart = 0, double thetaLength = Mathf.PI * 2)
         {
             RadiusTop = radiusTop;
             RadiusBottom = radiusBottom;
@@ -79,9 +79,9 @@ namespace ThreeJs4Net.Geometries
             }
 
             this.SetIndex(new BufferAttribute<uint>(indices.ToArray(), 1));
-            SetAttribute("position", new BufferAttribute<float>(vertices.ToArray(), 3));
-            SetAttribute("normal", new BufferAttribute<float>(normals.ToArray(), 3));
-            SetAttribute("uv", new BufferAttribute<float>(uvs.ToArray(), 2));
+            SetAttribute("position", new BufferAttribute<double>(vertices.ToArray(), 3));
+            SetAttribute("normal", new BufferAttribute<double>(normals.ToArray(), 3));
+            SetAttribute("uv", new BufferAttribute<double>(uvs.ToArray(), 2));
         }
 
         private void GenerateTorso()
@@ -92,23 +92,23 @@ namespace ThreeJs4Net.Geometries
             Vector3 normal = Vector3.Zero();
             Vector3 vertex = Vector3.Zero();
 
-            float slope = (RadiusBottom - RadiusTop) / Height;
+            double slope = (RadiusBottom - RadiusTop) / Height;
 
             for (y = 0; y <= HeightSegments; y++)
             {
                 List<int> indexRow = new List<int>();
 
-                float v = y / (float)HeightSegments;
+                double v = y / (double)HeightSegments;
 
-                float radius = v * (RadiusBottom - RadiusTop) + RadiusTop;
+                double radius = v * (RadiusBottom - RadiusTop) + RadiusTop;
 
                 for (x = 0; x <= RadialSegments; x++)
                 {
-                    float u = x / (float)RadialSegments;
-                    float theta = u * ThetaLength + ThetaStart;
+                    double u = x / (double)RadialSegments;
+                    double theta = u * ThetaLength + ThetaStart;
 
-                    float sinTheta = (float)System.Math.Sin(theta);
-                    float cosTheta = (float)System.Math.Cos(theta);
+                    double sinTheta = (double)System.Math.Sin(theta);
+                    double cosTheta = (double)System.Math.Cos(theta);
 
                     //vertex
 
@@ -162,8 +162,8 @@ namespace ThreeJs4Net.Geometries
 
             int groupCount = 0;
 
-            float radius = top ? RadiusTop : RadiusBottom;
-            float sign = top ? 1 : -1;
+            double radius = top ? RadiusTop : RadiusBottom;
+            double sign = top ? 1 : -1;
 
             centerIndexStart = index;
 
@@ -179,11 +179,11 @@ namespace ThreeJs4Net.Geometries
 
             for (x = 0; x <= RadialSegments; x++)
             {
-                float u = x / (float)RadialSegments;
-                float theta = u * ThetaLength + ThetaStart;
+                double u = x / (double)RadialSegments;
+                double theta = u * ThetaLength + ThetaStart;
 
-                float cosTheta = (float)System.Math.Cos(theta);
-                float sinTheta = (float)System.Math.Sin(theta);
+                double cosTheta = (double)System.Math.Cos(theta);
+                double sinTheta = (double)System.Math.Sin(theta);
 
                 //vertex
 

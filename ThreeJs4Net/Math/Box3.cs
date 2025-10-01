@@ -36,15 +36,15 @@ namespace ThreeJs4Net.Math
         }
 
         #region --- Already in R116 ---
-        public Box3 SetFromBufferAttribute(BufferAttribute<float> attribute)
+        public Box3 SetFromBufferAttribute(BufferAttribute<double> attribute)
         {
-            var minX = float.PositiveInfinity;
-            var minY = float.PositiveInfinity;
-            var minZ = float.PositiveInfinity;
+            var minX = double.PositiveInfinity;
+            var minY = double.PositiveInfinity;
+            var minZ = double.PositiveInfinity;
 
-            var maxX = float.NegativeInfinity;
-            var maxY = float.NegativeInfinity;
-            var maxZ = float.NegativeInfinity;
+            var maxX = double.NegativeInfinity;
+            var maxY = double.NegativeInfinity;
+            var maxZ = double.NegativeInfinity;
 
             for (int i = 0; i < attribute.Count; i++)
             {
@@ -173,7 +173,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Box3 ExpandByScalar(float scalar)
+        public Box3 ExpandByScalar(double scalar)
         {
             Min.AddScalar(-scalar);
             Max.AddScalar(scalar);
@@ -192,7 +192,7 @@ namespace ThreeJs4Net.Math
         public Sphere GetBoundingSphere(Sphere target)
         {
             this.GetCenter(target.Center);
-            target.Radius = this.GetSize(new Vector3()).Length() * (float)0.5;
+            target.Radius = this.GetSize(new Vector3()).Length() * (double)0.5;
             return target;
         }
 
@@ -210,7 +210,7 @@ namespace ThreeJs4Net.Math
             }
             else
             {
-                target.AddVectors(this.Min, this.Max).MultiplyScalar((float)0.5);
+                target.AddVectors(this.Min, this.Max).MultiplyScalar((double)0.5);
             }
 
             return target;
@@ -288,7 +288,7 @@ namespace ThreeJs4Net.Math
         {
             // We compute the minimum and maximum dot product values. If those values
             // are on the same side (back or front) of the plane, then there is no intersection.
-            float min, max;
+            double min, max;
 
             if (plane.Normal.X > 0)
             {
@@ -338,8 +338,8 @@ namespace ThreeJs4Net.Math
         /// </summary>
         public void MakeEmpty()
         {
-            this.Min.X = this.Min.Y = this.Min.Z = float.PositiveInfinity;
-            this.Max.X = this.Max.Y = this.Max.Z = float.NegativeInfinity;
+            this.Min.X = this.Min.Y = this.Min.Z = double.PositiveInfinity;
+            this.Max.X = this.Max.Y = this.Max.Z = double.NegativeInfinity;
         }
 
         public Box3 Set(Vector3 min, Vector3 max)
@@ -365,15 +365,15 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Box3 SetFromArray(float[] array)
+        public Box3 SetFromArray(double[] array)
         {
-            var minX = float.PositiveInfinity;
-            var minY = float.PositiveInfinity;
-            var minZ = float.PositiveInfinity;
+            var minX = double.PositiveInfinity;
+            var minY = double.PositiveInfinity;
+            var minZ = double.PositiveInfinity;
 
-            var maxX = float.NegativeInfinity;
-            var maxY = float.NegativeInfinity;
-            var maxZ = float.NegativeInfinity;
+            var maxX = double.NegativeInfinity;
+            var maxY = double.NegativeInfinity;
+            var maxZ = double.NegativeInfinity;
 
             for (int i = 0; i < array.Length; i += 3)
             {
@@ -410,7 +410,7 @@ namespace ThreeJs4Net.Math
 
         public Box3 SetFromCenterAndSize(Vector3 center, Vector3 size)
         {
-            var halfSize = new Vector3().Copy(size).MultiplyScalar((float)0.5);
+            var halfSize = new Vector3().Copy(size).MultiplyScalar((double)0.5);
 
             this.Min.Copy(center).Sub(halfSize);
             this.Max.Copy(center).Add(halfSize);

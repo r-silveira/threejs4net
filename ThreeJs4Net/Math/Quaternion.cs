@@ -10,31 +10,31 @@ namespace ThreeJs4Net.Math
     [DebuggerDisplay("X = {X}, Y = {Y}, Z = {Z}, W = {W}")]
     public class Quaternion : INotifyPropertyChanged
     {
-        private float x;
-        private float y;
-        private float z;
-        private float w;
+        private double x;
+        private double y;
+        private double z;
+        private double w;
 
         #region -- Public fields --
-        public float X
+        public double X
         {
             get => x;
             set { x = value; OnPropertyChanged(); }
         }
 
-        public float Y
+        public double Y
         {
             get => y;
             set { y = value; OnPropertyChanged(); }
         }
 
-        public float Z
+        public double Z
         {
             get => z;
             set { z = value; OnPropertyChanged(); }
         }
 
-        public float W
+        public double W
         {
             get => w;
             set { w = value; OnPropertyChanged(); }
@@ -67,7 +67,7 @@ namespace ThreeJs4Net.Math
         /// <param name="y"></param>
         /// <param name="z"></param>
         /// <param name="w"></param>
-        public Quaternion(float x, float y, float z, float w = 1)
+        public Quaternion(double x, double y, double z, double w = 1)
         {
             this.X = x;
             this.Y = y;
@@ -97,7 +97,7 @@ namespace ThreeJs4Net.Math
         }
 
         #region --- Already in R116 ---
-        public float AngleTo(Quaternion q)
+        public double AngleTo(Quaternion q)
         {
             return 2 * Mathf.Acos(Mathf.Abs(MathUtils.Clamp(this.Dot(q), -1, 1)));
         }
@@ -130,7 +130,7 @@ namespace ThreeJs4Net.Math
             return new Quaternion(this);
         }
 
-        public float Dot(Quaternion v)
+        public double Dot(Quaternion v)
         {
             return x * v.x + y * v.y + z * v.z + w * v.w;
         }
@@ -144,7 +144,7 @@ namespace ThreeJs4Net.Math
                    && (quaternion.W == this.W);
         }
 
-        public Quaternion FromArray(float[] array, int offset = 0)
+        public Quaternion FromArray(double[] array, int offset = 0)
         {
             this.X = array[offset];
             this.Y = array[offset + 1];
@@ -156,7 +156,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Quaternion FromBufferAttribute(BufferAttribute<float> attribute, int index)
+        public Quaternion FromBufferAttribute(BufferAttribute<double> attribute, int index)
         {
             this.X = attribute.GetX(index);
             this.Y = attribute.GetY(index);
@@ -175,7 +175,7 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <returns></returns>
-        public float Length()
+        public double Length()
         {
             return Mathf.Sqrt(LengthSq());
         }
@@ -184,7 +184,7 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <returns></returns>
-        public float LengthSq()
+        public double LengthSq()
         {
             return this.X * this.X + this.Y * this.Y + this.Z * this.Z + this.W * this.W;
         }
@@ -257,7 +257,7 @@ namespace ThreeJs4Net.Math
             return MultiplyQuaternions(q, this);
         }
 
-        public Quaternion RotateTowards(Quaternion q, float step)
+        public Quaternion RotateTowards(Quaternion q, double step)
         {
             var angle = this.AngleTo(q);
             if (angle == 0)
@@ -270,7 +270,7 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Quaternion Set(float x, float y, float z, float w)
+        public Quaternion Set(double x, double y, double z, double w)
         {
             this.X = x;
             this.Y = y;
@@ -391,39 +391,39 @@ namespace ThreeJs4Net.Math
 
             if (trace > 0)
             {
-                var s = (float)0.5 / Mathf.Sqrt(trace + (float)1.0);
+                var s = (double)0.5 / Mathf.Sqrt(trace + (double)1.0);
 
-                this.W = (float)0.25 / s;
+                this.W = (double)0.25 / s;
                 this.X = (m32 - m23) * s;
                 this.Y = (m13 - m31) * s;
                 this.Z = (m21 - m12) * s;
             }
             else if (m11 > m22 && m11 > m33)
             {
-                var s = (float)2.0 * Mathf.Sqrt((float)1.0 + m11 - m22 - m33);
+                var s = (double)2.0 * Mathf.Sqrt((double)1.0 + m11 - m22 - m33);
 
                 this.W = (m32 - m23) / s;
-                this.X = (float)0.25 * s;
+                this.X = (double)0.25 * s;
                 this.Y = (m12 + m21) / s;
                 this.Z = (m13 + m31) / s;
             }
             else if (m22 > m33)
             {
-                var s = (float)2.0 * Mathf.Sqrt((float)1.0 + m22 - m11 - m33);
+                var s = (double)2.0 * Mathf.Sqrt((double)1.0 + m22 - m11 - m33);
 
                 this.W = (m13 - m31) / s;
                 this.X = (m12 + m21) / s;
-                this.Y = (float)0.25 * s;
+                this.Y = (double)0.25 * s;
                 this.Z = (m23 + m32) / s;
             }
             else
             {
-                var s = (float)2.0 * Mathf.Sqrt((float)1.0 + m33 - m11 - m22);
+                var s = (double)2.0 * Mathf.Sqrt((double)1.0 + m33 - m11 - m22);
 
                 this.W = (m21 - m12) / s;
                 this.X = (m13 + m31) / s;
                 this.Y = (m23 + m32) / s;
-                this.Z = (float)0.25 * s;
+                this.Z = (double)0.25 * s;
             }
 
             this.OnPropertyChanged();
@@ -431,12 +431,12 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public Quaternion SetFromAxisAngle(Vector3 axis, float angle)
+        public Quaternion SetFromAxisAngle(Vector3 axis, double angle)
         {
             // http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
             // assumes axis is normalized
-            float halfAngle = angle / 2;
-            float s = Mathf.Sin(halfAngle);
+            double halfAngle = angle / 2;
+            double s = Mathf.Sin(halfAngle);
 
             this.X = axis.X * s;
             this.Y = axis.Y * s;
@@ -449,7 +449,7 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public Quaternion Slerp(Quaternion qb, float t)
+        public Quaternion Slerp(Quaternion qb, double t)
         {
             if (t == 0)
             {
@@ -460,7 +460,7 @@ namespace ThreeJs4Net.Math
                 return this.Copy(qb);
             }
 
-            float x = this.X, y = this.Y, z = this.Z, w = this.W;
+            double x = this.X, y = this.Y, z = this.Z, w = this.W;
 
             // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
             var cosHalfTheta = w * qb.W + x * qb.X + y * qb.Y + z * qb.Z;
@@ -489,7 +489,7 @@ namespace ThreeJs4Net.Math
                 return this;
             }
 
-            var sqrSinHalfTheta = (float)1.0 - cosHalfTheta * cosHalfTheta;
+            var sqrSinHalfTheta = (double)1.0 - cosHalfTheta * cosHalfTheta;
 
             if (sqrSinHalfTheta <= MathUtils.EPS5)
             {
@@ -520,16 +520,16 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float[] ToArray()
+        public double[] ToArray()
         {
             return new[] { this.X, this.Y, this.Z, this.W };
         }
 
-        public float[] ToArray(ref float[] array, int offset = 0)
+        public double[] ToArray(ref double[] array, int offset = 0)
         {
             if (array == null)
             {
-                array = new float[4];
+                array = new double[4];
             }
 
             if (array.Length < offset + 4)
@@ -546,36 +546,36 @@ namespace ThreeJs4Net.Math
         }
 
 
-        public static Quaternion Slerp(Quaternion qa, Quaternion qb, Quaternion qm, float t)
+        public static Quaternion Slerp(Quaternion qa, Quaternion qb, Quaternion qm, double t)
         {
             return qm.Copy(qa).Slerp(qb, t);
         }
 
-        public static Quaternion SlerpFlat(float[] dst, int dstOffset, float[] src0, int srcOffset0, float[] src1, int srcOffset1, float t)
+        public static Quaternion SlerpFlat(double[] dst, int dstOffset, double[] src0, int srcOffset0, double[] src1, int srcOffset1, double t)
         {
             // fuzz-free, array-based Quaternion SLERP operation
-            float x0 = src0[srcOffset0 + 0];
-            float y0 = src0[srcOffset0 + 1];
-            float z0 = src0[srcOffset0 + 2];
-            float w0 = src0[srcOffset0 + 3];
+            double x0 = src0[srcOffset0 + 0];
+            double y0 = src0[srcOffset0 + 1];
+            double z0 = src0[srcOffset0 + 2];
+            double w0 = src0[srcOffset0 + 3];
 
-            float x1 = src1[srcOffset1 + 0];
-            float y1 = src1[srcOffset1 + 1];
-            float z1 = src1[srcOffset1 + 2];
-            float w1 = src1[srcOffset1 + 3];
+            double x1 = src1[srcOffset1 + 0];
+            double y1 = src1[srcOffset1 + 1];
+            double z1 = src1[srcOffset1 + 2];
+            double w1 = src1[srcOffset1 + 3];
 
             if (w0 != w1 || x0 != x1 || y0 != y1 || z0 != z1)
             {
-                float s = 1 - t;
-                float cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1;
-                float dir = (cos >= 0 ? 1 : -1);
-                float sqrSin = 1 - cos * cos;
+                double s = 1 - t;
+                double cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1;
+                double dir = (cos >= 0 ? 1 : -1);
+                double sqrSin = 1 - cos * cos;
 
                 // Skip the Slerp for tiny steps to avoid numeric problems:
                 if (sqrSin > MathUtils.EPS5)
                 {
-                    float sin = Mathf.Sqrt(sqrSin);
-                    float len = Mathf.Atan2(sin, cos * dir);
+                    double sin = Mathf.Sqrt(sqrSin);
+                    double len = Mathf.Atan2(sin, cos * dir);
 
                     s = Mathf.Sin(s * len) / sin;
                     t = Mathf.Sin(t * len) / sin;
@@ -591,7 +591,7 @@ namespace ThreeJs4Net.Math
                 // Normalize in case we just did a lerp:
                 if (s == 1 - t)
                 {
-                    float f = 1 / Mathf.Sqrt(x0 * x0 + y0 * y0 + z0 * z0 + w0 * w0);
+                    double f = 1 / Mathf.Sqrt(x0 * x0 + y0 * y0 + z0 * z0 + w0 * w0);
                     x0 *= f;
                     y0 *= f;
                     z0 *= f;
@@ -607,7 +607,7 @@ namespace ThreeJs4Net.Math
             return new Quaternion().FromArray(dst);
         }
 
-        public static float[] MultiplyQuaternionsFlat(float[] dst, int dstOffset, float[] src0, int srcOffset0, float[] src1, int srcOffset1)
+        public static double[] MultiplyQuaternionsFlat(double[] dst, int dstOffset, double[] src0, int srcOffset0, double[] src1, int srcOffset1)
         {
             var x0 = src0[srcOffset0];
             var y0 = src0[srcOffset0 + 1];

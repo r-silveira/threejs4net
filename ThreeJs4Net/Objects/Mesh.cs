@@ -7,7 +7,7 @@ namespace ThreeJs4Net.Objects
 {
     public class Intersect
     {
-        public float Distance;
+        public double Distance;
 
         public Vector3 Point;
 
@@ -171,7 +171,7 @@ namespace ThreeJs4Net.Objects
             {
 
                 var indices = ((BufferAttribute<short>)attributes["index"]).Array;
-                var positions = ((BufferAttribute<float>)attributes["position"]).Array;
+                var positions = ((BufferAttribute<double>)attributes["position"]).Array;
                 var offsets = geometry.Offsets;
 
                 if (offsets.Count == 0)
@@ -247,7 +247,7 @@ namespace ThreeJs4Net.Objects
             else
             {
 
-                var positions = ((BufferAttribute<float>)attributes["position"]).Array;
+                var positions = ((BufferAttribute<double>)attributes["position"]).Array;
 
                 int j = 0;
                 for (var i = 0; i < positions.Length; i += 3, j += 9)
@@ -355,11 +355,11 @@ namespace ThreeJs4Net.Objects
             {
                 //var a, b, c;
                 var index = bufGeometry.Index;
-                var position = bufGeometry.GetAttribute<float>("position");
+                var position = bufGeometry.GetAttribute<double>("position");
                 //!!var morphPosition = bufGeometry.morphAttributes.position;
                 //!!var morphTargetsRelative = bufGeometry.morphTargetsRelative;
-                var uv = bufGeometry.GetAttribute<float>("uv");
-                var uv2 = bufGeometry.GetAttribute<float>("uv2");
+                var uv = bufGeometry.GetAttribute<double>("uv");
+                var uv2 = bufGeometry.GetAttribute<double>("uv2");
                 var groups = bufGeometry.groups;
                 var drawRange = bufGeometry.DrawRange;
                 //var i, j, il, jl;
@@ -556,8 +556,8 @@ namespace ThreeJs4Net.Objects
             return new Mesh().Copy(this);
         }
 
-        private Intersect CheckBufferGeometryIntersection(Object3D object3D, Material material, Raycaster raycaster, Ray ray, BufferAttribute<float> position, Vector3 morphPosition,
-            object morphTargetsRelative, BufferAttribute<float> uv, BufferAttribute<float> uv2, int a, int b, int c)
+        private Intersect CheckBufferGeometryIntersection(Object3D object3D, Material material, Raycaster raycaster, Ray ray, BufferAttribute<double> position, Vector3 morphPosition,
+            object morphTargetsRelative, BufferAttribute<double> uv, BufferAttribute<double> uv2, int a, int b, int c)
         {
             var vA = new Vector3().FromBufferAttribute(position, a);
             var vB = new Vector3().FromBufferAttribute(position, b);

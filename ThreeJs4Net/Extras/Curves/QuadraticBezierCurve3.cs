@@ -25,7 +25,7 @@ namespace ThreeJs4Net.Extras.Curves
         {
             return new QuadraticBezierCurve3(this);
         }
-        public override Vector3 GetPoint(float t, Vector3 optionalTarget = null)
+        public override Vector3 GetPoint(double t, Vector3 optionalTarget = null)
         {
             var point = optionalTarget != null ? optionalTarget : new Vector3();
 

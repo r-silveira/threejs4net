@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Math;
 using Xunit;
@@ -34,17 +33,17 @@ namespace ThreeJs4Net.Tests.Math
             var r2 = a / c;
             var r3 = b / c;
 
-            Assert.Equal(r1.X, 2f);
-            Assert.Equal(r1.Y, 3f);
-            Assert.Equal(r1.Z, 0f);
+            Assert.Equal(r1.X, 2);
+            Assert.Equal(r1.Y, 3);
+            Assert.Equal(r1.Z, 0);
 
-            Assert.Equal(r2.X, 0.5f);
+            Assert.Equal(r2.X, 0.5);
             Assert.True(r2.Y - 0.33333 <= MathUtils.EPS);
-            Assert.True(float.IsInfinity(r2.Z));
+            Assert.True(double.IsInfinity(r2.Z));
 
-            Assert.Equal(r3.X, -0.5f);
+            Assert.Equal(r3.X, -0.5);
             Assert.True(r3.Y - (-0.33333) <= MathUtils.EPS);
-            Assert.True(float.IsInfinity(r3.Z));
+            Assert.True(double.IsInfinity(r3.Z));
         }
 
         [Fact()]
@@ -236,9 +235,9 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = Vector3.Infinity();
 
-            Assert.True(a.X == float.PositiveInfinity);
-            Assert.True(a.Y == float.PositiveInfinity);
-            Assert.True(a.Z == float.PositiveInfinity);
+            Assert.True(a.X == double.PositiveInfinity);
+            Assert.True(a.Y == double.PositiveInfinity);
+            Assert.True(a.Z == double.PositiveInfinity);
         }
 
         [Fact()]
@@ -246,9 +245,9 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = Vector3.NegativeInfinity();
 
-            Assert.True(a.X == float.NegativeInfinity);
-            Assert.True(a.Y == float.NegativeInfinity);
-            Assert.True(a.Z == float.NegativeInfinity);
+            Assert.True(a.X == double.NegativeInfinity);
+            Assert.True(a.Y == double.NegativeInfinity);
+            Assert.True(a.Z == double.NegativeInfinity);
         }
 
         [Fact()]
@@ -512,9 +511,9 @@ namespace ThreeJs4Net.Tests.Math
             Assert.StrictEqual(a.Z, z * b.Z);
 
             b.Divide(c);
-            Assert.True(MathF.Abs(b.X - (float)0.5) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(b.Y - (float)0.5) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(b.Z - (float)0.5) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(b.X - (double)0.5) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(b.Y - (double)0.5) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(b.Z - (double)0.5) <= MathUtils.EPS);
         }
 
         [Fact()]
@@ -671,12 +670,12 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Vector3(x, y, z);
             var m = new Matrix4();
-            var transformed = new Vector3((float)0.3713906763541037, (float)0.5570860145311556, (float)0.7427813527082074);
+            var transformed = new Vector3((double)0.3713906763541037, (double)0.5570860145311556, (double)0.7427813527082074);
 
             a.TransformDirection(m);
-            Assert.True(MathF.Abs(a.X - transformed.X) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Y - transformed.Y) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Z - transformed.Z) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.X - transformed.X) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Y - transformed.Y) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Z - transformed.Z) <= MathUtils.EPS);
         }
 
         [Fact()]
@@ -706,7 +705,7 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void ClampLengthTest()
         {
-            var a = new Vector3((float)-0.01, (float)10.5, (float)7.5);
+            var a = new Vector3((double)-0.01, (double)10.5, (double)7.5);
 
             var clamp = a.ClampLength(1, 3);
 
@@ -718,13 +717,13 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void ClampScalarTest()
         {
-            var a = new Vector3((float)-0.01, (float)0.5, (float)1.5);
-            var clamped = new Vector3((float)0.1, (float)0.5, (float)1.0);
+            var a = new Vector3((double)-0.01, (double)0.5, (double)1.5);
+            var clamped = new Vector3((double)0.1, (double)0.5, (double)1.0);
 
-            a.ClampScalar((float)0.1, (float)1.0);
-            Assert.True(MathF.Abs(a.X - clamped.X) <= 0.001);
-            Assert.True(MathF.Abs(a.Y - clamped.Y) <= 0.001);
-            Assert.True(MathF.Abs(a.Z - clamped.Z) <= 0.001);
+            a.ClampScalar((double)0.1, (double)1.0);
+            Assert.True(Mathf.Abs(a.X - clamped.X) <= 0.001);
+            Assert.True(Mathf.Abs(a.Y - clamped.Y) <= 0.001);
+            Assert.True(Mathf.Abs(a.Z - clamped.Z) <= 0.001);
 
         }
 
@@ -848,7 +847,7 @@ namespace ThreeJs4Net.Tests.Math
             Assert.True(d.ManhattanLength() == 0, "Empty initialization");
 
             a.Set(x, y, z);
-            Assert.True(a.ManhattanLength() == MathF.Abs(x) + MathF.Abs(y) + MathF.Abs(z), "All components");
+            Assert.True(a.ManhattanLength() == Mathf.Abs(x) + Mathf.Abs(y) + Mathf.Abs(z), "All components");
         }
 
         [Fact()]
@@ -892,14 +891,14 @@ namespace ThreeJs4Net.Tests.Math
             var a = new Vector3(x, 0, z);
             var b = new Vector3(0, -y, 0);
 
-            Assert.True(a.Lerp(a, 0).Equals(a.Lerp(a, (float)0.5)));
+            Assert.True(a.Lerp(a, 0).Equals(a.Lerp(a, (double)0.5)));
             Assert.True(a.Lerp(a, 0).Equals(a.Lerp(a, 1)));
 
             Assert.True(a.Clone().Lerp(b, 0).Equals(a));
 
-            Assert.True(a.Clone().Lerp(b, (float)0.5).X == x * 0.5);
-            Assert.True(a.Clone().Lerp(b, (float)0.5).Y == -y * 0.5);
-            Assert.True(a.Clone().Lerp(b, (float)0.5).Z == z * 0.5);
+            Assert.True(a.Clone().Lerp(b, (double)0.5).X == x * 0.5);
+            Assert.True(a.Clone().Lerp(b, (double)0.5).Y == -y * 0.5);
+            Assert.True(a.Clone().Lerp(b, (double)0.5).Z == z * 0.5);
 
             Assert.True(a.Clone().Lerp(b, 1).Equals(b));
         }
@@ -908,7 +907,7 @@ namespace ThreeJs4Net.Tests.Math
         public void LerpVectorsTest()
         {
             var a = new Vector3(x, y, z);
-            var b = new Vector3(2 * x, -y, (float)0.5 * z);
+            var b = new Vector3(2 * x, -y, (double)0.5 * z);
 
             var l1 = a.LerpVectors(a, b, 0.5f);
             var l2 = a.LerpVectors(b, a, 1.5f);
@@ -926,13 +925,13 @@ namespace ThreeJs4Net.Tests.Math
         public void CrossTest()
         {
             var a = new Vector3(x, y, z);
-            var b = new Vector3(2 * x, -y, (float)0.5 * z);
+            var b = new Vector3(2 * x, -y, (double)0.5 * z);
             var crossed = new Vector3(18, 12, -18);
 
             a.Cross(b);
-            Assert.True(MathF.Abs(a.X - crossed.X) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Y - crossed.Y) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Z - crossed.Z) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.X - crossed.X) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Y - crossed.Y) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Z - crossed.Z) <= MathUtils.EPS);
         }
 
         [Fact()]
@@ -944,16 +943,16 @@ namespace ThreeJs4Net.Tests.Math
             var crossed = new Vector3(24, 0, -12);
 
             c.CrossVectors(a, b);
-            Assert.True(MathF.Abs(c.X - crossed.X) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(c.Y - crossed.Y) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(c.Z - crossed.Z) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(c.X - crossed.X) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(c.Y - crossed.Y) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(c.Z - crossed.Z) <= MathUtils.EPS);
         }
 
         [Fact()]
         public void AngleToTest()
         {
-            var a = new Vector3(0, (float)-0.18851655680720186, (float)0.9820700116639124);
-            var b = new Vector3(0, (float)0.18851655680720186, (float)-0.9820700116639124);
+            var a = new Vector3(0, (double)-0.18851655680720186, (double)0.9820700116639124);
+            var b = new Vector3(0, (double)0.18851655680720186, (double)-0.9820700116639124);
 
             Assert.Equal(a.AngleTo(a), 0);
             Assert.Equal(a.AngleTo(b), Mathf.PI);
@@ -966,7 +965,7 @@ namespace ThreeJs4Net.Tests.Math
             Assert.Equal(x.AngleTo(z), Mathf.PI / 2);
             Assert.Equal(z.AngleTo(x), Mathf.PI / 2);
 
-            Assert.True(MathF.Abs(x.AngleTo(new Vector3(1, 1, 0)) - (Mathf.PI / 4)) < 0.0000001);
+            Assert.True(Mathf.Abs(x.AngleTo(new Vector3(1, 1, 0)) - (Mathf.PI / 4)) < 0.0000001);
 
         }
 
@@ -1006,12 +1005,12 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Vector3();
             var m = new Matrix4().Set(2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53);
-            var expected = new Vector3((float)25.573423705088842, (float)31.921779399024736, (float)35.70714214271425);
+            var expected = new Vector3((double)25.573423705088842, (double)31.921779399024736, (double)35.70714214271425);
 
             a.SetFromMatrixScale(m);
-            Assert.True(MathF.Abs(a.X - expected.X) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Y - expected.Y) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Z - expected.Z) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.X - expected.X) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Y - expected.Y) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Z - expected.Z) <= MathUtils.EPS);
         }
 
         [Fact()]
@@ -1079,7 +1078,7 @@ namespace ThreeJs4Net.Tests.Math
         public void FromArrayTest()
         {
             var a = new Vector3();
-            var array = new float[] { 1, 2, 3, 4, 5, 6 };
+            var array = new double[] { 1, 2, 3, 4, 5, 6 };
 
             a.FromArray(array);
             Assert.StrictEqual(a.X, 1);
@@ -1102,20 +1101,20 @@ namespace ThreeJs4Net.Tests.Math
             Assert.StrictEqual(array[1], y);
             Assert.StrictEqual(array[2], z);
 
-            array = new float[] { };
+            array = new double[] { };
             a.ToArray(ref array);
             Assert.StrictEqual(array[0], x);
             Assert.StrictEqual(array[1], y);
             Assert.StrictEqual(array[2], z);
 
-            array = new float[] { };
+            array = new double[] { };
             a.ToArray(ref array, 1);
             //Assert.StrictEqual(array[0], null);
             Assert.StrictEqual(array[1], x);
             Assert.StrictEqual(array[2], y);
             Assert.StrictEqual(array[3], z);
 
-            float[] arr = null;
+            double[] arr = null;
             a.ToArray(ref arr, 1);
             Assert.StrictEqual(array[1], x);
             Assert.StrictEqual(array[2], y);
@@ -1150,12 +1149,12 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Vector3(x, y, z);
             var euler = new Euler(90, -45, 0);
-            var expected = new Vector3((float)-2.352970120501014, (float)(-4.7441750936226645), (float)0.9779234597246458);
+            var expected = new Vector3((double)-2.352970120501014, (double)(-4.7441750936226645), (double)0.9779234597246458);
 
             a.ApplyEuler(euler);
-            Assert.True(MathF.Abs(a.X - expected.X) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Y - expected.Y) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Z - expected.Z) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.X - expected.X) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Y - expected.Y) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Z - expected.Z) <= MathUtils.EPS);
 
         }
 
@@ -1164,13 +1163,13 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Vector3(x, y, z);
             var axis = new Vector3(0, 1, 0);
-            var angle = Mathf.PI / (float)4.0;
+            var angle = Mathf.PI / (double)4.0;
             var expected = new Vector3(3 * Mathf.Sqrt(2), 3, Mathf.Sqrt(2));
 
             a.ApplyAxisAngle(axis, angle);
-            Assert.True(MathF.Abs(a.X - expected.X) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Y - expected.Y) <= MathUtils.EPS);
-            Assert.True(MathF.Abs(a.Z - expected.Z) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.X - expected.X) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Y - expected.Y) <= MathUtils.EPS);
+            Assert.True(Mathf.Abs(a.Z - expected.Z) <= MathUtils.EPS);
         }
 
         [Fact()]
@@ -1225,7 +1224,7 @@ namespace ThreeJs4Net.Tests.Math
         public void FromBufferAttributeTest()
         {
             var a = new Vector3();
-            var attr = new BufferAttribute<float>(new float[] { 1, 2, 3, 4, 5, 6 }, 3);
+            var attr = new BufferAttribute<double>(new double[] { 1, 2, 3, 4, 5, 6 }, 3);
 
             a.FromBufferAttribute(attr, 0);
             Assert.Equal(1, a.X);

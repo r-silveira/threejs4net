@@ -7,7 +7,7 @@ namespace ThreeJs4Net.Materials
     {
         public Color Color;
 
-        public float Linewidth;
+        public double Linewidth;
 
         public string Linecap;
 

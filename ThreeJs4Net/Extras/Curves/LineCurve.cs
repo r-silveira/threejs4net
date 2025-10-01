@@ -14,7 +14,7 @@ namespace ThreeJs4Net.Extras.Curves
             this.v2 = v2 ?? new Vector2();
         }
 
-        public override Vector2 GetPoint(float t, Vector2 optionalTarget)
+        public override Vector2 GetPoint(double t, Vector2 optionalTarget)
         {
             var point = optionalTarget ?? new Vector2();
 
@@ -31,12 +31,12 @@ namespace ThreeJs4Net.Extras.Curves
             return point;
         }
 
-        public override Vector2 GetPointAt(float u, Vector2 optionalTarget)
+        public override Vector2 GetPointAt(double u, Vector2 optionalTarget)
         {
             return this.GetPoint(u, optionalTarget);
         }
 
-        public override Vector2 GetTangent(float t, Vector2 optionalTarget)
+        public override Vector2 GetTangent(double t, Vector2 optionalTarget)
         {
             var tangent = optionalTarget ?? new Vector2();
             tangent = tangent.Copy(this.v2).Sub(this.v1).Normalize();

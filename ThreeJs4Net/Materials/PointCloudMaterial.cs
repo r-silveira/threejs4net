@@ -6,7 +6,7 @@ namespace ThreeJs4Net.Materials
     public class PointCloudMaterial : Material
     {
         public Color Color = Color.ColorName(ColorKeywords.white);
-        public float Size = 1;
+        public double Size = 1;
         public bool Fog = true;
 
 #if USE_WINDOWS

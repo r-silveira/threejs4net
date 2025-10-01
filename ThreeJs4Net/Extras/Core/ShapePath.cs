@@ -26,7 +26,7 @@ namespace ThreeJs4Net
             this.Color = Color.Hex(0x000000);
         }
 
-        public ShapePath MoveTo(float x, float y)
+        public ShapePath MoveTo(double x, double y)
         {
             CurrentPath = new Path();
             SubPaths.Add(CurrentPath);
@@ -34,7 +34,7 @@ namespace ThreeJs4Net
 
             return this;
         }
-        public ShapePath LineTo(float x, float y)
+        public ShapePath LineTo(double x, double y)
         {
 
             this.CurrentPath.LineTo(x, y);
@@ -43,7 +43,7 @@ namespace ThreeJs4Net
 
         }
 
-        public ShapePath QuadraticCurveTo(float aCPx, float aCPy, float aX, float aY)
+        public ShapePath QuadraticCurveTo(double aCPx, double aCPy, double aX, double aY)
         {
 
             CurrentPath.QuadraticCurveTo(aCPx, aCPy, aX, aY);
@@ -52,7 +52,7 @@ namespace ThreeJs4Net
 
         }
 
-        public ShapePath BezierCurveTo(float aCP1x, float aCP1y, float aCP2x, float aCP2y, float aX, float aY)
+        public ShapePath BezierCurveTo(double aCP1x, double aCP1y, double aCP2x, double aCP2y, double aX, double aY)
         {
 
             CurrentPath.BezierCurveTo(aCP1x, aCP1y, aCP2x, aCP2y, aX, aY);
@@ -109,7 +109,7 @@ namespace ThreeJs4Net
                 var edgeDx = edgeHighPt.X - edgeLowPt.X;
                 var edgeDy = edgeHighPt.Y - edgeLowPt.Y;
 
-                if (System.Math.Abs(edgeDy) > float.Epsilon)
+                if (System.Math.Abs(edgeDy) > double.Epsilon)
                 {
 
                     // not parallel

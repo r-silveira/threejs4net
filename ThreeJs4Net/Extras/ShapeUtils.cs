@@ -6,10 +6,10 @@ namespace ThreeJs4Net.Extras
 {
     class ShapeUtils
     {
-        public static float Area(Vector3[] contour)
+        public static double Area(Vector3[] contour)
         {
             var n = contour.Length;
-            float a = 0.0f;
+            double a = 0.0;
             var p = n - 1;
 
             for (var q = 0; q < n; p = q++)
@@ -27,7 +27,7 @@ namespace ThreeJs4Net.Extras
 
         public static List<List<int>> TriangulateShape(List<Vector3> contour, List<List<Vector3>> holes)
         {
-            var vertices = new List<float>(); // flat array of vertices like [ x0,y0, x1,y1, x2,y2, ... ]
+            var vertices = new List<double>(); // flat array of vertices like [ x0,y0, x1,y1, x2,y2, ... ]
             var holeIndices = new List<int>(); // array of hole indices
             var faces = new List<List<int>>(); // final array of vertex indices like [ [ a,b,d ], [ b,c,d ] ]
 
@@ -90,7 +90,7 @@ namespace ThreeJs4Net.Extras
 
         }
 
-        public static void AddContour(List<float> vertices, List<Vector3> contour)
+        public static void AddContour(List<double> vertices, List<Vector3> contour)
         {
 
             for (var i = 0; i < contour.Count; i++)

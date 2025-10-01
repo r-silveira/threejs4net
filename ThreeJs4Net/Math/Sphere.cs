@@ -9,7 +9,7 @@ namespace ThreeJs4Net.Math
     {
         public Vector3 Center = new Vector3();
 
-        public float Radius;
+        public double Radius;
 
         /// <summary>
         /// 
@@ -25,7 +25,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="center"></param>
         /// <param name="radius"></param>
-        public Sphere(Vector3 center, float radius)
+        public Sphere(Vector3 center, double radius)
         {
             this.Center.Copy(center);
             this.Radius = radius;
@@ -49,7 +49,7 @@ namespace ThreeJs4Net.Math
                 new Box3().SetFromPoints(points).GetCenter(center);
             }
 
-            float maxRadiusSq = 0;
+            double maxRadiusSq = 0;
 
             foreach (var pt in points)
             {

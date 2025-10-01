@@ -8,12 +8,12 @@ namespace ThreeJs4Net.Extras.Core
     public abstract class Curve<T> where T : IVector<T>
     {
         protected int arcLengthDivisions = 200;
-        protected List<float> cacheArcLengths = null;
+        protected List<double> cacheArcLengths = null;
         protected bool needsUpdate = false;
 
-        public abstract T GetPoint(float t, T optionalTarget);
+        public abstract T GetPoint(double t, T optionalTarget);
 
-        public virtual T GetPointAt(float u, T optionalTarget)
+        public virtual T GetPointAt(double u, T optionalTarget)
         {
             var t = this.GetUtoTmapping(u);
             return this.GetPoint(t, optionalTarget);
@@ -22,7 +22,7 @@ namespace ThreeJs4Net.Extras.Core
         public List<T> GetPoints(int divisions = 5)
         {
             var points = new List<T>();
-            for (float d = 0; d <= divisions; d++)
+            for (double d = 0; d <= divisions; d++)
             {
                 points.Add(this.GetPoint(d / divisions, default(T)));
             }
@@ -36,19 +36,19 @@ namespace ThreeJs4Net.Extras.Core
 
             for (var d = 0; d <= divisions; d++)
             {
-                points.Add(this.GetPointAt((float)d / divisions, default(T)));
+                points.Add(this.GetPointAt((double)d / divisions, default(T)));
             }
 
             return points;
         }
 
-        public float GetLength()
+        public double GetLength()
         {
             var lengths = this.GetLengths();
             return lengths[lengths.Count - 1];
         }
 
-        public List<float> GetLengths(int? divisions = null)
+        public List<double> GetLengths(int? divisions = null)
         {
             int lDivisions = divisions ?? this.arcLengthDivisions;
 
@@ -59,15 +59,15 @@ namespace ThreeJs4Net.Extras.Core
 
             this.needsUpdate = false;
 
-            var cache = new List<float>();
+            var cache = new List<double>();
 
             T current;
             T last = this.GetPoint(0, default(T));
-            float sum = 0;
+            double sum = 0;
 
             cache.Add(0);
 
-            for (float p = 1; p <= lDivisions; p++)
+            for (double p = 1; p <= lDivisions; p++)
             {
                 current = this.GetPoint(p / lDivisions, default(T));
                 if (current is Vector2 v2)
@@ -97,16 +97,16 @@ namespace ThreeJs4Net.Extras.Core
         // Given u ( 0 .. 1 ), get a t to find p. This gives you points which are equidistant
 
         #region --> GetUtoTmapping
-        public float GetUtoTmapping(float u, float? distance = null)
+        public double GetUtoTmapping(double u, double? distance = null)
         {
             var arcLengths = this.GetLengths();
             var i = 0;
             var il = arcLengths.Count;
-            float targetArcLength; // The targeted u distance value to get
+            double targetArcLength; // The targeted u distance value to get
 
             if (distance != null && distance != 0)
             {
-                targetArcLength = (float)distance;
+                targetArcLength = (double)distance;
             }
             else
             {
@@ -120,7 +120,7 @@ namespace ThreeJs4Net.Extras.Core
             {
                 i = Mathf.Floor(low +
                                (high - low) /
-                               2); // less likely to overflow, though probably not issue here, JS doesn't really have integers, all numbers are floats
+                               2); // less likely to overflow, though probably not issue here, JS doesn't really have integers, all numbers are doubles
 
                 var comparison = arcLengths[i] - targetArcLength;
                 if (comparison < 0)
@@ -167,11 +167,11 @@ namespace ThreeJs4Net.Extras.Core
         // which seems to give a reasonable approximation
 
         #region --> GetTangent
-        public virtual T GetTangent(float t, T optionalTarget)
+        public virtual T GetTangent(double t, T optionalTarget)
         {
-            float delta = (float)0.0001;
-            float t1 = t - delta;
-            float t2 = t + delta;
+            double delta = (double)0.0001;
+            double t1 = t - delta;
+            double t2 = t + delta;
 
             // Capping in case of danger
 
@@ -198,7 +198,7 @@ namespace ThreeJs4Net.Extras.Core
         #endregion
 
         #region --> GetTangentAt
-        public T GetTangentAt(float u, T optionalTarget)
+        public T GetTangentAt(double u, T optionalTarget)
         {
             var t = this.GetUtoTmapping(u, null);
             return this.GetTangent(t, optionalTarget);
@@ -222,7 +222,7 @@ namespace ThreeJs4Net.Extras.Core
             var vec = new Vector3();
             var mat = new Matrix4();
 
-            float i, u, theta;
+            double i, u, theta;
 
             // compute the tangent vectors for each segment on the curve
 
@@ -240,7 +240,7 @@ namespace ThreeJs4Net.Extras.Core
 
             normals[0] = new Vector3();
             binormals[0] = new Vector3();
-            var min = float.PositiveInfinity;
+            var min = double.PositiveInfinity;
 
             var lTangent = tangents[0] as Vector3;
 
@@ -278,7 +278,7 @@ namespace ThreeJs4Net.Extras.Core
                 normals[idx] = normals[idx - 1].Clone();
                 binormals[idx] = binormals[idx - 1].Clone();
                 vec.CrossVectors((Vector3)tangents[idx - 1], (Vector3)tangents[idx]);
-                if (vec.Length() > float.Epsilon)
+                if (vec.Length() > double.Epsilon)
                 {
                     vec.Normalize();
                     theta = Mathf.Acos(MathUtils.Clamp(((Vector3)tangents[idx - 1]).Dot((Vector3)tangents[idx]), -1, 1)); // clamp for floating pt errors

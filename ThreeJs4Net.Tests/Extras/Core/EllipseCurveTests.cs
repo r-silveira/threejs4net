@@ -1,8 +1,4 @@
 ﻿using Xunit;
-using ThreeJs4Net.Extras.Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Extras.Core.Tests
@@ -86,7 +82,7 @@ namespace ThreeJs4Net.Extras.Core.Tests
                 0 // aRotation
             );
 
-            var testValues = new[] { 0, 0.3f, 0.5f, 0.7f, 1 };
+            var testValues = new[] { 0, 0.3, 0.5, 0.7, 1 };
 
             var p = new Vector3();
             var a = new Vector3();
@@ -119,19 +115,19 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var expectedTangents = new[]
             {
-                new Vector2(-0.000314159260186071f, 0.9999999506519786f),
+                new Vector2(-0.000314159260186071, 0.9999999506519786),
                 new Vector2(-1, 0),
                 new Vector2(0, -1),
                 new Vector2(1, 0),
-                new Vector2(0.00031415926018600165f, 0.9999999506519784f)
+                new Vector2(0.00031415926018600165, 0.9999999506519784)
             };
 
             var tangents = new[]
             {
                 curve.GetTangent(0, new Vector3()),
-                curve.GetTangent(0.25f, new Vector3()),
-                curve.GetTangent(0.5f, new Vector3()),
-                curve.GetTangent(0.75f, new Vector3()),
+                curve.GetTangent(0.25, new Vector3()),
+                curve.GetTangent(0.5, new Vector3()),
+                curve.GetTangent(0.75, new Vector3()),
                 curve.GetTangent(1, new Vector3())
             };
 
@@ -157,7 +153,7 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var start = curve.GetUtoTmapping(0, 0);
             var end = curve.GetUtoTmapping(0, curve.GetLength());
-            var somewhere = curve.GetUtoTmapping(0.7f, 1);
+            var somewhere = curve.GetUtoTmapping(0.7, 1);
 
             var expectedSomewhere = 0.01591614882650014;
 
@@ -180,11 +176,11 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var expectedPoints = new[] {
                     new Vector2( 10, 0 ),
-                    new Vector2( 3.0901699437494603f, 9.51056516295154f ),
-                    new Vector2( - 8.090169943749492f, 5.877852522924707f ),
-                    new Vector2( - 8.090169943749459f, - 5.877852522924751f ),
-                    new Vector2( 3.0901699437494807f, - 9.510565162951533f ),
-                    new Vector2( 10, - 2.4492935982947065e-15f )
+                    new Vector2( 3.0901699437494603, 9.51056516295154 ),
+                    new Vector2( - 8.090169943749492, 5.877852522924707 ),
+                    new Vector2( - 8.090169943749459, - 5.877852522924751 ),
+                    new Vector2( 3.0901699437494807, - 9.510565162951533 ),
+                    new Vector2( 10, - 2.4492935982947065e-15 )
                 };
 
             var points = curve.GetSpacedPoints();

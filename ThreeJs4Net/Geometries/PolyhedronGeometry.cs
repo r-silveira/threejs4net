@@ -6,15 +6,15 @@ namespace ThreeJs4Net.Geometries
 {
     public class PolyhedronGeometry : Geometry
     {
-        public float Radius { get; }
-        public float Detail { get; }
+        public double Radius { get; }
+        public double Detail { get; }
 
-        public List<float> Vertices;
+        public List<double> Vertices;
         public List<int> Indices;
 
-        public PolyhedronGeometry(List<float> vertices, List<int> indices, float radius, float detail)
+        public PolyhedronGeometry(List<double> vertices, List<int> indices, double radius, double detail)
         {
-            Vertices = vertices ?? new List<float>();
+            Vertices = vertices ?? new List<double>();
             Indices = indices ?? new List<int>();
             Radius = radius;
             Detail = detail;
@@ -28,17 +28,17 @@ namespace ThreeJs4Net.Geometries
 
     public class PolyhedronBufferGeometry : BufferGeometry
     {
-        public float Radius { get; }
-        public float Detail { get; }
+        public double Radius { get; }
+        public double Detail { get; }
 
-        public List<float> Vertices;
+        public List<double> Vertices;
         public List<int> Indices;
-        private List<float> VertexBuffer = new List<float>();
-        private List<float> UvBuffer = new List<float>();
+        private List<double> VertexBuffer = new List<double>();
+        private List<double> UvBuffer = new List<double>();
 
-        public PolyhedronBufferGeometry(List<float> vertices, List<int> indices, float radius = 1, float detail = 0)
+        public PolyhedronBufferGeometry(List<double> vertices, List<int> indices, double radius = 1, double detail = 0)
         {
-            Vertices = vertices ?? new List<float>();
+            Vertices = vertices ?? new List<double>();
             Indices = indices ?? new List<int>();
             Radius = radius;
             Detail = detail;
@@ -50,9 +50,9 @@ namespace ThreeJs4Net.Geometries
 
             GenerateUVs();
 
-            SetAttribute("position", new BufferAttribute<float>(VertexBuffer.ToArray(), 3));
-            SetAttribute("normal", new BufferAttribute<float>(VertexBuffer.ToArray(), 3));
-            SetAttribute("uv", new BufferAttribute<float>(UvBuffer.ToArray(), 2));
+            SetAttribute("position", new BufferAttribute<double>(VertexBuffer.ToArray(), 3));
+            SetAttribute("normal", new BufferAttribute<double>(VertexBuffer.ToArray(), 3));
+            SetAttribute("uv", new BufferAttribute<double>(UvBuffer.ToArray(), 2));
 
             if (detail == 0)
             {
@@ -64,7 +64,7 @@ namespace ThreeJs4Net.Geometries
             }
         }
 
-        private void Subdivide(float vDetail)
+        private void Subdivide(double vDetail)
         {
             var a = new Vector3();
             var b = new Vector3();
@@ -83,9 +83,9 @@ namespace ThreeJs4Net.Geometries
             }
         }
 
-        private void SubdivideFace(Vector3 a, Vector3 b, Vector3 c, float vDetail)
+        private void SubdivideFace(Vector3 a, Vector3 b, Vector3 c, double vDetail)
         {
-            float cols = (float)System.Math.Pow(2, vDetail);
+            double cols = (double)System.Math.Pow(2, vDetail);
 
             // we use this multidimensional array as a data structure for creating the subdivision
             var v = new List<List<Vector3>>();
@@ -98,7 +98,7 @@ namespace ThreeJs4Net.Geometries
 
                 var aj = a.Clone().Lerp(c, i / cols);
                 var bj = b.Clone().Lerp(c, i / cols);
-                float rows = cols - i;
+                double rows = cols - i;
 
                 for (j = 0; j <= rows; j++)
                 {
@@ -118,7 +118,7 @@ namespace ThreeJs4Net.Geometries
             {
                 for (j = 0; j < 2 * (cols - i) - 1; j++)
                 {
-                    var k = Mathf.Floor((float)j / 2);
+                    var k = Mathf.Floor((double)j / 2);
 
                     if (j % 2 == 0)
                     {
@@ -136,7 +136,7 @@ namespace ThreeJs4Net.Geometries
             }
         }
 
-        private void ApplyRadius(float vRadius)
+        private void ApplyRadius(double vRadius)
         {
             var vertex = new Vector3();
 
@@ -165,8 +165,8 @@ namespace ThreeJs4Net.Geometries
                 vertex.Y = VertexBuffer[i + 1];
                 vertex.Z = VertexBuffer[i + 2];
 
-                var u = (float)(Azimuth(vertex) / 2 / (Mathf.PI + 0.5));
-                var v = (float)(Inclination(vertex) / (Mathf.PI + 0.5));
+                var u = (double)(Azimuth(vertex) / 2 / (Mathf.PI + 0.5));
+                var v = (double)(Inclination(vertex) / (Mathf.PI + 0.5));
                 UvBuffer.Add(u);
                 UvBuffer.Add(1 - v);
             }
@@ -245,7 +245,7 @@ namespace ThreeJs4Net.Geometries
             }
         }
 
-        private void CorrectUV(Vector2 uv, int stride, Vector3 vector, float azimuth)
+        private void CorrectUV(Vector2 uv, int stride, Vector3 vector, double azimuth)
         {
             if (azimuth < 0 && uv.X == 1)
             {
@@ -254,20 +254,20 @@ namespace ThreeJs4Net.Geometries
 
             if (vector.X == 0 && vector.Z == 0)
             {
-                UvBuffer[stride] = (float)(azimuth / 2 / Mathf.PI + 0.5);
+                UvBuffer[stride] = (double)(azimuth / 2 / Mathf.PI + 0.5);
             }
         }
 
         // Angle around the Y axis, counter-clockwise when looking from above.
 
-        private float Azimuth(Vector3 vector)
+        private double Azimuth(Vector3 vector)
         {
             return Mathf.Atan2(vector.Z, -vector.X);
         }
 
 
         // Angle above the XZ plane.
-        private float Inclination(Vector3 vector)
+        private double Inclination(Vector3 vector)
         {
             return Mathf.Atan2(-vector.Y, Mathf.Sqrt((vector.X * vector.X) + (vector.Z * vector.Z)));
         }

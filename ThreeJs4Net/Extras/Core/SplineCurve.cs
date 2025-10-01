@@ -13,7 +13,7 @@ namespace ThreeJs4Net.Extras.Core
             this.points = points.ToList() ?? new List<Vector3>();
         }
 
-        public override Vector3 GetPoint(float t, Vector3 optionalTarget)
+        public override Vector3 GetPoint(double t, Vector3 optionalTarget)
         {
             Vector3 point = optionalTarget ?? new Vector3();
 

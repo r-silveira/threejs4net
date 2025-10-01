@@ -42,7 +42,7 @@ namespace ThreeJs4Net.Math
 
         public Vector3 GetCenter(Vector3 target)
         {
-            return target.AddVectors(this.Start, this.End).MultiplyScalar((float)0.5);
+            return target.AddVectors(this.Start, this.End).MultiplyScalar((double)0.5);
         }
 
         public Vector3 Delta(Vector3 target)
@@ -50,22 +50,22 @@ namespace ThreeJs4Net.Math
             return target.SubVectors(this.End, this.Start);
         }
 
-        public float DistanceSq()
+        public double DistanceSq()
         {
             return this.Start.DistanceToSquared(this.End);
         }
 
-        public float Distance()
+        public double Distance()
         {
             return this.Start.DistanceTo(this.End);
         }
 
-        public Vector3 At(float t, Vector3 target)
+        public Vector3 At(double t, Vector3 target)
         {
             return this.Delta(target).MultiplyScalar(t).Add(this.Start);
         }
 
-        public float ClosestPointToPointParameter(Vector3 point, bool clampToLine)
+        public double ClosestPointToPointParameter(Vector3 point, bool clampToLine)
         {
             var startP = new Vector3();
             var startEnd = new Vector3();

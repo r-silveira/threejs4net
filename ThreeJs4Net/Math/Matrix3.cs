@@ -10,7 +10,7 @@ namespace ThreeJs4Net.Math
     public class Matrix3 : INotifyPropertyChanged
     {
 
-        public float[] Elements = new float[9];
+        public double[] Elements = new double[9];
 
         /// <summary>
         /// 
@@ -23,11 +23,11 @@ namespace ThreeJs4Net.Math
         /// <summary>
         /// 
         /// </summary>
-        public float Determinant
+        public double Determinant
         {
             get
             {
-                float a = this.Elements[0],
+                double a = this.Elements[0],
                       b = this.Elements[1],
                       c = this.Elements[2],
                       d = this.Elements[3],
@@ -65,7 +65,7 @@ namespace ThreeJs4Net.Math
         /// <param name="offset"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        public float[] ApplyToVector3Array(float[] array, int offset, int length)
+        public double[] ApplyToVector3Array(double[] array, int offset, int length)
         {
             var v1 = new Vector3();
 
@@ -128,7 +128,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>
-        public float[] ApplyToVector3Array(float[] array)
+        public double[] ApplyToVector3Array(double[] array)
         {
             var offset = 0;
             var length = array.Length;
@@ -141,7 +141,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        private static bool CheckParamArray(ICollection<float> values)
+        private static bool CheckParamArray(ICollection<double> values)
         {
             if (values.Count == 9)
             {
@@ -151,7 +151,7 @@ namespace ThreeJs4Net.Math
             return false;
         }
 
-        public Matrix3 Set(float n11, float n12, float n13, float n21, float n22, float n23, float n31, float n32, float n33)
+        public Matrix3 Set(double n11, double n12, double n13, double n21, double n22, double n23, double n31, double n32, double n33)
         {
             var te = this.Elements;
 
@@ -169,7 +169,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="values"></param>
         [Obsolete("This method is using the wrong order to apply the set")]
-        public Matrix3 Set(float[] values)
+        public Matrix3 Set(double[] values)
         {
             if (CheckParamArray(values))
             {
@@ -196,7 +196,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="positionArray"></param>
         /// <returns></returns>
-        public List<float> MultiplyVector3Array(List<float> positionArray)
+        public List<double> MultiplyVector3Array(List<double> positionArray)
         {
             var v = new Vector3();
 
@@ -221,7 +221,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="scalar"></param>
         /// <returns></returns>
-        public Matrix3 MultiplyScalar(float scalar)
+        public Matrix3 MultiplyScalar(double scalar)
         {
             this.Elements[0] *= scalar;
             this.Elements[3] *= scalar;
@@ -287,7 +287,7 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public Matrix3 Transpose()
         {
-            float tmp;
+            double tmp;
             var TElements = this.Elements;
 
             tmp = TElements[1]; TElements[1] = TElements[3]; TElements[3] = tmp;
@@ -314,7 +314,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="r"></param>
         /// <returns></returns>
-        public Matrix3 TransposeIntoArray(List<float> r)
+        public Matrix3 TransposeIntoArray(List<double> r)
         {
             r[0] = this.Elements[0];
             r[1] = this.Elements[3];
@@ -334,7 +334,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="values"></param>
         /// <returns></returns>
-        public Matrix3 FromArray(float[] values)
+        public Matrix3 FromArray(double[] values)
         {
             this.Set(values);
 
@@ -345,7 +345,7 @@ namespace ThreeJs4Net.Math
         /// 
         /// </summary>
         /// <returns></returns>
-        public float[] ToArray()
+        public double[] ToArray()
         {
             return this.Elements;
         }
@@ -388,13 +388,13 @@ namespace ThreeJs4Net.Math
             var be = b.Elements;
             var te = this.Elements;
 
-            float a11 = ae[0], a12 = ae[3], a13 = ae[6];
-            float a21 = ae[1], a22 = ae[4], a23 = ae[7];
-            float a31 = ae[2], a32 = ae[5], a33 = ae[8];
+            double a11 = ae[0], a12 = ae[3], a13 = ae[6];
+            double a21 = ae[1], a22 = ae[4], a23 = ae[7];
+            double a31 = ae[2], a32 = ae[5], a33 = ae[8];
 
-            float b11 = be[0], b12 = be[3], b13 = be[6];
-            float b21 = be[1], b22 = be[4], b23 = be[7];
-            float b31 = be[2], b32 = be[5], b33 = be[8];
+            double b11 = be[0], b12 = be[3], b13 = be[6];
+            double b21 = be[1], b22 = be[4], b23 = be[7];
+            double b31 = be[2], b32 = be[5], b33 = be[8];
 
             te[0] = a11 * b11 + a12 * b21 + a13 * b31;
             te[3] = a11 * b12 + a12 * b22 + a13 * b32;

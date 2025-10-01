@@ -9,7 +9,7 @@ namespace ThreeJs4Net.Geometries
     {
         public Hashtable parameters;
 
-        public SphereGeometry(float radius, float? widthSegments = null, float? heightSegments = null, float? phiStart = null, float? phiLength = null, float? thetaStart = null, float? thetaLength = null)
+        public SphereGeometry(double radius, double? widthSegments = null, double? heightSegments = null, double? phiStart = null, double? phiLength = null, double? thetaStart = null, double? thetaLength = null)
             : base()
         {
             parameters = new Hashtable()
@@ -17,10 +17,10 @@ namespace ThreeJs4Net.Geometries
                 {"radius", radius},
                 {"withSegments", widthSegments},
                 {"heightSegments",heightSegments},
-                {"phiStart", phiStart != null ? (float)phiStart : 0},
-                {"phiLength", phiLength != null ? (float)phiLength : 2 * (float)Mathf.PI},
-                {"thetaStart", thetaStart!=null ? (float)thetaStart : 0},
-                {"thetaLength", thetaLength!=null ? (float)thetaLength : (float)Mathf.PI}
+                {"phiStart", phiStart != null ? (double)phiStart : 0},
+                {"phiLength", phiLength != null ? (double)phiLength : 2 * (double)Mathf.PI},
+                {"thetaStart", thetaStart!=null ? (double)thetaStart : 0},
+                {"thetaLength", thetaLength!=null ? (double)thetaLength : (double)Mathf.PI}
             };
 
             this.FromBufferGeometry(new SphereBufferGeometry(radius, widthSegments, heightSegments, phiStart, phiLength, thetaStart, thetaLength));
@@ -32,7 +32,7 @@ namespace ThreeJs4Net.Geometries
     {
         public Hashtable parameters;
 
-        public SphereBufferGeometry(float radius, float? widthSegments = null, float? heightSegments = null, float? phiStart = null, float? phiLength = null, float? thetaStart = null, float? thetaLength = null)
+        public SphereBufferGeometry(double radius, double? widthSegments = null, double? heightSegments = null, double? phiStart = null, double? phiLength = null, double? thetaStart = null, double? thetaLength = null)
             : base()
         {
             radius = radius != 0 ? radius : 1;
@@ -40,32 +40,32 @@ namespace ThreeJs4Net.Geometries
             if (widthSegments == null) widthSegments = 8;
             if (heightSegments == null) heightSegments = 6;
 
-            widthSegments = (float)Mathf.Max(3, Mathf.Floor(widthSegments.Value));
+            widthSegments = (double)Mathf.Max(3, Mathf.Floor(widthSegments.Value));
 
-            heightSegments = (float)Mathf.Max(2, Mathf.Floor(heightSegments.Value));
+            heightSegments = (double)Mathf.Max(2, Mathf.Floor(heightSegments.Value));
 
-            phiStart = phiStart != null ? (float)phiStart : 0;
-            phiLength = phiLength != null ? (float)phiLength : 2 * (float)Mathf.PI; ;
-            thetaStart = thetaStart != null ? (float)thetaStart : 0;
-            thetaLength = thetaLength != null ? (float)thetaLength : (float)Mathf.PI;
+            phiStart = phiStart != null ? (double)phiStart : 0;
+            phiLength = phiLength != null ? (double)phiLength : 2 * (double)Mathf.PI; ;
+            thetaStart = thetaStart != null ? (double)thetaStart : 0;
+            thetaLength = thetaLength != null ? (double)thetaLength : (double)Mathf.PI;
 
             parameters = new Hashtable()
             {
                 {"radius", radius},
                 {"withSegments", widthSegments},
                 {"heightSegments",heightSegments},
-                {"phiStart", phiStart != null ? (float)phiStart : 0},
-                {"phiLength", phiLength != null ? (float)phiLength : 2 * (float)Mathf.PI},
-                {"thetaStart", thetaStart!=null ? (float)thetaStart : 0},
-                {"thetaLength", thetaLength!=null ? (float)thetaLength : (float)Mathf.PI}
+                {"phiStart", phiStart != null ? (double)phiStart : 0},
+                {"phiLength", phiLength != null ? (double)phiLength : 2 * (double)Mathf.PI},
+                {"thetaStart", thetaStart!=null ? (double)thetaStart : 0},
+                {"thetaLength", thetaLength!=null ? (double)thetaLength : (double)Mathf.PI}
             };
 
-            var thetaEnd = (float)Mathf.Min((float)(thetaStart + thetaLength), Mathf.PI);
+            var thetaEnd = (double)Mathf.Min((double)(thetaStart + thetaLength), Mathf.PI);
 
             List<uint> indices = new List<uint>();
-            List<float> vertices = new List<float>();
-            List<float> normals = new List<float>();
-            List<float> uvs = new List<float>();
+            List<double> vertices = new List<double>();
+            List<double> normals = new List<double>();
+            List<double> uvs = new List<double>();
             List<List<int>> grid = new List<List<int>>();
 
             int index = 0;
@@ -78,35 +78,35 @@ namespace ThreeJs4Net.Geometries
 
                 List<int> verticesRow = new List<int>();
 
-                float v = iy / (float)heightSegments;
+                double v = iy / (double)heightSegments;
 
                 // special case for the poles
 
-                var uOffset = 0.0f;
+                var uOffset = 0.0;
 
                 if (iy == 0 && thetaStart == 0)
                 {
 
-                    uOffset = 0.5f / (float)widthSegments;
+                    uOffset = 0.5 / (double)widthSegments;
 
                 }
-                else if (iy == heightSegments && thetaEnd == (float)Mathf.PI)
+                else if (iy == heightSegments && thetaEnd == (double)Mathf.PI)
                 {
 
-                    uOffset = -0.5f / (float)widthSegments;
+                    uOffset = -0.5 / (double)widthSegments;
 
                 }
 
                 for (int ix = 0; ix <= widthSegments; ix++)
                 {
 
-                    float u = ix / (float)widthSegments;
+                    double u = ix / (double)widthSegments;
 
                     // vertex
 
-                    vertex.X = (float)(-radius * Mathf.Cos((float)phiStart + u * (float)phiLength) * Mathf.Sin((float)thetaStart + v * (float)thetaLength));
-                    vertex.Y = (float)(radius * Mathf.Cos((float)thetaStart + v * (float)thetaLength));
-                    vertex.Z = (float)(radius * Mathf.Sin((float)phiStart + u * (float)phiLength) * Mathf.Sin((float)thetaStart + v * (float)thetaLength));
+                    vertex.X = (double)(-radius * Mathf.Cos((double)phiStart + u * (double)phiLength) * Mathf.Sin((double)thetaStart + v * (double)thetaLength));
+                    vertex.Y = (double)(radius * Mathf.Cos((double)thetaStart + v * (double)thetaLength));
+                    vertex.Z = (double)(radius * Mathf.Sin((double)phiStart + u * (double)phiLength) * Mathf.Sin((double)thetaStart + v * (double)thetaLength));
 
                     vertices.Add(vertex.X);
                     vertices.Add(vertex.Y);
@@ -150,7 +150,7 @@ namespace ThreeJs4Net.Geometries
                         indices.Add((uint)b);
                         indices.Add((uint)d);
                     }
-                    if (iy != (int)(heightSegments - 1) || thetaEnd < (float)Mathf.PI)
+                    if (iy != (int)(heightSegments - 1) || thetaEnd < (double)Mathf.PI)
                     {
                         indices.Add((uint)b);
                         indices.Add((uint)c);
@@ -162,9 +162,9 @@ namespace ThreeJs4Net.Geometries
             // build geometry
 
             this.SetIndex(new BufferAttribute<uint>(indices.ToArray(), 1));
-            this.SetAttribute("position", new BufferAttribute<float>(vertices.ToArray(), 3));
-            this.SetAttribute("normal", new BufferAttribute<float>(normals.ToArray(), 3));
-            this.SetAttribute("uv", new BufferAttribute<float>(uvs.ToArray(), 2));
+            this.SetAttribute("position", new BufferAttribute<double>(vertices.ToArray(), 3));
+            this.SetAttribute("normal", new BufferAttribute<double>(normals.ToArray(), 3));
+            this.SetAttribute("uv", new BufferAttribute<double>(uvs.ToArray(), 2));
         }
     }
 }

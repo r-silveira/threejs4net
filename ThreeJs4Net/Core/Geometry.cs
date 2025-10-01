@@ -16,7 +16,7 @@ namespace ThreeJs4Net.Core
         public List<Face3> Faces = new List<Face3>();
         public List<List<List<Vector2>>> FaceVertexUvs = new List<List<List<Vector2>>>();
 
-        public List<float> LineDistances = new List<float>();
+        public List<double> LineDistances = new List<double>();
 
         public bool HasTangents = false;
 
@@ -48,19 +48,19 @@ namespace ThreeJs4Net.Core
 
 
         #region --- Already in R116 ---
-        public Geometry RotateX(float angle)
+        public Geometry RotateX(double angle)
         {
             // rotate geometry around world x-axis
             return this.ApplyMatrix4(new Matrix4().MakeRotationX(angle));
         }
 
-        public Geometry RotateY(float angle)
+        public Geometry RotateY(double angle)
         {
             // rotate geometry around world y-axis
             return this.ApplyMatrix4(new Matrix4().MakeRotationY(angle));
         }
 
-        public Geometry RotateZ(float angle)
+        public Geometry RotateZ(double angle)
         {
             // rotate geometry around world z-axis
             return this.ApplyMatrix4(new Matrix4().MakeRotationZ(angle));
@@ -92,7 +92,7 @@ namespace ThreeJs4Net.Core
             var center = this.BoundingSphere.Center;
             var radius = this.BoundingSphere.Radius;
 
-            var s = radius == 0 ? 1 : (float)1.0 / radius;
+            var s = radius == 0 ? 1 : (double)1.0 / radius;
 
             var matrix = new Matrix4();
             matrix.Set(
@@ -469,7 +469,7 @@ namespace ThreeJs4Net.Core
             }
         }
 
-        public Geometry Scale(float x, float y, float z)
+        public Geometry Scale(double x, double y, double z)
         {
             return this.ApplyMatrix4(new Matrix4().MakeScale(x, y, z));
         }
@@ -513,7 +513,7 @@ namespace ThreeJs4Net.Core
             return this;
         }
 
-        public Geometry Translate(float x, float y, float z)
+        public Geometry Translate(double x, double y, double z)
         {
             // translate geometry
             var m1 = new Matrix4().MakeTranslation(x, y, z);
@@ -532,8 +532,8 @@ namespace ThreeJs4Net.Core
                 throw new Exception("THREE.Geometry.fromBufferGeometry(): Position attribute required for conversion.");
             }
 
-            var positions = geometry.GetAttribute<float>("position").Array;
-            var normals = geometry.GetAttribute<float>("normal") != null ? geometry.GetAttribute<float>("normal").Array : null;
+            var positions = geometry.GetAttribute<double>("position").Array;
+            var normals = geometry.GetAttribute<double>("normal") != null ? geometry.GetAttribute<double>("normal").Array : null;
             var colors = geometry.GetAttribute<Color>("color") != null ? geometry.GetAttribute<Color>("color").Array : null;
             //TODO: var uvs = geometry.GetAttribute<Vector2>("uv") != null ? geometry.GetAttribute<Vector2>("uv").Array : null;
             //TODO: var uvs2 = geometry.GetAttribute<Vector2>("uv2") != null ? geometry.GetAttribute<Vector2>("uv2").Array : null;

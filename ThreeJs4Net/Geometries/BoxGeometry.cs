@@ -23,9 +23,9 @@ namespace ThreeJs4Net.Geometries
         ///     Constructor
         /// </summary>
         public BoxGeometry(
-            float width,
-            float height,
-            float depth,
+            double width,
+            double height,
+            double depth,
             int widthSegments = 1,
             int heightSegments = 1,
             int depthSegments = 1)
@@ -84,9 +84,9 @@ namespace ThreeJs4Net.Geometries
             string v,
             int udir,
             int vdir,
-            float width,
-            float height,
-            float depth,
+            double width,
+            double height,
+            double depth,
             int materialIndex)
         {
             var w = string.Empty;
@@ -188,11 +188,11 @@ namespace ThreeJs4Net.Geometries
         private int numberOfVertices = 0;
         private int groupStart = 0;
         private List<uint> indices = new List<uint>();
-        private List<float> vertices = new List<float>();
-        private List<float> normals = new List<float>();
-        private List<float> uvs = new List<float>();
+        private List<double> vertices = new List<double>();
+        private List<double> normals = new List<double>();
+        private List<double> uvs = new List<double>();
 
-        public BoxBufferGeometry(float width = 1, float height = 1, float depth = 1, int widthSegments = 1,
+        public BoxBufferGeometry(double width = 1, double height = 1, double depth = 1, int widthSegments = 1,
             int heightSegments = 1, int depthSegments = 1)
         {
             parameters = new BoxBufferGeometryParams()
@@ -214,12 +214,12 @@ namespace ThreeJs4Net.Geometries
 
             //geometry.AddAttribute( "index", new BufferAttribute<uint>( indices.ToArray(), 1 ) );
             this.SetIndex(new BufferAttribute<uint>( indices.ToArray(), 1 ) );
-            this.SetAttribute( "position", new BufferAttribute<float>( vertices.ToArray(), 3 ) );
-            this.SetAttribute( "normal", new BufferAttribute<float>( normals.ToArray(), 3 ) );
-            this.SetAttribute( "uv", new BufferAttribute<float>( uvs.ToArray(), 2 ) );
+            this.SetAttribute( "position", new BufferAttribute<double>( vertices.ToArray(), 3 ) );
+            this.SetAttribute( "normal", new BufferAttribute<double>( normals.ToArray(), 3 ) );
+            this.SetAttribute( "uv", new BufferAttribute<double>( uvs.ToArray(), 2 ) );
         }
 
-        private void buildPlane(char u1, char v1, char w1, int udir, int vdir, float width, float height, float depth, int gridX, int gridY, int materialIndex)
+        private void buildPlane(char u1, char v1, char w1, int udir, int vdir, double width, double height, double depth, int gridX, int gridY, int materialIndex)
         {
             int u = u1 == 'x' ? 0 : u1 == 'y' ? 1 : 2;
             int v = v1 == 'x' ? 0 : v1 == 'y' ? 1 : 2;
@@ -318,12 +318,12 @@ namespace ThreeJs4Net.Geometries
 
         internal class BoxBufferGeometryParams
         {
-            public float Width { get; set; }
-            public float Height { get; set; }
-            public float Depth { get; set; }
+            public double Width { get; set; }
+            public double Height { get; set; }
+            public double Depth { get; set; }
             public int WidthSegments { get; set; }
-            public float HeightSegments { get; set; }
-            public float DepthSegments { get; set; }
+            public double HeightSegments { get; set; }
+            public double DepthSegments { get; set; }
         }
     }
 }

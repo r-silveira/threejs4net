@@ -46,18 +46,18 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
             }
 
             var indices = index.Array;
-            var positions = geometry.GetAttribute<float>("position").Array;
-            var normals = geometry.GetAttribute<float>("normal").Array;
-            var uvs = geometry.GetAttribute<float>("uv").Array;
+            var positions = geometry.GetAttribute<double>("position").Array;
+            var normals = geometry.GetAttribute<double>("normal").Array;
+            var uvs = geometry.GetAttribute<double>("uv").Array;
 
             var nVertices = positions.Length / 3;
 
             if (attributes["tangent"] == null)
             {
-                geometry.SetAttribute("tangent", new BufferAttribute<float>(new float[4 * nVertices], 4));
+                geometry.SetAttribute("tangent", new BufferAttribute<double>(new double[4 * nVertices], 4));
             }
 
-            var tangents = geometry.GetAttribute<float>("tangent").Array;
+            var tangents = geometry.GetAttribute<double>("tangent").Array;
 
             var tan1 = new List<Vector3>();
             var tan2 = new List<Vector3>();
@@ -93,10 +93,10 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                 uvB.Sub(uvA);
                 uvC.Sub(uvA);
 
-                float r = (float)1.0 / (uvB.X * uvC.Y - uvC.X * uvB.Y);
+                double r = (double)1.0 / (uvB.X * uvC.Y - uvC.X * uvB.Y);
 
                 // silently ignore degenerate uv triangles having coincident or colinear vertices
-                if (float.IsInfinity(r))
+                if (double.IsInfinity(r))
                 {
                     return;
                 }
@@ -144,8 +144,8 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
             var n = new Vector3();
             var n2 = new Vector3();
             Vector3 t;
-            float test;
-            float w;
+            double test;
+            double w;
 
             void handleVertex(int v)
             {
@@ -161,7 +161,7 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                 // Calculate handedness
                 tmp2.CrossVectors(n2, t);
                 test = tmp2.Dot(tan2[v]);
-                w = (test < 0.0) ? (float)-1.0 : (float)1.0;
+                w = (test < 0.0) ? (double)-1.0 : (double)1.0;
 
                 tangents[v * 4] = tmp.X;
                 tangents[v * 4 + 1] = tmp.Y;
@@ -282,7 +282,7 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                     }
                     else if (geometry.Attributes["position"] != null)
                     {
-                        var position = geometry.GetAttribute<float>("position");
+                        var position = geometry.GetAttribute<double>("position");
                         count = position.Count;
                     }
                     else
@@ -305,7 +305,7 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                 for (var i = 0; i < geometries.Length; ++i)
                 {
                     var geometry = geometries[i];
-                    var position = geometry.GetAttribute<float>("position");
+                    var position = geometry.GetAttribute<double>("position");
                     var index = geometry.Index;
                     for (var j = 0; j < index.Count; ++j)
                     {
@@ -349,7 +349,7 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                         mergedAttribute = MergeBufferAttributes<UInt16>(attr.Value.ToArray());
                         break;
                     case "Single":
-                        mergedAttribute = MergeBufferAttributes<float>(attr.Value.ToArray());
+                        mergedAttribute = MergeBufferAttributes<double>(attr.Value.ToArray());
                         break;
                 }
 

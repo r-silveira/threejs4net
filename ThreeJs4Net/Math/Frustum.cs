@@ -1,5 +1,4 @@
 ﻿using ThreeJs4Net.Core;
-using ThreeJs4Net.Extras.Objects;
 
 namespace ThreeJs4Net.Math
 {
@@ -76,10 +75,10 @@ namespace ThreeJs4Net.Math
         {
             var planes = this.Planes;
             var me = m.Elements;
-            float me0 = me[0], me1 = me[1], me2 = me[2], me3 = me[3];
-            float me4 = me[4], me5 = me[5], me6 = me[6], me7 = me[7];
-            float me8 = me[8], me9 = me[9], me10 = me[10], me11 = me[11];
-            float me12 = me[12], me13 = me[13], me14 = me[14], me15 = me[15];
+            double me0 = me[0], me1 = me[1], me2 = me[2], me3 = me[3];
+            double me4 = me[4], me5 = me[5], me6 = me[6], me7 = me[7];
+            double me8 = me[8], me9 = me[9], me10 = me[10], me11 = me[11];
+            double me12 = me[12], me13 = me[13], me14 = me[14], me15 = me[15];
 
             planes[0].SetComponents(me3 - me0, me7 - me4, me11 - me8, me15 - me12).Normalize();
             planes[1].SetComponents(me3 + me0, me7 + me4, me11 + me8, me15 + me12).Normalize();
@@ -104,15 +103,6 @@ namespace ThreeJs4Net.Math
             return this.IntersectsSphere(sphere);
         }
 
-        public bool IntersectsSprite(Sprite sprite)
-        {
-            var sphere = new Sphere();
-            sphere.Center.Set(0, 0, 0);
-            sphere.Radius = (float)0.7071067811865476;
-            sphere.ApplyMatrix4(sprite.MatrixWorld);
-
-            return this.IntersectsSphere(sphere);
-        }
 
         public bool IntersectsSphere(Sphere sphere)
         {

@@ -8,7 +8,7 @@ namespace ThreeJs4Net.Geometries
     public class TorusGeometry : Geometry
     {
         public Hashtable parameters;
-        public TorusGeometry(float? radius = null, float? tube = null, float? radialSegments = null, float? tubularSegments = null, float? arc = null) : base()
+        public TorusGeometry(float? radius = null, double? tube = null, double? radialSegments = null, double? tubularSegments = null, double? arc = null) : base()
         {
             parameters = new Hashtable()
             {
@@ -29,13 +29,13 @@ namespace ThreeJs4Net.Geometries
     {
         public Hashtable parameters;
 
-        public TorusBufferGeometry(float? radius = null, float? tube = null, float? radialSegments = null, float? tubularSegments = null, float? arc = null) : base()
+        public TorusBufferGeometry(double? radius = null, double? tube = null, double? radialSegments = null, double? tubularSegments = null, double? arc = null) : base()
         {
             radius = radius != null ? radius : 1;
             tube = tube != null ? tube : 1;
-            radialSegments = radialSegments != null ? (float)Mathf.Floor(radialSegments.Value) : 8;
-            tubularSegments = tubularSegments != null ? (float)Mathf.Floor(tubularSegments.Value) : 6;
-            arc = arc != null ? arc : (float)Mathf.PI * 2;
+            radialSegments = radialSegments != null ? (double)Mathf.Floor(radialSegments.Value) : 8;
+            tubularSegments = tubularSegments != null ? (double)Mathf.Floor(tubularSegments.Value) : 6;
+            arc = arc != null ? arc : (double)Mathf.PI * 2;
             parameters = new Hashtable()
             {
                 {"radius",radius },
@@ -46,9 +46,9 @@ namespace ThreeJs4Net.Geometries
             };
 
             List<uint> indices = new List<uint>();
-            List<float> vertices = new List<float>();
-            List<float> normals = new List<float>();
-            List<float> uvs = new List<float>();
+            List<double> vertices = new List<double>();
+            List<double> normals = new List<double>();
+            List<double> uvs = new List<double>();
 
             // helper variables
 
@@ -66,21 +66,21 @@ namespace ThreeJs4Net.Geometries
                 for (i = 0; i <= tubularSegments; i++)
                 {
 
-                    float u = i / (float)tubularSegments * (float)arc;
-                    float v = j / (float)radialSegments * (float)Mathf.PI * 2;
+                    double u = i / (double)tubularSegments * (double)arc;
+                    double v = j / (double)radialSegments * (double)Mathf.PI * 2;
 
                     // vertex
 
-                    vertex.X = (float)((radius + tube * Mathf.Cos(v)) * Mathf.Cos(u));
-                    vertex.Y = (float)((radius + tube * Mathf.Cos(v)) * Mathf.Sin(u));
-                    vertex.Z = (float)(tube * Mathf.Sin(v));
+                    vertex.X = (double)((radius + tube * Mathf.Cos(v)) * Mathf.Cos(u));
+                    vertex.Y = (double)((radius + tube * Mathf.Cos(v)) * Mathf.Sin(u));
+                    vertex.Z = (double)(tube * Mathf.Sin(v));
 
                     vertices.Add(vertex.X, vertex.Y, vertex.Z);
 
                     // normal
 
-                    center.X = radius.Value * (float)Mathf.Cos(u);
-                    center.Y = radius.Value * (float)Mathf.Sin(u);
+                    center.X = radius.Value * (double)Mathf.Cos(u);
+                    center.Y = radius.Value * (double)Mathf.Sin(u);
                     normal.SubVectors(vertex, center).Normalize();
 
                     normals.Add(normal.X, normal.Y, normal.Z);
@@ -124,11 +124,11 @@ namespace ThreeJs4Net.Geometries
 
             this.SetIndex(new BufferAttribute<uint>(indices.ToArray(), 1));
 
-            this.SetAttribute("position", new BufferAttribute<float>(vertices.ToArray(), 3));
+            this.SetAttribute("position", new BufferAttribute<double>(vertices.ToArray(), 3));
 
-            this.SetAttribute("normal", new BufferAttribute<float>(normals.ToArray(), 3));
+            this.SetAttribute("normal", new BufferAttribute<double>(normals.ToArray(), 3));
 
-            this.SetAttribute("uv", new BufferAttribute<float>(uvs.ToArray(), 2));
+            this.SetAttribute("uv", new BufferAttribute<double>(uvs.ToArray(), 2));
         }
     }
 }

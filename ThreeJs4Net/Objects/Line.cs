@@ -72,7 +72,7 @@ namespace ThreeJs4Net.Objects
 				var geometryB = (BufferGeometry)geometry;
 				var index = geometryB.Index;
 				//var attributes = geometryBuffer.Attributes;
-				var positions = geometryB.GetAttribute<float>("position");
+				var positions = geometryB.GetAttribute<double>("position");
 
 				if (index != null)
 				{
@@ -89,7 +89,7 @@ namespace ThreeJs4Net.Objects
 
 						var distSq = _ray.DistanceSqToSegment(vStart, vEnd, interRay, interSegment);
 
-						if (distSq > localThresholdSq || float.IsNaN(distSq)) continue;
+						if (distSq > localThresholdSq || double.IsNaN(distSq)) continue;
 
 						interRay.ApplyMatrix4(this.MatrixWorld); //Move back to world space for distance calculation
 
@@ -120,7 +120,7 @@ namespace ThreeJs4Net.Objects
 
 						var distSq = _ray.DistanceSqToSegment(vStart, vEnd, interRay, interSegment);
 
-						if (distSq > localThresholdSq || float.IsNaN(distSq)) continue;
+						if (distSq > localThresholdSq || double.IsNaN(distSq)) continue;
 
 						interRay.ApplyMatrix4(this.MatrixWorld); //Move back to world space for distance calculation
 
@@ -151,7 +151,7 @@ namespace ThreeJs4Net.Objects
 				{
 					var distSq = _ray.DistanceSqToSegment(vertices[i], vertices[i + 1], interRay, interSegment);
 
-					if (distSq > localThresholdSq || float.IsNaN(distSq)) continue;
+					if (distSq > localThresholdSq || double.IsNaN(distSq)) continue;
 
 					interRay.ApplyMatrix4(this.MatrixWorld); //Move back to world space for distance calculation
 
@@ -180,8 +180,8 @@ namespace ThreeJs4Net.Objects
                 // we assume non-indexed geometry
                 if (bufGeometry.Index == null)
                 {
-                    var positionAttribute = bufGeometry.GetAttribute<float>("position");
-                    var lineDistances = new List<float>();
+                    var positionAttribute = bufGeometry.GetAttribute<double>("position");
+                    var lineDistances = new List<double>();
                     lineDistances.Add(0);
 
                     for (var i = 1; i < positionAttribute.Count; i++)
@@ -193,7 +193,7 @@ namespace ThreeJs4Net.Objects
                         lDistance  += _start.DistanceTo(_end);
                         lineDistances.Add(lDistance);
                     }
-                    bufGeometry.SetAttribute("lineDistance", new BufferAttribute<float>(lineDistances.ToArray(), 1));
+                    bufGeometry.SetAttribute("lineDistance", new BufferAttribute<double>(lineDistances.ToArray(), 1));
                 }
                 else
                 {

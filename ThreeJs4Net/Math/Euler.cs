@@ -15,9 +15,9 @@ namespace ThreeJs4Net.Math
         }
 
         private RotationOrder order = DefaultOrder;
-        private float x;
-        private float y;
-        private float z;
+        private double x;
+        private double y;
+        private double z;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Euler()
@@ -27,7 +27,7 @@ namespace ThreeJs4Net.Math
             this.Z = 0;
         }
 
-        public Euler(float x, float y, float z, RotationOrder order = RotationOrder.XYZ)
+        public Euler(double x, double y, double z, RotationOrder order = RotationOrder.XYZ)
         {
             this.X = x;
             this.Y = y;
@@ -37,12 +37,12 @@ namespace ThreeJs4Net.Math
 
         #region --- Already in R116 ---
 
-        public Euler Set(float a, float b, float c)
+        public Euler Set(double a, double b, double c)
         {
             return Set(a, b, c, RotationOrder.XYZ);
         }
 
-        public Euler Set(float a, float b, float c, RotationOrder o)
+        public Euler Set(double a, double b, double c, RotationOrder o)
         {
             this.X = a;
             this.Y = b;
@@ -58,19 +58,19 @@ namespace ThreeJs4Net.Math
             set { order = value; OnPropertyChanged(); }
         }
 
-        public float X
+        public double X
         {
             get => x;
             set { x = value; OnPropertyChanged(); }
         }
 
-        public float Y
+        public double Y
         {
             get => y;
             set { y = value; OnPropertyChanged(); }
         }
 
-        public float Z
+        public double Z
         {
             get => z;
             set { z = value; OnPropertyChanged(); }
@@ -106,96 +106,96 @@ namespace ThreeJs4Net.Math
             switch (rotationOrder)
             {
                 case RotationOrder.XYZ:
-                    this.y = (float)System.Math.Asin(MathUtils.Clamp(m13, -1, 1));
+                    this.y = (double)System.Math.Asin(MathUtils.Clamp(m13, -1, 1));
 
                     if (System.Math.Abs(m13) < 0.99999)
                     {
-                        this.x = (float)System.Math.Atan2(-m23, m33);
-                        this.z = (float)System.Math.Atan2(-m12, m11);
+                        this.x = (double)System.Math.Atan2(-m23, m33);
+                        this.z = (double)System.Math.Atan2(-m12, m11);
                     }
                     else
                     {
-                        this.x = (float)System.Math.Atan2(m32, m22);
+                        this.x = (double)System.Math.Atan2(m32, m22);
                         this.z = 0;
                     }
 
                     break;
                 case RotationOrder.YXZ:
-                    this.x = (float)System.Math.Asin(-MathUtils.Clamp(m23, -1, 1));
+                    this.x = (double)System.Math.Asin(-MathUtils.Clamp(m23, -1, 1));
 
                     if (System.Math.Abs(m23) < 0.99999)
                     {
-                        this.y = (float)System.Math.Atan2(m13, m33);
-                        this.z = (float)System.Math.Atan2(m21, m22);
+                        this.y = (double)System.Math.Atan2(m13, m33);
+                        this.z = (double)System.Math.Atan2(m21, m22);
                     }
                     else
                     {
-                        this.y = (float)System.Math.Atan2(-m31, m11);
+                        this.y = (double)System.Math.Atan2(-m31, m11);
                         this.z = 0;
                     }
 
                     break;
                 case RotationOrder.ZXY:
-                    this.x = (float)System.Math.Asin(MathUtils.Clamp(m32, -1, 1));
+                    this.x = (double)System.Math.Asin(MathUtils.Clamp(m32, -1, 1));
 
                     if (System.Math.Abs(m32) < 0.99999)
                     {
-                        this.y = (float)System.Math.Atan2(-m31, m33);
-                        this.z = (float)System.Math.Atan2(-m12, m22);
+                        this.y = (double)System.Math.Atan2(-m31, m33);
+                        this.z = (double)System.Math.Atan2(-m12, m22);
                     }
                     else
                     {
                         this.y = 0;
-                        this.z = (float)System.Math.Atan2(m21, m11);
+                        this.z = (double)System.Math.Atan2(m21, m11);
                     }
 
                     break;
                 case RotationOrder.ZYX:
-                    this.y = (float)System.Math.Asin(-MathUtils.Clamp(m31, -1, 1));
+                    this.y = (double)System.Math.Asin(-MathUtils.Clamp(m31, -1, 1));
 
                     if (System.Math.Abs(m31) < 0.99999)
                     {
-                        this.x = (float)System.Math.Atan2(m32, m33);
-                        this.z = (float)System.Math.Atan2(m21, m11);
+                        this.x = (double)System.Math.Atan2(m32, m33);
+                        this.z = (double)System.Math.Atan2(m21, m11);
                     }
                     else
                     {
                         this.x = 0;
-                        this.z = (float)System.Math.Atan2(-m12, m22);
+                        this.z = (double)System.Math.Atan2(-m12, m22);
                     }
 
                     break;
                 case RotationOrder.YZX:
-                    this.z = (float)System.Math.Asin(MathUtils.Clamp(m21, -1, 1));
+                    this.z = (double)System.Math.Asin(MathUtils.Clamp(m21, -1, 1));
 
                     if (System.Math.Abs(m21) < 0.99999)
                     {
 
-                        this.x = (float)System.Math.Atan2(-m23, m22);
-                        this.y = (float)System.Math.Atan2(-m31, m11);
+                        this.x = (double)System.Math.Atan2(-m23, m22);
+                        this.y = (double)System.Math.Atan2(-m31, m11);
 
                     }
                     else
                     {
 
                         this.x = 0;
-                        this.y = (float)System.Math.Atan2(m13, m33);
+                        this.y = (double)System.Math.Atan2(m13, m33);
 
                     }
 
                     break;
                 case RotationOrder.XZY:
-                    this.z = (float)System.Math.Asin(-MathUtils.Clamp(m12, -1, 1));
+                    this.z = (double)System.Math.Asin(-MathUtils.Clamp(m12, -1, 1));
 
                     if (System.Math.Abs(m12) < 0.99999)
                     {
-                        this.x = (float)System.Math.Atan2(m32, m22);
-                        this.y = (float)System.Math.Atan2(m13, m11);
+                        this.x = (double)System.Math.Atan2(m32, m22);
+                        this.y = (double)System.Math.Atan2(m13, m11);
                     }
                     else
                     {
 
-                        this.x = (float)System.Math.Atan2(-m23, m33);
+                        this.x = (double)System.Math.Atan2(-m23, m33);
                         this.y = 0;
 
                     }
@@ -225,7 +225,7 @@ namespace ThreeJs4Net.Math
             return this.Set(v.X, v.Y, v.Z, rotationOrder ?? this.Order);
         }
 
-        public Euler FromArray(float[] array)
+        public Euler FromArray(double[] array)
         {
             this.x = array[0];
             this.y = array[1];
@@ -240,9 +240,9 @@ namespace ThreeJs4Net.Math
             return this;
         }
 
-        public float[] ToArray(float[] array = null, int offset = 0)
+        public double[] ToArray(double[] array = null, int offset = 0)
         {
-            array ??= new float[4];
+            array ??= new double[4];
 
             array[offset] = this.x;
             array[offset + 1] = this.y;

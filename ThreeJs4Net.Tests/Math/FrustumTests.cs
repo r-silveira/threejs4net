@@ -1,5 +1,4 @@
-﻿using ThreeJs4Net.Extras.Objects;
-using ThreeJs4Net.Geometries;
+﻿using ThreeJs4Net.Geometries;
 using ThreeJs4Net.Math;
 using ThreeJs4Net.Objects;
 using Xunit;
@@ -119,16 +118,16 @@ namespace ThreeJs4Net.Tests.Math
 
             Assert.True(!a.ContainsPoint(new Vector3(0, 0, 0)));
             Assert.True(a.ContainsPoint(new Vector3(0, 0, -50)));
-            Assert.True(a.ContainsPoint(new Vector3(0, 0, (float)-1.001)));
-            Assert.True(a.ContainsPoint(new Vector3(-1, -1, (float)-1.001)));
-            Assert.True(!a.ContainsPoint(new Vector3((float)-1.1, (float)-1.1, (float)-1.001)));
-            Assert.True(a.ContainsPoint(new Vector3(1, 1, (float)-1.001)));
-            Assert.True(!a.ContainsPoint(new Vector3((float)1.1, (float)1.1, (float)-1.001)));
+            Assert.True(a.ContainsPoint(new Vector3(0, 0, (double)-1.001)));
+            Assert.True(a.ContainsPoint(new Vector3(-1, -1, (double)-1.001)));
+            Assert.True(!a.ContainsPoint(new Vector3((double)-1.1, (double)-1.1, (double)-1.001)));
+            Assert.True(a.ContainsPoint(new Vector3(1, 1, (double)-1.001)));
+            Assert.True(!a.ContainsPoint(new Vector3((double)1.1, (double)1.1, (double)-1.001)));
             Assert.True(a.ContainsPoint(new Vector3(0, 0, -100)));
             Assert.True(a.ContainsPoint(new Vector3(-1, -1, -100)));
-            Assert.True(!a.ContainsPoint(new Vector3((float)-1.1, (float)-1.1, (float)-100.1)));
+            Assert.True(!a.ContainsPoint(new Vector3((double)-1.1, (double)-1.1, (double)-100.1)));
             Assert.True(a.ContainsPoint(new Vector3(1, 1, -100)));
-            Assert.True(!a.ContainsPoint(new Vector3((float)1.1, (float)1.1, (float)-100.1)));
+            Assert.True(!a.ContainsPoint(new Vector3((double)1.1, (double)1.1, (double)-100.1)));
             Assert.True(!a.ContainsPoint(new Vector3(0, 0, -101)));
         }
 
@@ -140,16 +139,16 @@ namespace ThreeJs4Net.Tests.Math
 
             Assert.True(!a.ContainsPoint(new Vector3(0, 0, 0)));
             Assert.True(a.ContainsPoint(new Vector3(0, 0, -50)));
-            Assert.True(a.ContainsPoint(new Vector3(0, 0, (float)-1.001)));
-            Assert.True(a.ContainsPoint(new Vector3(-1, -1, (float)-1.001)));
-            Assert.True(!a.ContainsPoint(new Vector3((float)-1.1, (float)-1.1, (float)-1.001)));
-            Assert.True(a.ContainsPoint(new Vector3(1, 1, (float)-1.001)));
-            Assert.True(!a.ContainsPoint(new Vector3((float)1.1, (float)1.1, (float)-1.001)));
-            Assert.True(a.ContainsPoint(new Vector3(0, 0, (float)-99.999)));
-            Assert.True(a.ContainsPoint(new Vector3((float)-99.999, (float)-99.999, (float)-99.999)));
-            Assert.True(!a.ContainsPoint(new Vector3((float)-100.1, (float)-100.1, (float)-100.1)));
-            Assert.True(a.ContainsPoint(new Vector3((float)99.999, (float)99.999, (float)-99.999)));
-            Assert.True(!a.ContainsPoint(new Vector3((float)100.1, (float)100.1, (float)-100.1)));
+            Assert.True(a.ContainsPoint(new Vector3(0, 0, (double)-1.001)));
+            Assert.True(a.ContainsPoint(new Vector3(-1, -1, (double)-1.001)));
+            Assert.True(!a.ContainsPoint(new Vector3((double)-1.1, (double)-1.1, (double)-1.001)));
+            Assert.True(a.ContainsPoint(new Vector3(1, 1, (double)-1.001)));
+            Assert.True(!a.ContainsPoint(new Vector3((double)1.1, (double)1.1, (double)-1.001)));
+            Assert.True(a.ContainsPoint(new Vector3(0, 0, (double)-99.999)));
+            Assert.True(a.ContainsPoint(new Vector3((double)-99.999, (double)-99.999, (double)-99.999)));
+            Assert.True(!a.ContainsPoint(new Vector3((double)-100.1, (double)-100.1, (double)-100.1)));
+            Assert.True(a.ContainsPoint(new Vector3((double)99.999, (double)99.999, (double)-99.999)));
+            Assert.True(!a.ContainsPoint(new Vector3((double)100.1, (double)100.1, (double)-100.1)));
             Assert.True(!a.ContainsPoint(new Vector3(0, 0, -101)));
         }
 
@@ -183,44 +182,25 @@ namespace ThreeJs4Net.Tests.Math
             var a = new Frustum().SetFromProjectionMatrix(m);
 
             Assert.True(!a.IntersectsSphere(new Sphere(new Vector3(0, 0, 0), 0)));
-            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3(0, 0, 0), (float)0.9)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, 0), (float)1.1)));
+            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3(0, 0, 0), (double)0.9)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, 0), (double)1.1)));
             Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, -50), 0)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, (float)-1.001), 0)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(-1, -1, (float)-1.001), 0)));
-            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3((float)-1.1, (float)-1.1, (float)-1.001), 0)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((float)-1.1, (float)-1.1, (float)-1.001), (float)0.5)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(1, 1, (float)-1.001), 0)));
-            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3((float)1.1, (float)1.1, (float)-1.001), 0)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((float)1.1, (float)1.1, (float)-1.001), (float)0.5)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, (float)-99.999), 0)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((float)-99.999, (float)-99.999, (float)-99.999), 0)));
-            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3((float)-100.1, (float)-100.1, (float)-100.1), 0)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((float)-100.1, (float)-100.1, (float)-100.1), (float)0.5)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((float)99.999, (float)99.999, (float)-99.999), 0)));
-            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3((float)100.1, (float)100.1, (float)-100.1), 0)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((float)100.1, (float)100.1, (float)-100.1), (float)0.2)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, (double)-1.001), 0)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(-1, -1, (double)-1.001), 0)));
+            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3((double)-1.1, (double)-1.1, (double)-1.001), 0)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((double)-1.1, (double)-1.1, (double)-1.001), (double)0.5)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(1, 1, (double)-1.001), 0)));
+            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3((double)1.1, (double)1.1, (double)-1.001), 0)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((double)1.1, (double)1.1, (double)-1.001), (double)0.5)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, (double)-99.999), 0)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((double)-99.999, (double)-99.999, (double)-99.999), 0)));
+            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3((double)-100.1, (double)-100.1, (double)-100.1), 0)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((double)-100.1, (double)-100.1, (double)-100.1), (double)0.5)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((double)99.999, (double)99.999, (double)-99.999), 0)));
+            Assert.True(!a.IntersectsSphere(new Sphere(new Vector3((double)100.1, (double)100.1, (double)-100.1), 0)));
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3((double)100.1, (double)100.1, (double)-100.1), (double)0.2)));
             Assert.True(!a.IntersectsSphere(new Sphere(new Vector3(0, 0, -101), 0)));
-            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, -101), (float)1.1)));
-        }
-
-
-
-
-        [Fact()]
-        public void IntersectsSpriteTest()
-        {
-            var m = new Matrix4().MakePerspective(-1, 1, 1, -1, 1, 100);
-            var a = new Frustum().SetFromProjectionMatrix(m);
-            var sprite = new Sprite();
-            bool intersects = a.IntersectsSprite(sprite);
-            Assert.False(intersects);
-
-            sprite.Position.Set(-1, -1, -1);
-            sprite.UpdateMatrixWorld();
-
-            intersects = a.IntersectsSprite(sprite);
-            Assert.True(intersects, "Successful intersection");
+            Assert.True(a.IntersectsSphere(new Sphere(new Vector3(0, 0, -101), (double)1.1)));
         }
 
         [Fact()]

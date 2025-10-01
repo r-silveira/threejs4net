@@ -4,7 +4,6 @@ using ThreeJs4Net.Objects;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Math;
-using System.Collections.Generic;
 
 namespace ThreeJs4Net.Tests.Geometries
 {

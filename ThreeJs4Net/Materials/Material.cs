@@ -15,7 +15,7 @@ namespace ThreeJs4Net.Materials
         public string Name;
         public string type = "Material";
         public int Side = Three.FrontSide;
-        public float Opacity = 1;
+        public double Opacity = 1;
         public bool Transparent = false;
         public int Blending = Three.NormalBlending;
         //public int BlendSrc = Three.SrcAlphaFactor;

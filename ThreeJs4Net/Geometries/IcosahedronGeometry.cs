@@ -5,7 +5,7 @@ namespace ThreeJs4Net.Geometries
 {
     public class IcosahedronGeometry : Geometry
     {
-        public IcosahedronGeometry(float radius = 1, float detail = 0)
+        public IcosahedronGeometry(double radius = 1, double detail = 0)
         {
             FromBufferGeometry(new IcosahedronBufferGeometry(radius, detail));
             MergeVertices();
@@ -14,9 +14,9 @@ namespace ThreeJs4Net.Geometries
 
     public class IcosahedronBufferGeometry : PolyhedronBufferGeometry
     {
-        static float t = (1 + (float)System.Math.Sqrt(5)) / 2;
+        static double t = (1 + (double)System.Math.Sqrt(5)) / 2;
 
-        private new static List<float> Vertices { get; } = new List<float>
+        private new static List<double> Vertices { get; } = new List<double>
         {
             - 1, t, 0,  1, t, 0,    - 1, - t, 0,    1, - t, 0,
             0, - 1, t,     0, 1, t,    0, - 1, - t,    0, 1, - t,
@@ -32,7 +32,7 @@ namespace ThreeJs4Net.Geometries
             4, 9, 5,   2, 4, 11,   6, 2, 10,   8, 6, 7,    9, 8, 1
         };
 
-        public IcosahedronBufferGeometry(float radius = 1, float detail = 0) : base(Vertices, Indices, radius, detail)
+        public IcosahedronBufferGeometry(double radius = 1, double detail = 0) : base(Vertices, Indices, radius, detail)
         {
         }
     }

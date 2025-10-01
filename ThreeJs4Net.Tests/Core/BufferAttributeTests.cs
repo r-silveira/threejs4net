@@ -11,24 +11,24 @@ namespace ThreeJs4Net.Tests.Core
         [Fact()]
         public void Instancing()
         {
-            var a = new BufferAttribute<float>(new float[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 4, false);
+            var a = new BufferAttribute<double>(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 4, false);
 
             Assert.Throws<IndexOutOfRangeException>(() => a.GetZ(10));
             Assert.Equal(7, a.GetZ(1));
 
-            a = new BufferAttribute<float>(new float[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 3, false);
+            a = new BufferAttribute<double>(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 3, false);
             Assert.Equal(6, a.GetZ(1));
 
-            a = new BufferAttribute<float>(new float[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 2, false);
+            a = new BufferAttribute<double>(new double[] { 1, 2, 3, 4, 5, 6, 7, 8 }, 2, false);
             Assert.Equal(4, a.GetY(1));
         }
 
         [Fact()]
         public void SetAndGetTest()
         {
-            var f32a = new float[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-            var a = new BufferAttribute<float>(f32a, 4, false);
-            var expected = new float[] { 1, 2, -3, -4, -5, -6, 7, 8 };
+            var f32a = new double[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+            var a = new BufferAttribute<double>(f32a, 4, false);
+            var expected = new double[] { 1, 2, -3, -4, -5, -6, 7, 8 };
 
             a.SetX(1, a.GetX(1) * -1);
             a.SetY(1, a.GetY(1) * -1);
@@ -41,11 +41,11 @@ namespace ThreeJs4Net.Tests.Core
         [Fact()]
         public void CopyArrayTest()
         {
-            var array1 = new float[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-            var array2 = new float[] { 0, 0 };
-            var array3 = new float[] { };
+            var array1 = new double[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+            var array2 = new double[] { 0, 0 };
+            var array3 = new double[] { };
 
-            var a = new BufferAttribute<float>(array2, 4, false);
+            var a = new BufferAttribute<double>(array2, 4, false);
 
             a.CopyArray(array1);
             Assert.Equal(array1, a.Array);
@@ -70,10 +70,10 @@ namespace ThreeJs4Net.Tests.Core
             };
 
 
-            var array2 = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-            var array1 = new float[] { };
+            var array2 = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+            var array1 = new double[] { };
 
-            var a = new BufferAttribute<float>(array1, 4, false);
+            var a = new BufferAttribute<double>(array1, 4, false);
 
             a.CopyVector4sArray(vec4);
             Assert.Equal(array2, a.Array);
@@ -87,10 +87,10 @@ namespace ThreeJs4Net.Tests.Core
                 new Vector3(1, 2, 3), new Vector3(4, 5, 6), new Vector3(7, 8, 9)
             };
 
-            var array2 = new float[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            var array1 = new float[] { };
+            var array2 = new double[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            var array1 = new double[] { };
 
-            var a = new BufferAttribute<float>(array1, 3, false);
+            var a = new BufferAttribute<double>(array1, 3, false);
 
             a.CopyVector3sArray(vectors);
             Assert.Equal(array2, a.Array);
@@ -104,10 +104,10 @@ namespace ThreeJs4Net.Tests.Core
                 new Vector2(1, 2), new Vector2(3, 4), new Vector2(5, 6)
             };
 
-            var array2 = new float[] { 1, 2, 3, 4, 5, 6 };
-            var array1 = new float[] { };
+            var array2 = new double[] { 1, 2, 3, 4, 5, 6 };
+            var array1 = new double[] { };
 
-            var a = new BufferAttribute<float>(array1, 2, false);
+            var a = new BufferAttribute<double>(array1, 2, false);
 
             a.CopyVector2sArray(vectors);
             Assert.Equal(array2, a.Array);
@@ -141,8 +141,8 @@ namespace ThreeJs4Net.Tests.Core
         [Fact()]
         public void CloneTest()
         {
-            var f32a = new float[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-            var a = new BufferAttribute<float>(f32a, 4, false);
+            var f32a = new double[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+            var a = new BufferAttribute<double>(f32a, 4, false);
 
             var b = a.Clone();
 
@@ -156,13 +156,13 @@ namespace ThreeJs4Net.Tests.Core
         [Fact()]
         public void SetTest()
         {
-            var f32a = new float[] { 1, 2, 3, 4 };
-            var a = new BufferAttribute<float>(f32a, 2, false);
-            var expected = new float[] { 9, 2, 8, 4, 0, 0, 0, 0, 0, 0, 8, 11 };
+            var f32a = new double[] { 1, 2, 3, 4 };
+            var a = new BufferAttribute<double>(f32a, 2, false);
+            var expected = new double[] { 9, 2, 8, 4, 0, 0, 0, 0, 0, 0, 8, 11 };
 
-            a.Set(new float[] { 9 });
-            a.Set(new float[] { 8 }, 2);
-            a.Set(new float[] { 8, 11 }, 10);
+            a.Set(new double[] { 9 });
+            a.Set(new double[] { 8 }, 2);
+            a.Set(new double[] { 8, 11 }, 10);
 
             Assert.Equal(expected, a.Array);
         }
@@ -170,9 +170,9 @@ namespace ThreeJs4Net.Tests.Core
         [Fact()]
         public void SetXYTest()
         {
-            var f32a = new float[] { 1, 2, 3, 4 };
-            var a = new BufferAttribute<float>(f32a, 2, false);
-            var expected = new float[] { -1, -2, 3, 4 };
+            var f32a = new double[] { 1, 2, 3, 4 };
+            var a = new BufferAttribute<double>(f32a, 2, false);
+            var expected = new double[] { -1, -2, 3, 4 };
 
             a.SetXY(0, -1, -2);
 
@@ -182,9 +182,9 @@ namespace ThreeJs4Net.Tests.Core
         [Fact()]
         public void SetXYZTest()
         {
-            var f32a = new float[] { 1, 2, 3, 4, 5, 6 };
-            var a = new BufferAttribute<float>(f32a, 3, false);
-            var expected = new float[] { 1, 2, 3, -4, -5, -6 };
+            var f32a = new double[] { 1, 2, 3, 4, 5, 6 };
+            var a = new BufferAttribute<double>(f32a, 3, false);
+            var expected = new double[] { 1, 2, 3, -4, -5, -6 };
 
             a.SetXYZ(1, -4, -5, -6);
 
@@ -194,9 +194,9 @@ namespace ThreeJs4Net.Tests.Core
         [Fact()]
         public void SetXYZWTest()
         {
-            var f32a = new float[] { 1, 2, 3, 4 };
-            var a = new BufferAttribute<float>(f32a, 4, false);
-            var expected = new float[] { -1, -2, -3, -4 };
+            var f32a = new double[] { 1, 2, 3, 4 };
+            var a = new BufferAttribute<double>(f32a, 4, false);
+            var expected = new double[] { -1, -2, -3, -4 };
 
             a.SetXYZW(0, -1, -2, -3, -4);
 

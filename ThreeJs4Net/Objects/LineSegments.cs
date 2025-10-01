@@ -2,7 +2,6 @@
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Materials;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Renderers.Shaders;
 
 namespace ThreeJs4Net.Objects
 {
@@ -33,8 +32,8 @@ namespace ThreeJs4Net.Objects
                 // we assume non-indexed geometry
                 if (bufferGeometry.Index == null)
                 {
-                    var positionAttribute = bufferGeometry.GetAttribute<float>("position");
-                    var lineDistances = new float[positionAttribute.Count/2];
+                    var positionAttribute = bufferGeometry.GetAttribute<double>("position");
+                    var lineDistances = new double[positionAttribute.Count/2];
 
                     for (int i = 0; i < positionAttribute.Count; i+=2)
                     {
@@ -45,7 +44,7 @@ namespace ThreeJs4Net.Objects
                         lineDistances[i + 1] = lineDistances[i] + start.DistanceTo(end);
                     }
 
-                    bufferGeometry.SetAttribute("lineDistance", new BufferAttribute<float>(lineDistances, 1));
+                    bufferGeometry.SetAttribute("lineDistance", new BufferAttribute<double>(lineDistances, 1));
                 }
                 else
                 {

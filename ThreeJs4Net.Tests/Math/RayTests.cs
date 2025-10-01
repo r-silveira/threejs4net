@@ -209,7 +209,7 @@ namespace ThreeJs4Net.Tests.Math
             Assert.True(point.DistanceTo(new Vector3(0, 0, -1)) < TOL);
 
             // same situation as above, but move the sphere a fraction more to the right, and ray a0 should now just miss
-             b = new Sphere(new Vector3((float)2.01, 0, -1), 2);
+             b = new Sphere(new Vector3((double)2.01, 0, -1), 2);
             a0.IntersectSphere(b, point.Copy(posInf3));
             Assert.True(point.Equals(posInf3));
 
@@ -242,10 +242,10 @@ namespace ThreeJs4Net.Tests.Math
         public void IntersectsSphereTest()
         {
             var a = new Ray(one3.Clone(), new Vector3(0, 0, 1));
-            var b = new Sphere(zero3, (float)0.5);
-            var c = new Sphere(zero3, (float)1.5);
-            var d = new Sphere(one3, (float)0.1);
-            var e = new Sphere(two3, (float)0.1);
+            var b = new Sphere(zero3, (double)0.5);
+            var c = new Sphere(zero3, (double)1.5);
+            var d = new Sphere(one3, (double)0.1);
+            var e = new Sphere(two3, (double)0.1);
             var f = new Sphere(two3, 1);
 
             Assert.True(!a.IntersectsSphere(b));
@@ -383,9 +383,9 @@ namespace ThreeJs4Net.Tests.Math
             // DdN > 0
             ray.Set(ray.Origin, one3.Clone());
             ray.IntersectTriangle(a, b, c, false, point);
-            Assert.True(Mathf.Abs(point.X - (float)2 / 3) <= MathUtils.EPS5);
-            Assert.True(Mathf.Abs(point.Y - (float)2 / 3) <= MathUtils.EPS5);
-            Assert.True(Mathf.Abs(point.Z - (float)2 / 3) <= MathUtils.EPS5);
+            Assert.True(Mathf.Abs(point.X - (double)2 / 3) <= MathUtils.EPS5);
+            Assert.True(Mathf.Abs(point.Y - (double)2 / 3) <= MathUtils.EPS5);
+            Assert.True(Mathf.Abs(point.Z - (double)2 / 3) <= MathUtils.EPS5);
 
             // DdN > 0, DdQxE2 < 0
             b.MultiplyScalar(-1);

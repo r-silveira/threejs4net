@@ -35,7 +35,7 @@ namespace ThreeJs4Net.Extras.Core
         {
             return new Shape(this);
         }
-        public List<List<Vector3>> GetPointsHoles(float divisions)
+        public List<List<Vector3>> GetPointsHoles(double divisions)
         {
             var holePts = new List<List<Vector3>>();
 
@@ -48,7 +48,7 @@ namespace ThreeJs4Net.Extras.Core
             return holePts;
         }
 
-        public Hashtable ExtractPoints(float divisions)
+        public Hashtable ExtractPoints(double divisions)
         {
             return new Hashtable()
             {

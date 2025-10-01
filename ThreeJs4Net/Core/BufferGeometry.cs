@@ -114,32 +114,32 @@ namespace ThreeJs4Net.Core
             return this;
         }
 
-        public BufferGeometry Scale(float x, float y, float z)
+        public BufferGeometry Scale(double x, double y, double z)
         {
             this.ApplyMatrix4(new Matrix4().MakeScale(x, y, z));
             return this;
         }
 
-        public BufferGeometry RotateX(float angle)
+        public BufferGeometry RotateX(double angle)
         {
             this.ApplyMatrix4(new Matrix4().MakeRotationX(angle));
             return this;
         }
 
-        public BufferGeometry RotateY(float angle)
+        public BufferGeometry RotateY(double angle)
         {
             this.ApplyMatrix4(new Matrix4().MakeRotationY(angle));
             return this;
 
         }
 
-        public BufferGeometry RotateZ(float angle)
+        public BufferGeometry RotateZ(double angle)
         {
             this.ApplyMatrix4(new Matrix4().MakeRotationZ(angle));
             return this;
         }
 
-        public BufferGeometry Translate(float x, float y, float z)
+        public BufferGeometry Translate(double x, double y, double z)
         {
             this.ApplyMatrix4(new Matrix4().MakeTranslation(x, y, z));
             return this;
@@ -169,8 +169,8 @@ namespace ThreeJs4Net.Core
 
             this.BoundingSphere ??= new Sphere();
 
-            var position = this.Attributes["position"] as BufferAttribute<float>;
-            var positions = GetBuffer<float>("position");
+            var position = this.Attributes["position"] as BufferAttribute<double>;
+            var positions = GetBuffer<double>("position");
 
             if (positions != null)
             {
@@ -181,7 +181,7 @@ namespace ThreeJs4Net.Core
 
                 box.GetCenter(center);
 
-                float maxRadiusSq = 0;
+                double maxRadiusSq = 0;
 
                 for (var i = 0; i < positions.Length / position.ItemSize; i++)
                 {
@@ -204,11 +204,11 @@ namespace ThreeJs4Net.Core
         {
             this.BoundingBox ??= new Box3();
 
-            var position = this.Attributes["position"] as BufferAttribute<float>;
-            //!! NOT IMPLEMENTED YET:   var morphAttributesPosition = this.Attributes["position"] as BufferAttribute<float>;
+            var position = this.Attributes["position"] as BufferAttribute<double>;
+            //!! NOT IMPLEMENTED YET:   var morphAttributesPosition = this.Attributes["position"] as BufferAttribute<double>;
             Debug.Assert(position != null);
 
-            var positions = GetBuffer<float>("position");
+            var positions = GetBuffer<double>("position");
 
 
             if (positions != null)
@@ -236,7 +236,7 @@ namespace ThreeJs4Net.Core
 
         private T[] GetBuffer<T>(string name)
         {
-            var bufferAttr = this.Attributes[name] as BufferAttribute<float>;
+            var bufferAttr = this.Attributes[name] as BufferAttribute<double>;
             return bufferAttr?.Array as T[];
         }
 
@@ -244,19 +244,19 @@ namespace ThreeJs4Net.Core
         {
             var index = this.Index;
             var attributes = this.Attributes;
-            var position = this.Attributes["position"] as BufferAttribute<float>;
-            var positions = GetBuffer<float>("position");
+            var position = this.Attributes["position"] as BufferAttribute<double>;
+            var positions = GetBuffer<double>("position");
 
             if (positions != null)
             {
                 if (!attributes.ContainsKey("normal"))
                 {
-                    this.SetAttribute("normal", new BufferAttribute<float>(new float[positions.Length], 3));
+                    this.SetAttribute("normal", new BufferAttribute<double>(new double[positions.Length], 3));
                 }
                 else
                 {
                     // reset existing normals to zero
-                    var array = GetBuffer<float>("normal");
+                    var array = GetBuffer<double>("normal");
 
                     for (var i = 0; i < array.Length; i++)
                     {
@@ -271,7 +271,7 @@ namespace ThreeJs4Net.Core
                 var cb = new Vector3();
                 var ab = new Vector3();
 
-                var normals = GetBuffer<float>("normal");
+                var normals = GetBuffer<double>("normal");
 
                 // indexed elements
 
@@ -336,7 +336,7 @@ namespace ThreeJs4Net.Core
 
                 this.NormalizeNormals();
 
-                ((BufferAttribute<float>)Attributes["normal"]).needsUpdate = true;
+                ((BufferAttribute<double>)Attributes["normal"]).needsUpdate = true;
             }
         }
 
@@ -347,7 +347,7 @@ namespace ThreeJs4Net.Core
 
         public void NormalizeNormals()
         {
-            var normalBufferAttribute = this.Attributes["normal"] as BufferAttribute<float>;
+            var normalBufferAttribute = this.Attributes["normal"] as BufferAttribute<double>;
             Debug.Assert(null != normalBufferAttribute);
 
             var normals = normalBufferAttribute.Array;
@@ -358,7 +358,7 @@ namespace ThreeJs4Net.Core
                 var y = normals[i + 1];
                 var z = normals[i + 2];
 
-                var n = 1.0f / (float)System.Math.Sqrt(x * x + y * y + z * z);
+                var n = 1.0f / (double)System.Math.Sqrt(x * x + y * y + z * z);
 
                 normals[i] *= n;
                 normals[i + 1] *= n;
@@ -403,9 +403,9 @@ namespace ThreeJs4Net.Core
             {
                 attr.Value.TryGetValue("type", out object bufType);
 
-                if (bufType == typeof(float))
+                if (bufType == typeof(double))
                 {
-                    this.SetAttribute(attr.Key, (attr.Value as BufferAttribute<float>).Clone());
+                    this.SetAttribute(attr.Key, (attr.Value as BufferAttribute<double>).Clone());
                 }
                 if (bufType == typeof(int))
                 {
@@ -422,7 +422,7 @@ namespace ThreeJs4Net.Core
             //for (name in morphAttributes )
             //{
             //    var array = [];
-            //    var morphAttribute = morphAttributes[name]; // morphAttribute: array of Float32BufferAttributes
+            //    var morphAttribute = morphAttributes[name]; // morphAttribute: array of double32BufferAttributes
             //    for (i = 0, l = morphAttribute.length; i < l; i++)
             //    {
             //        array.push(morphAttribute[i].clone());
@@ -488,7 +488,7 @@ namespace ThreeJs4Net.Core
 
             if (this.Attributes.ContainsKey("position"))
             {
-                var position = (BufferAttribute<float>)this.Attributes["position"];
+                var position = (BufferAttribute<double>)this.Attributes["position"];
 
                 matrix.ApplyToVector3Array(position.Array);
                 position.needsUpdate = true;
@@ -496,7 +496,7 @@ namespace ThreeJs4Net.Core
 
             if (this.Attributes.ContainsKey("normal"))
             {
-                var normal = (BufferAttribute<float>)this.Attributes["normal"];
+                var normal = (BufferAttribute<double>)this.Attributes["normal"];
 
                 var normalMatrix = new Matrix3().GetNormalMatrix(matrix);
 
@@ -517,7 +517,7 @@ namespace ThreeJs4Net.Core
 
         public BufferGeometry SetFromPoints(IEnumerable<Vector3> points)
         {
-            var position = new List<float>();
+            var position = new List<double>();
 
             foreach (var point in points)
             {
@@ -526,7 +526,7 @@ namespace ThreeJs4Net.Core
                 position.Add(point.Z);
             }
 
-            this.SetAttribute("position", new BufferAttribute<float>(position.ToArray(), 3));
+            this.SetAttribute("position", new BufferAttribute<double>(position.ToArray(), 3));
 
             return this;
         }

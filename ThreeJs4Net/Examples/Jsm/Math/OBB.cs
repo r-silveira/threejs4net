@@ -17,9 +17,9 @@ namespace ThreeJs4Net.Examples.Jsm.Math
         private readonly Ray _localRay = new Ray();
         private readonly Vector3 _size = new Vector3();
         private readonly Vector3 _closestPoint = new Vector3();
-        private readonly float[][] _Absr = new float[][] { new float[] { 0, 0, 0 }, new float[] { 0, 0, 0 }, new float[] { 0, 0, 0 } };
-        private readonly float[][] _r = new float[][] { new float[] { 0, 0, 0 }, new float[] { 0, 0, 0 }, new float[] { 0, 0, 0 } };
-        private readonly float[] _t = new float[] { 0,0,0 };
+        private readonly double[][] _Absr = new double[][] { new double[] { 0, 0, 0 }, new double[] { 0, 0, 0 }, new double[] { 0, 0, 0 } };
+        private readonly double[][] _r = new double[][] { new double[] { 0, 0, 0 }, new double[] { 0, 0, 0 }, new double[] { 0, 0, 0 } };
+        private readonly double[] _t = new double[] { 0,0,0 };
 
         public Vector3 Center;
         public Vector3 HalfSize;
@@ -160,7 +160,7 @@ namespace ThreeJs4Net.Examples.Jsm.Math
         public OBB FromBox3(Box3 box3)
         {
             box3.GetCenter(this.Center);
-            box3.GetSize(this.HalfSize).MultiplyScalar((float)0.5);
+            box3.GetSize(this.HalfSize).MultiplyScalar((double)0.5);
             this.Rotation.Identity();
             return this;
         }
@@ -224,7 +224,7 @@ namespace ThreeJs4Net.Examples.Jsm.Math
             return Mathf.Abs(d) <= r;
         }
 
-        public bool IntersectsOBB(OBB obb, float epsilon = float.Epsilon)
+        public bool IntersectsOBB(OBB obb, double epsilon = double.Epsilon)
         {
             // prepare data structures (the code uses the same nomenclature like the reference)
             a.c = this.Center;
@@ -267,7 +267,7 @@ namespace ThreeJs4Net.Examples.Jsm.Math
                 }
             }
 
-            float ra, rb;
+            double ra, rb;
 
             // test axes L = A0, L = A1, L = A2
             for (var i = 0; i < 3; i++)
@@ -364,7 +364,7 @@ namespace ThreeJs4Net.Examples.Jsm.Math
         {
             public Vector3 c { get; set; }
             public Vector3[] u { get; set; } = new Vector3[] { new Vector3(), new Vector3(), new Vector3() };
-            public float[] e { get; set; } = new float[3] { 0, 0, 0 };
+            public double[] e { get; set; } = new double[3] { 0, 0, 0 };
         }
     }
 }

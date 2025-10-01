@@ -6,9 +6,9 @@ namespace ThreeJs4Net.Tests.Math
 {
     public class EulerTests : BaseTests
     {
-        private bool QuatEquals(Quaternion a, Quaternion b, float? tolerance = null)
+        private bool QuatEquals(Quaternion a, Quaternion b, double? tolerance = null)
         {
-            tolerance = tolerance ?? 0.0001f;
+            tolerance = tolerance ?? 0.0001;
             var diff = Mathf.Abs(a.X - b.X) + Mathf.Abs(a.Y - b.Y) + Mathf.Abs(a.Z - b.Z) + Mathf.Abs(a.W - b.W);
             return (diff < tolerance);
         }
@@ -106,7 +106,7 @@ namespace ThreeJs4Net.Tests.Math
         public void FromArrayTest()
         {
             var a = new Euler();
-            var array = new float[] { x, y, z };
+            var array = new double[] { x, y, z };
 
             a.FromArray(array);
             Assert.StrictEqual(a.X, x);
@@ -115,7 +115,7 @@ namespace ThreeJs4Net.Tests.Math
             Assert.StrictEqual(a.Order, Euler.RotationOrder.XYZ);
 
             a = new Euler();
-            array = new float[] { x, y, z, (float)Euler.RotationOrder.ZXY };
+            array = new double[] { x, y, z, (double)Euler.RotationOrder.ZXY };
             a.FromArray(array);
             Assert.StrictEqual(a.X, x);
             Assert.StrictEqual(a.Y, y);
@@ -135,7 +135,7 @@ namespace ThreeJs4Net.Tests.Math
             Assert.StrictEqual(array[2], z);
             Assert.StrictEqual(array[3], (int)order);
 
-            array = new float[] { float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity, 0};
+            array = new double[] { double.PositiveInfinity, double.PositiveInfinity, double.PositiveInfinity, 0};
             a.ToArray(array);
             Assert.StrictEqual(array[0], x);
             Assert.StrictEqual(array[1], y);

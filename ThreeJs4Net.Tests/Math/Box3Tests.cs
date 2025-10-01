@@ -8,7 +8,7 @@ namespace ThreeJs4Net.Tests.Math
 {
     public class Box3Tests : BaseTests
     {
-        private bool compareBox(Box3 a, Box3 b, float threshold = 0.0001f)
+        private bool compareBox(Box3 a, Box3 b, double threshold = 0.0001)
         {
             return (a.Min.DistanceTo(b.Min) < threshold &&
                      a.Max.DistanceTo(b.Max) < threshold);
@@ -432,8 +432,8 @@ namespace ThreeJs4Net.Tests.Math
         public void SetFromBufferAttributeTest()
         {
             var a = new Box3(zero3.Clone(), one3.Clone());
-            var bigger = new BufferAttribute<float>(new float[] { -2, -2, -2, 2, 2, 2, 1.5f, 1.5f, 1.5f, 0, 0, 0 }, 3);
-            var smaller = new BufferAttribute<float>(new float[] { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0, 0, 0 }, 3);
+            var bigger = new BufferAttribute<double>(new double[] { -2, -2, -2, 2, 2, 2, 1.5, 1.5, 1.5, 0, 0, 0 }, 3);
+            var smaller = new BufferAttribute<double>(new double[] { -0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0, 0, 0 }, 3);
             var newMin = new Vector3(-2, -2, -2);
             var newMax = new Vector3(2, 2, 2);
 
@@ -441,8 +441,8 @@ namespace ThreeJs4Net.Tests.Math
             Assert.Equal(newMin, a.Min);
             Assert.Equal(newMax, a.Max);
 
-            newMin.Set(-0.5f, -0.5f, -0.5f);
-            newMax.Set(0.5f, 0.5f, 0.5f);
+            newMin.Set(-0.5, -0.5, -0.5);
+            newMax.Set(0.5, 0.5, 0.5);
 
             a.SetFromBufferAttribute(smaller);
             Assert.Equal(newMin, a.Min);
@@ -472,7 +472,7 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Box3();
 
-            a.SetFromArray(new float[] { 0, 0, 0, 1, 1, 1, 2, 2, 2 });
+            a.SetFromArray(new double[] { 0, 0, 0, 1, 1, 1, 2, 2, 2 });
             Assert.Equal(zero3, a.Min);
             Assert.Equal(two3, a.Max);
         }

@@ -1,13 +1,11 @@
-﻿using System;
-using ThreeJs4Net.Core;
-using ThreeJs4Net.Math;
+﻿using ThreeJs4Net.Math;
 using Xunit;
 
 namespace ThreeJs4Net.Tests.Math
 {
     public class Matrix3Tests : BaseTests
     {
-        private readonly float _epsilon = 0.0001f;
+        private readonly double _epsilon = 0.0001;
 
         [Fact()]
         public void Instancing()
@@ -93,7 +91,7 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void Invert()
         {
-            var m = new Matrix4().MakeRotationX(0.3f);
+            var m = new Matrix4().MakeRotationX(0.3);
             
             var a = new Matrix3().SetFromMatrix4(m);
             var b = a.Clone();

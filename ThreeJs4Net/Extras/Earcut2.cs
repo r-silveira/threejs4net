@@ -11,9 +11,9 @@ namespace ThreeJs4Net.Extras
     {
         public class EarcutNode
         {
-            public float X;
+            public double X;
 
-            public float Y;
+            public double Y;
 
             public int Z = 0;
 
@@ -32,7 +32,7 @@ namespace ThreeJs4Net.Extras
             // indicates whether this is a steiner point
             public bool Steiner = false;
 
-            public EarcutNode(int i, float x, float y)
+            public EarcutNode(int i, double x, double y)
             {
                 I = i;
                 X = x;
@@ -41,7 +41,7 @@ namespace ThreeJs4Net.Extras
 
         }
         private int dim;
-        public List<int> Triangulate(List<float> data, List<int> holeIndices, int? dim = null)
+        public List<int> Triangulate(List<double> data, List<int> holeIndices, int? dim = null)
         {
             dim = dim != null ? dim : 2;
 
@@ -55,7 +55,7 @@ namespace ThreeJs4Net.Extras
 
             if (outerEarcutNode == null || outerEarcutNode.Next == outerEarcutNode.Prev) return triangles;
 
-            float minX = 0, minY = 0, maxX, maxY, x, y, invSize = 0;
+            double minX = 0, minY = 0, maxX, maxY, x, y, invSize = 0;
 
             if (hasHoles) outerEarcutNode = EliminateHoles(data, holeIndices, outerEarcutNode, dim.Value);
 
@@ -76,7 +76,7 @@ namespace ThreeJs4Net.Extras
                 }
 
                 // minX, minY and invSize are later used to transform coords into integers for z-order calculation
-                invSize = (float)System.Math.Max(maxX - minX, maxY - minY);
+                invSize = (double)System.Math.Max(maxX - minX, maxY - minY);
                 invSize = invSize != 0 ? 1 / invSize : 0;
             }
 
@@ -89,7 +89,7 @@ namespace ThreeJs4Net.Extras
         {
             return p1.X == p2.X && p1.Y == p2.Y;
         }
-        public EarcutNode LinkedList(List<float> data, int start, int end, int dim, bool clockwise)
+        public EarcutNode LinkedList(List<double> data, int start, int end, int dim, bool clockwise)
         {
             int i;
             EarcutNode last = null;
@@ -148,7 +148,7 @@ namespace ThreeJs4Net.Extras
             return end;
         }
 
-        public void EarcutLinked(EarcutNode ear, List<int> triangles, int dim, float minX, float minY, float invSize, int? pass = null)
+        public void EarcutLinked(EarcutNode ear, List<int> triangles, int dim, double minX, double minY, double invSize, int? pass = null)
         {
             if (ear == null) return;
 
@@ -208,7 +208,7 @@ namespace ThreeJs4Net.Extras
                 }
             }
         }
-        public EarcutNode InsertEarcutNode(int i, float x, float y, EarcutNode last)
+        public EarcutNode InsertEarcutNode(int i, double x, double y, EarcutNode last)
         {
             EarcutNode p = new EarcutNode(i, x, y);
 
@@ -243,7 +243,7 @@ namespace ThreeJs4Net.Extras
 
             return false;
         }
-        public int Sign(float num)
+        public int Sign(double num)
         {
             return num > 0 ? 1 : num < 0 ? -1 : 0;
         }
@@ -285,7 +285,7 @@ namespace ThreeJs4Net.Extras
         }
 
         // try splitting polygon into two and triangulate them independently
-        public void SplitEarcut(EarcutNode start, List<int> triangles, int dim, float minX, float minY, float invSize)
+        public void SplitEarcut(EarcutNode start, List<int> triangles, int dim, double minX, double minY, double invSize)
         {
             // look for a valid diagonal that divides the polygon into two
             var a = start;
@@ -313,7 +313,7 @@ namespace ThreeJs4Net.Extras
                 a = a.Next;
             } while (a != start);
         }
-        public EarcutNode EliminateHoles(List<float> data, List<int> holeIndices, EarcutNode outerEarcutNode, int dim)
+        public EarcutNode EliminateHoles(List<double> data, List<int> holeIndices, EarcutNode outerEarcutNode, int dim)
         {
             List<EarcutNode> queue = new List<EarcutNode>();
             int i, len;
@@ -359,9 +359,9 @@ namespace ThreeJs4Net.Extras
         public EarcutNode FindHoleBridge(EarcutNode hole, EarcutNode outerEarcutNode)
         {
             EarcutNode p = outerEarcutNode;
-            float hx = hole.X,
+            double hx = hole.X,
                 hy = hole.Y,
-                qx = float.NegativeInfinity;
+                qx = double.NegativeInfinity;
 
             EarcutNode m = null;
 
@@ -395,9 +395,9 @@ namespace ThreeJs4Net.Extras
             // otherwise choose the point of the minimum angle with the ray as connection point
 
             EarcutNode stop = m;
-            float mx = m.X,
+            double mx = m.X,
                 my = m.Y,
-                tanMin = float.PositiveInfinity,
+                tanMin = double.PositiveInfinity,
                 tan;
 
             p = m;
@@ -408,7 +408,7 @@ namespace ThreeJs4Net.Extras
                         PointInTriangle(hy < my ? hx : qx, hy, mx, my, hy < my ? qx : hx, hy, p.X, p.Y))
                 {
 
-                    tan = (float)System.Math.Abs(hy - p.Y) / (hx - p.X); // tangential
+                    tan = (double)System.Math.Abs(hy - p.Y) / (hx - p.X); // tangential
 
                     if (LocallyInside(p, hole) &&
                         (tan < tanMin || (tan == tanMin && (p.X > m.X || (p.X == m.X && SectorContainsSector(m, p))))))
@@ -533,7 +533,7 @@ namespace ThreeJs4Net.Extras
         {
             EarcutNode p = a;
             bool inside = false;
-            float px = (a.X + b.X) / 2,
+            double px = (a.X + b.X) / 2,
                  py = (a.Y + b.Y) / 2;
             do
             {
@@ -586,7 +586,7 @@ namespace ThreeJs4Net.Extras
             return true;
         }
 
-        public bool IsEarHashed(EarcutNode ear, float minX, float minY, float invSize)
+        public bool IsEarHashed(EarcutNode ear, double minX, double minY, double invSize)
         {
             EarcutNode a = ear.Prev,
                 b = ear,
@@ -595,13 +595,13 @@ namespace ThreeJs4Net.Extras
             if (Area(a, b, c) >= 0) return false; // reflex, can't be an ear
 
             // triangle bbox; min & max are calculated like this for speed
-            float minTX = a.X < b.X ? (a.X < c.X ? a.X : c.X) : (b.X < c.X ? b.X : c.X),
+            double minTX = a.X < b.X ? (a.X < c.X ? a.X : c.X) : (b.X < c.X ? b.X : c.X),
                   minTY = a.Y < b.Y ? (a.Y < c.Y ? a.Y : c.Y) : (b.Y < c.Y ? b.Y : c.Y),
                   maxTX = a.X > b.X ? (a.X > c.X ? a.X : c.X) : (b.X > c.X ? b.X : c.X),
                   maxTY = a.Y > b.Y ? (a.Y > c.Y ? a.Y : c.Y) : (b.Y > c.Y ? b.Y : c.Y);
 
             // z-order range for the current triangle bbox;
-            float minZ = zOrder(minTX, minTY, minX, minY, invSize),
+            double minZ = zOrder(minTX, minTY, minX, minY, invSize),
                   maxZ = zOrder(maxTX, maxTY, minX, minY, invSize);
 
             EarcutNode p = ear.PrevZ,
@@ -642,7 +642,7 @@ namespace ThreeJs4Net.Extras
             return true;
         }
         // interlink polygon EarcutNodes in z-order
-        public void IndexCurve(EarcutNode start, float minX, float minY, float invSize)
+        public void IndexCurve(EarcutNode start, double minX, double minY, double invSize)
         {
             var p = start;
             do
@@ -660,7 +660,7 @@ namespace ThreeJs4Net.Extras
 
         }
 
-        public int zOrder(float _x, float _y, float minX, float minY, float invSize)
+        public int zOrder(double _x, double _y, double minX, double minY, double invSize)
         {
             // coords are transformed into non-negative 15-bit integer range
             int x = Convert.ToInt32(32767 * (_x - minX) * invSize);
@@ -678,13 +678,13 @@ namespace ThreeJs4Net.Extras
 
             return x | (y << 1);
         }
-        public float Area(EarcutNode p, EarcutNode q, EarcutNode r)
+        public double Area(EarcutNode p, EarcutNode q, EarcutNode r)
         {
             return (q.Y - p.Y) * (r.X - q.X) - (q.X - p.X) * (r.Y - q.Y);
         }
-        public float SignedArea(List<float> data, int start, int end, int dim)
+        public double SignedArea(List<double> data, int start, int end, int dim)
         {
-            var sum = 0.0f;
+            var sum = 0.0;
             for (int i = start, j = end - dim; i < end; i += dim)
             {
                 var sum1 = (data[j] - data[i]);
@@ -699,7 +699,7 @@ namespace ThreeJs4Net.Extras
             }
             return sum;
         }
-        public bool PointInTriangle(float ax, float ay, float bx, float by, float cx, float cy, float px, float py)
+        public bool PointInTriangle(double ax, double ay, double bx, double by, double cx, double cy, double px, double py)
         {
             return (cx - px) * (ay - py) - (ax - px) * (cy - py) >= 0 &&
                    (ax - px) * (by - py) - (bx - px) * (ay - py) >= 0 &&

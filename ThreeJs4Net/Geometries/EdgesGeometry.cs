@@ -18,7 +18,7 @@ namespace ThreeJs4Net.Geometries
 
 			// buffer
 
-			List<float> vertices = new List<float>();
+			List<double> vertices = new List<double>();
 
 			// helper variables
 
@@ -81,7 +81,7 @@ namespace ThreeJs4Net.Geometries
 				}
 			}
 
-			this.SetAttribute("position", new BufferAttribute<float>(vertices.ToArray(), 3));
+			this.SetAttribute("position", new BufferAttribute<double>(vertices.ToArray(), 3));
 		}
 	}
 }

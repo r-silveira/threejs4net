@@ -27,9 +27,9 @@ namespace ThreeJs4Net.Extras
             var segmentWidth = width / gridX;
             var segmentHeight = height / gridY;
 
-            var vertices = new float[gridX1 * gridY1 * 3];
-            var normals = new float[gridX1 * gridY1 * 3];
-            var uvs = new float[gridX1 * gridY1 * 2];
+            var vertices = new double[gridX1 * gridY1 * 3];
+            var normals = new double[gridX1 * gridY1 * 3];
+            var uvs = new double[gridX1 * gridY1 * 2];
 
             var offset = 0;
             var offset2 = 0;
@@ -49,7 +49,7 @@ namespace ThreeJs4Net.Extras
 
                     normals[offset + 2] = 1;
 
-                    uvs[offset2] = ix / (float)gridX;
+                    uvs[offset2] = ix / (double)gridX;
                     uvs[offset2 + 1] = 1 - (iy / gridY);
 
                     offset += 3;
@@ -88,9 +88,9 @@ namespace ThreeJs4Net.Extras
             }
 
             this.AddAttribute("index", new BufferAttribute<uint>(indices, 1));
-            this.AddAttribute("position", new BufferAttribute<float>(vertices, 3));
-            this.AddAttribute("normal", new BufferAttribute<float>(normals, 3));
-            this.AddAttribute("uv", new BufferAttribute<float>(uvs, 2));
+            this.AddAttribute("position", new BufferAttribute<double>(vertices, 3));
+            this.AddAttribute("normal", new BufferAttribute<double>(normals, 3));
+            this.AddAttribute("uv", new BufferAttribute<double>(uvs, 2));
         }
     }
 }

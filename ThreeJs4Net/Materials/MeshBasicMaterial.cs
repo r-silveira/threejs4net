@@ -105,8 +105,8 @@ namespace ThreeJs4Net.Materials
         //     public Texture EnvMap;
         public Color Color;
         public int Combine;
-        public float Reflectivity;
-        public float RefractionRatio;
+        public double Reflectivity;
+        public double RefractionRatio;
         public bool Fog;
         public int Shading;
 

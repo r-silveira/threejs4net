@@ -8,7 +8,7 @@ namespace ThreeJs4Net.Extras.Core
     {
         public List<Curve<Vector3>> Curves = new List<Curve<Vector3>>();
         private bool AutoClose;
-        private float[] cacheLengths = null;
+        private double[] cacheLengths = null;
 
         public CurvePath(): base()
         {
@@ -33,7 +33,7 @@ namespace ThreeJs4Net.Extras.Core
             }
         }
 
-        public override Vector3 GetPoint(float t, Vector3 optionalTarget)
+        public override Vector3 GetPoint(double t, Vector3 optionalTarget)
         {
             var d = t * this.GetLength();
             var curveLengths = this.GetCurveLengths();
@@ -63,7 +63,7 @@ namespace ThreeJs4Net.Extras.Core
         // THREE.Curve, getLength() depends on getPoint() but in THREE.CurvePath
         // getPoint() depends on getLength
 
-        public new float GetLength()
+        public new double GetLength()
         {
             var lens = this.GetCurveLengths();
             return lens[lens.Length - 1];
@@ -80,7 +80,7 @@ namespace ThreeJs4Net.Extras.Core
         // Compute lengths and cache them
         // We cannot overwrite getLengths() because UtoT mapping uses it.
 
-        public float[] GetCurveLengths()
+        public double[] GetCurveLengths()
         {
             // We use cache values if curves and cache array are same length
             if (this.cacheLengths?.Length == Curves.Count)
@@ -90,8 +90,8 @@ namespace ThreeJs4Net.Extras.Core
 
             // Get length of sub-curve
             // Push sums into cached array
-            var lengths = new List<float>();
-            float sums = 0;
+            var lengths = new List<double>();
+            double sums = 0;
             for (var i = 0; i < Curves.Count; i++)
             {
                 sums += Curves[i].GetLength();
@@ -107,7 +107,7 @@ namespace ThreeJs4Net.Extras.Core
             var points = new List<Vector3>();
             for (var i = 0; i <= divisions; i++)
             {
-                points.Add(this.GetPoint((float)i / divisions, null));
+                points.Add(this.GetPoint((double)i / divisions, null));
             }
 
             if (this.AutoClose)

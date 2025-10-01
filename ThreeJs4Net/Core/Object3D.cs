@@ -177,7 +177,7 @@ namespace ThreeJs4Net.Core
             return vector.ApplyMatrix4(this.MatrixWorld);
         }
 
-        public Object3D RotateOnAxis(Vector3 axis, float angle)
+        public Object3D RotateOnAxis(Vector3 axis, double angle)
         {
             var q1 = new Quaternion().SetFromAxisAngle(axis, angle);
             this.Quaternion.Multiply(q1);
@@ -185,7 +185,7 @@ namespace ThreeJs4Net.Core
         }
 
 
-        public Object3D RotateOnWorldAxis(Vector3 axis, float angle)
+        public Object3D RotateOnWorldAxis(Vector3 axis, double angle)
         {
             // rotate object on axis in world space
             // axis is assumed to be normalized
@@ -195,22 +195,22 @@ namespace ThreeJs4Net.Core
             return this;
         }
 
-        public Object3D RotateX(float angle)
+        public Object3D RotateX(double angle)
         {
             return this.RotateOnAxis(Vector3.UnitX(), angle);
         }
 
-        public Object3D RotateY(float angle)
+        public Object3D RotateY(double angle)
         {
             return this.RotateOnAxis(Vector3.UnitY(), angle);
         }
 
-        public Object3D RotateZ(float angle)
+        public Object3D RotateZ(double angle)
         {
             return this.RotateOnAxis(Vector3.UnitZ(), angle);
         }
 
-        public void SetRotationFromAxisAngle(Vector3 axis, float angle)
+        public void SetRotationFromAxisAngle(Vector3 axis, double angle)
         {
             // assumes axis is normalized
             this.Quaternion.SetFromAxisAngle(axis, angle);
@@ -233,7 +233,7 @@ namespace ThreeJs4Net.Core
             this.Quaternion.Copy(q);
         }
 
-        public Object3D TranslateOnAxis(Vector3 axis, float distance)
+        public Object3D TranslateOnAxis(Vector3 axis, double distance)
         {
             // translate object by distance along axis in object space
             // axis is assumed to be normalized
@@ -246,7 +246,7 @@ namespace ThreeJs4Net.Core
         /// 
         /// </summary>
         /// <param name="distance"></param>
-        public Object3D TranslateX(float distance)
+        public Object3D TranslateX(double distance)
         {
             return this.TranslateOnAxis(Vector3.UnitX(), distance);
         }
@@ -255,12 +255,12 @@ namespace ThreeJs4Net.Core
         /// 
         /// </summary>
         /// <param name="distance"></param>
-        public Object3D TranslateY(float distance)
+        public Object3D TranslateY(double distance)
         {
             return this.TranslateOnAxis(Vector3.UnitY(), distance);
         }
 
-        public Object3D TranslateZ(float distance)
+        public Object3D TranslateZ(double distance)
         {
             return this.TranslateOnAxis(Vector3.UnitZ(), distance);
         }
@@ -365,7 +365,7 @@ namespace ThreeJs4Net.Core
         }
 
 
-        public virtual void LookAt(float x, float y, float z)
+        public virtual void LookAt(double x, double y, double z)
         {
             this.LookAt(new Vector3(x, y, z));
         }

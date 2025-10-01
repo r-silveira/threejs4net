@@ -8,19 +8,19 @@ namespace ThreeJs4Net.Core
     {
         //public Layers Layers = new Layers();
 
-        public float Precision = 0.0001f;
-        public float LinePrecision = 1;
+        public double Precision = 0.0001;
+        public double LinePrecision = 1;
         public Ray Ray;
-        public float Near = 0;
-        public float Far = float.PositiveInfinity;
+        public double Near = 0;
+        public double Far = double.PositiveInfinity;
 
         public Raycaster()
         {
         }
 
-        public Raycaster(Vector3 origin, Vector3 direction, float near = 0, float? far = null)
+        public Raycaster(Vector3 origin, Vector3 direction, double near = 0, double? far = null)
         {
-            far ??= float.NegativeInfinity;
+            far ??= double.NegativeInfinity;
             this.Ray = new Ray(origin, direction);
             // direction is assumed to be normalized (for accurate distance calculations)
         }

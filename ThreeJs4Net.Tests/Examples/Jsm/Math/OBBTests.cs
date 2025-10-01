@@ -12,38 +12,38 @@ namespace ThreeJs4Net.Tests.Examples.Jsm.Math
         {
             var box = new Box3(new Vector3(0, 0, 0), new Vector3(10, 10, 10));
             var obb = new OBB();
-            var matrix4 = new Matrix4(new float[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
+            var matrix4 = new Matrix4(new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 
-            Assert.Equal(obb.Center.ToArray(), new float[] { 0, 0, 0 });
+            Assert.Equal(obb.Center.ToArray(), new double[] { 0, 0, 0 });
             obb.FromBox3(box);
-            Assert.Equal(obb.Center.ToArray(), new float[] { 5, 5, 5 });
-            Assert.Equal(obb.Rotation.ToArray(), new float[] { 1, 0, 0, 0, 1, 0, 0, 0, 1 });
+            Assert.Equal(obb.Center.ToArray(), new double[] { 5, 5, 5 });
+            Assert.Equal(obb.Rotation.ToArray(), new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1 });
 
-            matrix4 = matrix4.MakeRotationX((float)0.5);
+            matrix4 = matrix4.MakeRotationX((double)0.5);
             obb.ApplyMatrix4(matrix4);
 
-            Assert.Equal(obb.Rotation.ToArray(), new float[]
+            Assert.Equal(obb.Rotation.ToArray(), new double[]
             {
                 1, 0, 0,
-                0, (float)0.8775825618903728, (float)0.479425538604203,
-                0, (float)-0.479425538604203, (float)0.8775825618903728
+                0, (double)0.8775825618903728, (double)0.479425538604203,
+                0, (double)-0.479425538604203, (double)0.8775825618903728
             });
 
 
-            matrix4 = matrix4.MakeRotationY((float)0.3);
+            matrix4 = matrix4.MakeRotationY((double)0.3);
             obb.ApplyMatrix4(matrix4);
 
-            Assert.Equal(obb.Rotation.ToArray(), new float[]
+            Assert.Equal(obb.Rotation.ToArray(), new double[]
             {
-                (float) 0.9553365, 
-                (float) 0.141679943, 
-                (float) -0.2593434,
-                (float) 0, 
-                (float) 0.87758255, 
-                (float) 0.47942555,
-                (float) 0.295520216, 
-                (float) -0.45801273, 
-                (float) 0.838386655
+                (double) 0.9553365, 
+                (double) 0.141679943, 
+                (double) -0.2593434,
+                (double) 0, 
+                (double) 0.87758255, 
+                (double) 0.47942555,
+                (double) 0.295520216, 
+                (double) -0.45801273, 
+                (double) 0.838386655
             });
         }
 

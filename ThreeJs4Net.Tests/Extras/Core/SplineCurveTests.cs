@@ -1,11 +1,6 @@
 ﻿using Xunit;
-using ThreeJs4Net.Extras.Core;
 using System;
-using System.Collections.Generic;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Extras.Core;
 
 namespace ThreeJs4Net.Extras.Core.Tests
 {
@@ -24,10 +19,10 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var expectedPoints = new Vector2[] {
                         new Vector2( - 10, 0 ),
-                        new Vector2( - 6.08f, 4.56f ),
-                        new Vector2( - 2, 2.48f ),
-                        new Vector2( 2, - 2.48f ),
-                        new Vector2( 6.08f, - 4.56f ),
+                        new Vector2( - 6.08, 4.56 ),
+                        new Vector2( - 2, 2.48 ),
+                        new Vector2( 2, - 2.48 ),
+                        new Vector2( 6.08, - 4.56 ),
                         new Vector2( 10, 0 )
                 };
 
@@ -58,10 +53,10 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var expectedPoints = new Vector3[] {
                 new Vector3( - 10, 0, 0 ),
-                new Vector3( - 6.08f, 4.56f, 0 ),
-                new Vector3( - 2, 2.48f, 0 ),
-                new Vector3( 2, - 2.48f, 0 ),
-                new Vector3( 6.08f, - 4.56f, 0 ),
+                new Vector3( - 6.08, 4.56, 0 ),
+                new Vector3( - 2, 2.48, 0 ),
+                new Vector3( 2, - 2.48, 0 ),
+                new Vector3( 6.08, - 4.56, 0 ),
                 new Vector3( 10, 0, 0 )
             };
 
@@ -72,7 +67,7 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             Assert.True(expectedLength - length <= MathUtils.EPS);
 
-            var expectedLengths = new float[] { 0.0f, Mathf.Sqrt(50), Mathf.Sqrt(200), Mathf.Sqrt(450), Mathf.Sqrt(800) };
+            var expectedLengths = new double[] { 0.0, Mathf.Sqrt(50), Mathf.Sqrt(200), Mathf.Sqrt(450), Mathf.Sqrt(800) };
 
             var lengths = curve.GetLengths(4);
 
@@ -93,10 +88,10 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var expectedPoints = new Vector2[] {
                 new Vector2( - 10, 0 ),
-                new Vector2( - 6.08f, 4.56f ),
-                new Vector2( - 2, 2.48f ),
-                new Vector2( 2, - 2.48f ),
-                new Vector2( 6.08f, - 4.56f ),
+                new Vector2( - 6.08, 4.56 ),
+                new Vector2( - 2, 2.48 ),
+                new Vector2( 2, - 2.48 ),
+                new Vector2( 6.08, - 4.56 ),
                 new Vector2( 10, 0 )
             };
 
@@ -125,24 +120,24 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var expectedPoints = new Vector2[] {
                 new Vector2( - 10, 0 ),
-                new Vector2( - 6.08f, 4.56f ),
-                new Vector2( - 2, 2.48f ),
-                new Vector2( 2, - 2.48f ),
-                new Vector2( 6.08f, - 4.56f ),
+                new Vector2( - 6.08, 4.56 ),
+                new Vector2( - 2, 2.48 ),
+                new Vector2( 2, - 2.48 ),
+                new Vector2( 6.08, - 4.56 ),
                 new Vector2( 10, 0 )
             };
 
             var curve = _curve;
             var expectedTangent = new Vector2[] {
-                    new Vector2( 0.7068243340243188f, 0.7073891155729485f ), // 0
-                    new Vector2( 0.7069654305325396f, - 0.7072481035902046f ), // 0.5
-                    new Vector2( 0.7068243340245123f, 0.7073891155727552f ) // 1
+                    new Vector2( 0.7068243340243188, 0.7073891155729485 ), // 0
+                    new Vector2( 0.7069654305325396, - 0.7072481035902046 ), // 0.5
+                    new Vector2( 0.7068243340245123, 0.7073891155727552 ) // 1
                 };
 
             var tangents = new Vector3[] {
-                curve.GetTangent( 0f, new Vector3() ),
-                curve.GetTangent( 0.5f, new Vector3() ),
-                curve.GetTangent( 1f, new Vector3() )
+                curve.GetTangent( 0, new Vector3() ),
+                curve.GetTangent( 0.5, new Vector3() ),
+                curve.GetTangent( 1, new Vector3() )
                 };
 
             for (int i = 0; i < tangents.Length; i++)
@@ -168,7 +163,7 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var start = curve.GetUtoTmapping(0, 0);
             var end = curve.GetUtoTmapping(0, curve.GetLength());
-            var middle = curve.GetUtoTmapping(0.5f, 0);
+            var middle = curve.GetUtoTmapping(0.5, 0);
 
             Assert.Equal(0, start);
             Assert.Equal(1, end);
@@ -191,9 +186,9 @@ namespace ThreeJs4Net.Extras.Core.Tests
 
             var expectedPoints = new Vector3[] {
                 new Vector3( - 10, 0, 0 ),
-                new Vector3( - 4.996509634683014f, 4.999995128640857f, 0 ),
+                new Vector3( - 4.996509634683014, 4.999995128640857, 0 ),
                 new Vector3( 0, 0, 0 ),
-                new Vector3( 4.996509634683006f, - 4.999995128640857f, 0 ),
+                new Vector3( 4.996509634683006, - 4.999995128640857, 0 ),
                 new Vector3( 10, 0, 0 )
             };
 
@@ -208,8 +203,8 @@ namespace ThreeJs4Net.Extras.Core.Tests
                 //Assert.Equal(expectedPoints[i].X, points[i].X);
                 //Assert.Equal(expectedPoints[i].Y, points[i].Y);
 
-                Assert.True(MathF.Abs(expectedPoints[i].X - points[i].X) <= MathUtils.EPS3);
-                Assert.True(MathF.Abs(expectedPoints[i].Y - points[i].Y) <= MathUtils.EPS3);
+                Assert.True(System.Math.Abs(expectedPoints[i].X - points[i].X) <= MathUtils.EPS3);
+                Assert.True(System.Math.Abs(expectedPoints[i].Y - points[i].Y) <= MathUtils.EPS3);
 
             }
         }

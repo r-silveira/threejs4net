@@ -24,16 +24,16 @@ namespace ThreeJs4Net.Math
             else return val;
         }
 
-        public static float Clamp(float val, float min, float max) 
+        public static double Clamp(double val, double min, double max) 
         {
             if (val.CompareTo(min) < 0) return min;
             else if (val.CompareTo(max) > 0) return max;
             else return val;
         }
 
-        public static float Random()
+        public static double Random()
         {
-            return (float)random.NextDouble();
+            return (double)random.NextDouble();
         }
 
         public static Color Random(this Color value)
@@ -46,7 +46,7 @@ namespace ThreeJs4Net.Math
         /// </summary>
         /// <param name="list"></param>
         /// <param name="values"></param>
-        public static void Add(this List<float> list, params float[] values)
+        public static void Add(this List<double> list, params double[] values)
         {
             list.AddRange(values);
         }
@@ -58,7 +58,7 @@ namespace ThreeJs4Net.Math
         /// <param name="q"></param>
         /// <param name="t"></param>
         /// <returns></returns>
-        private static float hue2rgb ( float p, float q, float t )
+        private static double hue2rgb (double p, double q, double t )
         {
 		    if ( t < 0.0f ) t += 1;
 		    if ( t > 1.0f ) t -= 1;
@@ -69,7 +69,7 @@ namespace ThreeJs4Net.Math
 		    return p;
 		}
 
-        public static float Lerp(this float x, float y, float t)
+        public static double Lerp(this double x, double y, double t)
         {
             return (1 - t) * x + t * y;
 

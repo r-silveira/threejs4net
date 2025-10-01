@@ -4,16 +4,16 @@ namespace ThreeJs4Net.Extras.Core
 {
     public class EllipseCurve : Curve<Vector3>
     {
-        public float aX;
-        public float aY;
-        public float xRadius;
-        public float yRadius;
-        public float aStartAngle;
-        public float aEndAngle;
+        public double aX;
+        public double aY;
+        public double xRadius;
+        public double yRadius;
+        public double aStartAngle;
+        public double aEndAngle;
         public bool aClockwise;
-        public float aRotation;
+        public double aRotation;
 
-        public EllipseCurve(float? aX = null, float? aY = null, float? xRadius = null, float? yRadius = null, float? aStartAngle = null, float? aEndAngle = null, bool? clockwise = null, float? rotation = null) : base()
+        public EllipseCurve(double? aX = null, double? aY = null, double? xRadius = null, double? yRadius = null, double? aStartAngle = null, double? aEndAngle = null, bool? clockwise = null, double? rotation = null) : base()
         {
             this.aX = aX != null ? aX.Value : 0;
             this.aY = aY != null ? aY.Value : 0;
@@ -22,14 +22,14 @@ namespace ThreeJs4Net.Extras.Core
             this.yRadius = yRadius != null ? yRadius.Value : 1;
 
             this.aStartAngle = aStartAngle != null ? aStartAngle.Value : 0;
-            this.aEndAngle = aEndAngle != null ? aEndAngle.Value : (float)(2 * System.Math.PI);
+            this.aEndAngle = aEndAngle != null ? aEndAngle.Value : (double)(2 * System.Math.PI);
 
             this.aClockwise = clockwise != null ? clockwise.Value : false;
 
             this.aRotation = rotation != null ? rotation.Value : 0;
         }
 
-        public override Vector3 GetPoint(float t, Vector3 optionalTarget = null)
+        public override Vector3 GetPoint(double t, Vector3 optionalTarget = null)
         {
             Vector3 point = optionalTarget ?? new Vector3();
 

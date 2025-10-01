@@ -170,7 +170,7 @@ namespace ThreeJs4Net.Tests.Math
         public void FromArrayTest()
         {
             var a = new Vector2();
-            var array = new float[] { 1, 2, 3, 4 };
+            var array = new double[] { 1, 2, 3, 4 };
 
             a.FromArray(array);
             Assert.Equal(1, a.X);
@@ -185,7 +185,7 @@ namespace ThreeJs4Net.Tests.Math
         public void FromBufferAttributeTest()
         {
             var a = new Vector2();
-            var attr = new BufferAttribute<float>(new float[] { 1, 2, 3, 4 }, 2);
+            var attr = new BufferAttribute<double>(new double[] { 1, 2, 3, 4 }, 2);
 
             a.FromBufferAttribute(attr, 0);
             Assert.Equal(1, a.X);
@@ -222,13 +222,13 @@ namespace ThreeJs4Net.Tests.Math
             var a = new Vector2(x, 0);
             var b = new Vector2(0, -y);
 
-            Assert.True(a.Lerp(a, 0).Equals(a.Lerp(a, (float)0.5)));
+            Assert.True(a.Lerp(a, 0).Equals(a.Lerp(a, (double)0.5)));
             Assert.True(a.Lerp(a, 0).Equals(a.Lerp(a, 1)));
 
             Assert.True(a.Clone().Lerp(b, 0).Equals(a));
 
-            Assert.True(a.Clone().Lerp(b, (float)0.5).X == x * 0.5);
-            Assert.True(a.Clone().Lerp(b, (float)0.5).Y == -y * 0.5);
+            Assert.True(a.Clone().Lerp(b, (double)0.5).X == x * 0.5);
+            Assert.True(a.Clone().Lerp(b, (double)0.5).Y == -y * 0.5);
 
             Assert.True(a.Clone().Lerp(b, 1).Equals(b));
         }
@@ -326,24 +326,24 @@ namespace ThreeJs4Net.Tests.Math
         [Fact()]
         public void RoundTest()
         {
-            Assert.Equal(new Vector2((float)-0.1, (float)0.1).Floor(), new Vector2(-1, 0));
-            Assert.Equal(new Vector2((float)-0.5, (float)0.5).Floor(), new Vector2(-1, 0));
-            Assert.Equal(new Vector2((float)-0.9, (float)0.9).Floor(), new Vector2(-1, 0));
+            Assert.Equal(new Vector2((double)-0.1, (double)0.1).Floor(), new Vector2(-1, 0));
+            Assert.Equal(new Vector2((double)-0.5, (double)0.5).Floor(), new Vector2(-1, 0));
+            Assert.Equal(new Vector2((double)-0.9, (double)0.9).Floor(), new Vector2(-1, 0));
 
-            Assert.Equal(new Vector2((float)-0.1, (float)0.1).Ceil(), new Vector2(0, 1));
-            Assert.Equal(new Vector2((float)-0.5, (float)0.5).Ceil(), new Vector2(0, 1));
-            Assert.Equal(new Vector2((float)-0.9, (float)0.9).Ceil(), new Vector2(0, 1));
+            Assert.Equal(new Vector2((double)-0.1, (double)0.1).Ceil(), new Vector2(0, 1));
+            Assert.Equal(new Vector2((double)-0.5, (double)0.5).Ceil(), new Vector2(0, 1));
+            Assert.Equal(new Vector2((double)-0.9, (double)0.9).Ceil(), new Vector2(0, 1));
 
-            Assert.Equal(new Vector2((float)-0.1, (float)0.1).Round(), new Vector2(0, 0));
-            Assert.Equal(new Vector2((float)-0.5, (float)0.5).Round(), new Vector2(0, 1));
-            Assert.Equal(new Vector2((float)-0.9, (float)0.9).Round(), new Vector2(-1, 1));
-
-            Assert.Equal(new Vector2((float)-0.1, (float)0.1).RoundToZero(), new Vector2(0, 0));
-            Assert.Equal(new Vector2((float)-0.5, (float)0.5).RoundToZero(), new Vector2(0, 0));
-            Assert.Equal(new Vector2((float)-0.9, (float)0.9).RoundToZero(), new Vector2(0, 0));
-            Assert.Equal(new Vector2((float)-1.1, (float)1.1).RoundToZero(), new Vector2(-1, 1));
-            Assert.Equal(new Vector2((float)-1.5, (float)1.5).RoundToZero(), new Vector2(-1, 1));
-            Assert.Equal(new Vector2((float)-1.9, (float)1.9).RoundToZero(), new Vector2(-1, 1));
+            Assert.Equal(new Vector2((double)-0.1, (double)0.1).Round(), new Vector2(0, 0));
+            Assert.Equal(new Vector2((double)-0.5, (double)0.5).Round(), new Vector2(0, 1));
+            Assert.Equal(new Vector2((double)-0.9, (double)0.9).Round(), new Vector2(-1, 1));
+                                      
+            Assert.Equal(new Vector2((double)-0.1, (double)0.1).RoundToZero(), new Vector2(0, 0));
+            Assert.Equal(new Vector2((double)-0.5, (double)0.5).RoundToZero(), new Vector2(0, 0));
+            Assert.Equal(new Vector2((double)-0.9, (double)0.9).RoundToZero(), new Vector2(0, 0));
+            Assert.Equal(new Vector2((double)-1.1, (double)1.1).RoundToZero(), new Vector2(-1, 1));
+            Assert.Equal(new Vector2((double)-1.5, (double)1.5).RoundToZero(), new Vector2(-1, 1));
+            Assert.Equal(new Vector2((double)-1.9, (double)1.9).RoundToZero(), new Vector2(-1, 1));
         }
 
 
@@ -469,18 +469,18 @@ namespace ThreeJs4Net.Tests.Math
         {
             var a = new Vector2(x, y);
 
-            var array = new float[] { };
+            var array = new double[] { };
 
             array = a.ToArray(ref array);
             Assert.Equal(array[0], x);
             Assert.Equal(array[1], y);
 
-            array = new float[] { };
+            array = new double[] { };
             a.ToArray(ref array);
             Assert.Equal(array[0], x);
             Assert.Equal(array[1], y);
 
-            array = new float[] { };
+            array = new double[] { };
             a.ToArray(ref array, 1);
             //Assert.Equal(array[0], null);
             Assert.Equal(array[1], x);

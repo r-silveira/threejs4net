@@ -158,21 +158,21 @@ namespace ThreeJs4Net.Math
     [Serializable]
     public struct HSL
     {
-        public float H;
+        public double H;
 
-        public float S;
+        public double S;
 
-        public float L;
+        public double L;
 
     }
     [Serializable]
     public struct Color
     {
-        public float R;
+        public double R;
 
-        public float G;
+        public double G;
 
-        public float B;
+        public double B;
 
 
         public Color(int hex)
@@ -183,7 +183,7 @@ namespace ThreeJs4Net.Math
             this.G = (hex >> 8 & 255) / 255f;
             this.B = (hex & 255) / 255f;
         }
-        public Color(float r, float? g = null, float? b = null)
+        public Color(double r, double? g = null, double? b = null)
         {
             R = 0;
             G = 0;
@@ -198,7 +198,7 @@ namespace ThreeJs4Net.Math
             }
         }
 
-        public float Hue2RGB(float p, float q, float t)
+        public double Hue2RGB(double p, double q, double t)
         {
             if (t < 0) t += 1;
             if (t > 1) t -= 1;
@@ -208,14 +208,14 @@ namespace ThreeJs4Net.Math
             return p;
         }
 
-        public float SRGBToLinear(float c)
+        public double SRGBToLinear(double c)
         {
-            return (c < 0.04045) ? c * 0.0773993808f : (float)System.Math.Pow(c * 0.9478672986 + 0.0521327014, 2.4);
+            return (c < 0.04045) ? c * 0.0773993808f : (double)System.Math.Pow(c * 0.9478672986 + 0.0521327014, 2.4);
         }
 
-        public float LinearToSRGB(float c)
+        public double LinearToSRGB(double c)
         {
-            return (c < 0.0031308f) ? c * 12.92f : 1.055f * ((float)System.Math.Pow(c, 0.41666)) - 0.055f;
+            return (c < 0.0031308f) ? c * 12.92f : 1.055f * ((double)System.Math.Pow(c, 0.41666)) - 0.055f;
         }
 
         public Color Set(object value)
@@ -232,7 +232,7 @@ namespace ThreeJs4Net.Math
 
             return this;
         }
-        public Color SetScalar(float scalar)
+        public Color SetScalar(double scalar)
         {
 
             this.R = scalar;
@@ -263,7 +263,7 @@ namespace ThreeJs4Net.Math
 
             return this;
         }
-        public Color SetRGB(float r, float g, float b)
+        public Color SetRGB(double r, double g, double b)
         {
 
             this.R = r;
@@ -272,11 +272,11 @@ namespace ThreeJs4Net.Math
 
             return this;
         }
-        public float EuclideanModulo(float n, float m)
+        public double EuclideanModulo(double n, double m)
         {
             return ((n % m) + m) % m;
         }
-        public Color SetHSL(float h, float s, float l)
+        public Color SetHSL(double h, double s, double l)
         {
 
             // h,s,l ranges are in 0.0 - 1.0
@@ -326,42 +326,42 @@ namespace ThreeJs4Net.Math
 
             return this;
         }
-        public Color CopyGammaToLinear(Color color, float? gammaFactor)
+        public Color CopyGammaToLinear(Color color, double? gammaFactor)
         {
 
             if (gammaFactor == null) gammaFactor = 2.0f;
 
-            this.R = (float)System.Math.Pow(color.R, gammaFactor.Value);
-            this.G = (float)System.Math.Pow(color.G, gammaFactor.Value);
-            this.B = (float)System.Math.Pow(color.B, gammaFactor.Value);
+            this.R = (double)System.Math.Pow(color.R, gammaFactor.Value);
+            this.G = (double)System.Math.Pow(color.G, gammaFactor.Value);
+            this.B = (double)System.Math.Pow(color.B, gammaFactor.Value);
 
             return this;
 
         }
 
-        public Color CopyLinearToGamma(Color color, float? gammaFactor)
+        public Color CopyLinearToGamma(Color color, double? gammaFactor)
         {
 
             if (gammaFactor == null) gammaFactor = 2.0f;
 
             var safeInverse = (gammaFactor > 0) ? (1.0f / gammaFactor) : 1.0f;
 
-            this.R = (float)System.Math.Pow(color.R, (float)safeInverse);
-            this.G = (float)System.Math.Pow(color.G, (float)safeInverse);
-            this.B = (float)System.Math.Pow(color.B, (float)safeInverse);
+            this.R = (double)System.Math.Pow(color.R, (double)safeInverse);
+            this.G = (double)System.Math.Pow(color.G, (double)safeInverse);
+            this.B = (double)System.Math.Pow(color.B, (double)safeInverse);
 
             return this;
 
         }
 
-        public Color ConvertGammaToLinear(float? gammaFactor)
+        public Color ConvertGammaToLinear(double? gammaFactor)
         {
 
             return this.CopyGammaToLinear(this, gammaFactor);
 
         }
 
-        public Color ConvertLinearToGamma(float? gammaFactor)
+        public Color ConvertLinearToGamma(double? gammaFactor)
         {
 
             this.CopyLinearToGamma(this, gammaFactor);
@@ -436,8 +436,8 @@ namespace ThreeJs4Net.Math
             var max = System.Math.Max(r, System.Math.Max(g, b));
             var min = System.Math.Min(r, System.Math.Min(g, b));
 
-            float hue = 0, saturation = 0;
-            float lightness = (min + max) / 2.0f;
+            double hue = 0, saturation = 0;
+            double lightness = (min + max) / 2.0f;
 
             if (min == max)
             {
@@ -479,7 +479,7 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public Color OffsetHSL(float h, float s, float l)
+        public Color OffsetHSL(double h, double s, double l)
         {
 
             HSL _hslA = this.GetHSL();
@@ -515,7 +515,7 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public Color AddScalar(float s)
+        public Color AddScalar(double s)
         {
 
             this.R += s;
@@ -569,7 +569,7 @@ namespace ThreeJs4Net.Math
             return result;
         }
 
-        public Color MultiplyScalar(float s)
+        public Color MultiplyScalar(double s)
         {
 
             this.R *= s;
@@ -580,7 +580,7 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public static Color operator *(Color left, float s)
+        public static Color operator *(Color left, double s)
         {
             Color result = new Color();
 
@@ -591,7 +591,7 @@ namespace ThreeJs4Net.Math
             return result;
         }
 
-        public Color Lerp(Color color, float alpha)
+        public Color Lerp(Color color, double alpha)
         {
 
             this.R += (color.R - this.R) * alpha;
@@ -602,7 +602,7 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public Color LerpHSL(Color color, float alpha)
+        public Color LerpHSL(Color color, double alpha)
         {
 
             HSL _hslA = this.GetHSL();
@@ -626,7 +626,7 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public Color FromArray(float[] array, int? offset = null)
+        public Color FromArray(double[] array, int? offset = null)
         {
 
             if (offset == null) offset = 0;
@@ -640,10 +640,10 @@ namespace ThreeJs4Net.Math
 
         }
 
-        public float[] ToArray(float[] array, int? offset)
+        public double[] ToArray(double[] array, int? offset)
         {
 
-            if (array == null) array = new float[3];
+            if (array == null) array = new double[3];
             if (offset == null) offset = 0;
 
             array[(int)offset] = this.R;
@@ -724,7 +724,7 @@ namespace ThreeJs4Net.Math
             return saturation;
         }
 
-        public static Color FromArgb(float r, float g, float b, float alpha)
+        public static Color FromArgb(double r, double g, double b, double alpha)
         {
             return new Color(r, g, b);
         }
