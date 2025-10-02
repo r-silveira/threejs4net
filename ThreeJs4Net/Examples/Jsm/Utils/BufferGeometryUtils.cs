@@ -351,6 +351,9 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                     case "Single":
                         mergedAttribute = MergeBufferAttributes<double>(attr.Value.ToArray());
                         break;
+                    case "Double":
+                        mergedAttribute = MergeBufferAttributes<double>(attr.Value.ToArray());
+                        break;
                 }
 
                 if (mergedAttribute == null)

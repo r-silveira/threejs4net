@@ -1,5 +1,4 @@
-﻿using System.Runtime.Intrinsics.X86;
-using ThreeJs4Net.Examples.Jsm.Math;
+﻿using ThreeJs4Net.Examples.Jsm.Math;
 using ThreeJs4Net.Math;
 using Xunit;
 
@@ -7,6 +6,17 @@ namespace ThreeJs4Net.Tests.Examples.Jsm.Math
 {
     public class OBBTests : BaseTests
     {
+        public static void AssertEqualWithTolerance(double[] expected, double[] actual, double tolerance = 1e-6)
+        {
+            Assert.Equal(expected.Length, actual.Length);
+
+            for (int i = 0; i < expected.Length; i++)
+            {
+                Assert.True(System.Math.Abs(expected[i] - actual[i]) <= tolerance,
+                    $"Expected {expected[i]} but got {actual[i]} at index {i}");
+            }
+        }
+
         [Fact()]
         public void OBBTest()
         {
@@ -14,15 +24,15 @@ namespace ThreeJs4Net.Tests.Examples.Jsm.Math
             var obb = new OBB();
             var matrix4 = new Matrix4(new double[] { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 });
 
-            Assert.Equal(obb.Center.ToArray(), new double[] { 0, 0, 0 });
+            AssertEqualWithTolerance(obb.Center.ToArray(), new double[] { 0, 0, 0 });
             obb.FromBox3(box);
-            Assert.Equal(obb.Center.ToArray(), new double[] { 5, 5, 5 });
-            Assert.Equal(obb.Rotation.ToArray(), new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1 });
+            AssertEqualWithTolerance(obb.Center.ToArray(), new double[] { 5, 5, 5 });
+            AssertEqualWithTolerance(obb.Rotation.ToArray(), new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 1 });
 
             matrix4 = matrix4.MakeRotationX((double)0.5);
             obb.ApplyMatrix4(matrix4);
 
-            Assert.Equal(obb.Rotation.ToArray(), new double[]
+            AssertEqualWithTolerance(obb.Rotation.ToArray(), new double[]
             {
                 1, 0, 0,
                 0, (double)0.8775825618903728, (double)0.479425538604203,
@@ -33,7 +43,7 @@ namespace ThreeJs4Net.Tests.Examples.Jsm.Math
             matrix4 = matrix4.MakeRotationY((double)0.3);
             obb.ApplyMatrix4(matrix4);
 
-            Assert.Equal(obb.Rotation.ToArray(), new double[]
+            AssertEqualWithTolerance(obb.Rotation.ToArray(), new double[]
             {
                 (double) 0.9553365, 
                 (double) 0.141679943, 

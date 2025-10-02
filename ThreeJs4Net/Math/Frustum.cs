@@ -84,8 +84,8 @@ namespace ThreeJs4Net.Math
             planes[1].SetComponents(me3 + me0, me7 + me4, me11 + me8, me15 + me12).Normalize();
             planes[2].SetComponents(me3 + me1, me7 + me5, me11 + me9, me15 + me13).Normalize();
             planes[3].SetComponents(me3 - me1, me7 - me5, me11 - me9, me15 - me13).Normalize();
-            planes[4].SetComponents(me3 - me2, me7 - me6, me11 - me10, me15 - me14).Normalize();
-            planes[5].SetComponents(me3 + me2, me7 + me6, me11 + me10, me15 + me14).Normalize();
+            planes[4].SetComponents(me3 - me2, me7 - me6, me11 - me10, me15 - me14).Normalize(); // inverse here
+            planes[5].SetComponents(me3 + me2, me7 + me6, me11 + me10, me15 + me14).Normalize(); // inverse here?
 
             return this;
         }
@@ -144,13 +144,13 @@ namespace ThreeJs4Net.Math
             return true;
         }
 
-        public bool ContainsPoint(Vector3 point)
+        public bool ContainsPoint(Vector3 point, double eps = 1e-6)
         {
             var planes = this.Planes;
 
             for (var i = 0; i < 6; i++)
             {
-                if (planes[i].DistanceToPoint(point) < 0)
+                if (planes[i].DistanceToPoint(point) < -eps)
                 {
                     return false;
                 }

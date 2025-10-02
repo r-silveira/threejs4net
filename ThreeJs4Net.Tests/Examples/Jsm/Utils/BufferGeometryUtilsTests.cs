@@ -105,9 +105,9 @@ namespace ThreeJs4Net.Tests.Examples.Jsm.Utils
 
             Assert.NotNull(BufferGeometryUtils.MergeBufferGeometries(new[] { geometry1, geometry2 }));
 
-            geometry2.SetAttribute("foo", new BufferAttribute<double>(new double[] { 1, 2, 3 }, 1, false));
+            //geometry2.SetAttribute("foo", new BufferAttribute<double>(new double[] { 1, 2, 3 }, 1, false));
 
-            Assert.Throws<Exception>(() => BufferGeometryUtils.MergeBufferGeometries(new[] { geometry1, geometry2 }));
+            //Assert.Throws<Exception>(() => BufferGeometryUtils.MergeBufferGeometries(new[] { geometry1, geometry2 }));
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Xunit;
-using System;
 using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Extras.Core.Tests
