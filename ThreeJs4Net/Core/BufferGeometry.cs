@@ -374,7 +374,10 @@ namespace ThreeJs4Net.Core
                 var y = normals[i + 1];
                 var z = normals[i + 2];
 
-                var n = 1.0f / (float)System.Math.Sqrt(x * x + y * y + z * z);
+                // Zero-length normals (degenerate triangles, unreferenced vertices) stay zero, as in three.js
+                // (Vector3.normalize divides by `length || 1`). Previously 1/0 = Infinity and 0 * Infinity = NaN.
+                var length = (float)System.Math.Sqrt(x * x + y * y + z * z);
+                var n = 1.0f / (length == 0 ? 1 : length);
 
                 normals[i] *= n;
                 normals[i + 1] *= n;
