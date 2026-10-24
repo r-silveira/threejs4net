@@ -145,7 +145,7 @@ namespace ThreeJs4Net.Math
             set
             {
                 x = value;
-                OnPropertyChanged();
+                NotifyPropertyChanged(nameof(X));
             }
         }
 
@@ -155,7 +155,7 @@ namespace ThreeJs4Net.Math
             set
             {
                 y = value;
-                OnPropertyChanged();
+                NotifyPropertyChanged(nameof(Y));
             }
         }
 
@@ -165,7 +165,22 @@ namespace ThreeJs4Net.Math
             set
             {
                 z = value;
-                OnPropertyChanged();
+                NotifyPropertyChanged(nameof(Z));
+            }
+        }
+
+        /// <summary>
+        /// Fast path for the property setters. The base <see cref="OnPropertyChanged"/> only raises
+        /// <see cref="PropertyChanged"/>, so when the instance is exactly <see cref="Vector3"/> (no override
+        /// is possible) and there are no subscribers, the virtual call is a no-op and can be skipped.
+        /// Subclasses and instances with subscribers keep the exact previous behavior.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null || GetType() != typeof(Vector3))
+            {
+                OnPropertyChanged(propertyName);
             }
         }
 
@@ -296,7 +311,7 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public static Vector3 operator +(Vector3 left, Vector3 right)
         {
-            return new Vector3 { X = left.X + right.X, Y = left.Y + right.Y, Z = left.Z + right.Z };
+            return new Vector3(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
         }
 
         /// <summary>
@@ -307,7 +322,7 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public static Vector3 operator -(Vector3 left, Vector3 right)
         {
-            return new Vector3 { X = left.X - right.X, Y = left.Y - right.Y, Z = left.Z - right.Z };
+            return new Vector3(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
         }
 
         /// <summary>
@@ -318,7 +333,7 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public static Vector3 operator *(Vector3 left, Vector3 right)
         {
-            return new Vector3 { X = left.X * right.X, Y = left.Y * right.Y, Z = left.Z * right.Z };
+            return new Vector3(left.X * right.X, left.Y * right.Y, left.Z * right.Z);
         }
 
         /// <summary>
@@ -329,7 +344,7 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public static Vector3 operator /(Vector3 left, Vector3 right)
         {
-            return new Vector3 { X = left.X / right.X, Y = left.Y / right.Y, Z = left.Z / right.Z };
+            return new Vector3(left.X / right.X, left.Y / right.Y, left.Z / right.Z);
         }
 
         /// <summary>
@@ -536,8 +551,17 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public Vector3 Reflect(Vector3 normal)
         {
-            var vector = new Vector3().Copy(normal).MultiplyScalar(2 * Dot(normal));
-            return Sub(vector);
+            // Same arithmetic as Sub(normal * (2 * Dot(normal))), without the temporary Vector3.
+            var s = 2 * Dot(normal);
+            var vX = normal.X * s;
+            var vY = normal.Y * s;
+            var vZ = normal.Z * s;
+
+            this.X -= vX;
+            this.Y -= vY;
+            this.Z -= vZ;
+
+            return this;
         }
 
         /// <summary>
@@ -671,9 +695,11 @@ namespace ThreeJs4Net.Math
 
         public Vector3 ClampScalar(float minVal, float maxVal)
         {
-            var min = new Vector3(minVal, minVal, minVal);
-            var max = new Vector3(maxVal, maxVal, maxVal);
-            Clamp(min, max);
+            // Same logic as Clamp(new Vector3(minVal), new Vector3(maxVal)), without the two temporaries.
+            if (this.X < minVal) this.X = minVal; else if (this.X > maxVal) this.X = maxVal;
+            if (this.Y < minVal) this.Y = minVal; else if (this.Y > maxVal) this.Y = maxVal;
+            if (this.Z < minVal) this.Z = minVal; else if (this.Z > maxVal) this.Z = maxVal;
+
             return this;
         }
 
@@ -1062,8 +1088,24 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public Vector3 ProjectOnPlane(Vector3 planeNormal)
         {
-            var vector = new Vector3().Copy(this).ProjectOnVector(planeNormal);
-            return Sub(vector);
+            // Same arithmetic as Sub(Clone().ProjectOnVector(planeNormal)), without the temporary Vector3.
+            float nX = planeNormal.X, nY = planeNormal.Y, nZ = planeNormal.Z;
+            float pX = 0, pY = 0, pZ = 0;
+
+            var denominator = nX * nX + nY * nY + nZ * nZ;
+            if (denominator != 0)
+            {
+                var scalar = (nX * this.X + nY * this.Y + nZ * this.Z) / denominator;
+                pX = nX * scalar;
+                pY = nY * scalar;
+                pZ = nZ * scalar;
+            }
+
+            this.X -= pX;
+            this.Y -= pY;
+            this.Z -= pZ;
+
+            return this;
         }
 
         public Vector3 Random()
@@ -1077,9 +1119,13 @@ namespace ThreeJs4Net.Math
 
         public Vector3 FromBufferAttribute(BufferAttribute<float> attribute, int index)
         {
-            this.x = attribute.GetX(index);
-            this.y = attribute.GetY(index);
-            this.z = attribute.GetZ(index);
+            // Read Array/ItemSize once (each is a dictionary lookup) instead of once per component.
+            var array = attribute.Array;
+            var offset = index * attribute.ItemSize;
+
+            this.x = array[offset];
+            this.y = array[offset + 1];
+            this.z = array[offset + 2];
 
             return this;
         }

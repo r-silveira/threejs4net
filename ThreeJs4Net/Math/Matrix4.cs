@@ -391,21 +391,22 @@ namespace ThreeJs4Net.Math
         /// <returns></returns>
         public float[] ApplyToVector3Array(float[] array, int offset, int length)
         {
-            var v1 = new Vector3();
+            // Same arithmetic as Vector3.ApplyMatrix4, without going through a Vector3 per element.
+            var e = this.elements;
+            float e0 = e[0], e1 = e[1], e2 = e[2];
+            float e4 = e[4], e5 = e[5], e6 = e[6];
+            float e8 = e[8], e9 = e[9], e10 = e[10];
+            float e12 = e[12], e13 = e[13], e14 = e[14];
 
-            for (int i = 0, j = offset, il; i < length; i += 3, j += 3)
+            for (int i = 0, j = offset; i < length; i += 3, j += 3)
             {
+                var lX = array[j];
+                var lY = array[j + 1];
+                var lZ = array[j + 2];
 
-                v1.X = array[j];
-                v1.Y = array[j + 1];
-                v1.Z = array[j + 2];
-
-                v1.ApplyMatrix4(this);
-
-                array[j] = v1.X;
-                array[j + 1] = v1.Y;
-                array[j + 2] = v1.Z;
-
+                array[j] = e0 * lX + e4 * lY + e8 * lZ + e12;
+                array[j + 1] = e1 * lX + e5 * lY + e9 * lZ + e13;
+                array[j + 2] = e2 * lX + e6 * lY + e10 * lZ + e14;
             }
 
             return array;

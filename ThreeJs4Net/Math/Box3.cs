@@ -46,11 +46,17 @@ namespace ThreeJs4Net.Math
             var maxY = float.NegativeInfinity;
             var maxZ = float.NegativeInfinity;
 
-            for (int i = 0; i < attribute.Count; i++)
+            // Read Array/ItemSize once: each access is a dictionary lookup, and the previous loop did
+            // eight of them per vertex (Count + GetX/GetY/GetZ).
+            var array = attribute.Array;
+            var itemSize = attribute.ItemSize;
+            var count = array.Length / itemSize;
+
+            for (int i = 0, o = 0; i < count; i++, o += itemSize)
             {
-                var x = attribute.GetX(i);
-                var y = attribute.GetY(i);
-                var z = attribute.GetZ(i);
+                var x = array[o];
+                var y = array[o + 1];
+                var z = array[o + 2];
 
                 if (x < minX) minX = x;
                 if (y < minY) minY = y;

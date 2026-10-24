@@ -166,7 +166,6 @@ namespace ThreeJs4Net.Core
         public override void ComputeBoundingSphere()
         {
             var box = new Box3();
-            var vector = new Vector3();
 
             this.BoundingSphere ??= new Sphere();
 
@@ -184,10 +183,19 @@ namespace ThreeJs4Net.Core
 
                 float maxRadiusSq = 0;
 
-                for (var i = 0; i < positions.Length / position.ItemSize; i++)
+                // Same arithmetic as center.DistanceToSquared(vector.FromBufferAttribute(position, i)),
+                // reading the backing array directly (ItemSize is a dictionary lookup).
+                var itemSize = position.ItemSize;
+                var count = positions.Length / itemSize;
+                float cX = center.X, cY = center.Y, cZ = center.Z;
+
+                for (int i = 0, o = 0; i < count; i++, o += itemSize)
                 {
-                    vector.FromBufferAttribute(position, i);
-                    maxRadiusSq = Mathf.Max(maxRadiusSq, center.DistanceToSquared(vector));
+                    var dX = cX - positions[o];
+                    var dY = cY - positions[o + 1];
+                    var dZ = cZ - positions[o + 2];
+
+                    maxRadiusSq = Mathf.Max(maxRadiusSq, dX * dX + dY * dY + dZ * dZ);
                 }
 
                 //!! IMPLEMENT MORPH
@@ -265,46 +273,38 @@ namespace ThreeJs4Net.Core
                     }
                 }
 
-                var pA = new Vector3();
-                var pB = new Vector3();
-                var pC = new Vector3();
-
-                var cb = new Vector3();
-                var ab = new Vector3();
-
                 var normals = GetBuffer<float>("normal");
+
+                // The per-triangle math below is the same as the previous Vector3-based version
+                // (cb = pC - pB; ab = pA - pB; cb = cross(cb, ab)), in the same order, using locals
+                // instead of five Vector3 temporaries whose setters went through OnPropertyChanged.
 
                 // indexed elements
 
                 if (index != null && index.length > 0)
                 {
                     var indices = index.Array;
+                    var indexCount = index.Count;
 
-                    for (var i = 0; i < index.Count; i += 3)
+                    for (var i = 0; i < indexCount; i += 3)
                     {
                         var vA = (int)(indices[i + 0]) * 3;
                         var vB = (int)(indices[i + 1]) * 3;
                         var vC = (int)(indices[i + 2]) * 3;
 
-                        pA.FromArray(positions, vA);
-                        pB.FromArray(positions, vB);
-                        pC.FromArray(positions, vC);
+                        FaceNormal(positions, vA, vB, vC, out var nX, out var nY, out var nZ);
 
-                        cb.SubVectors(pC, pB);
-                        ab.SubVectors(pA, pB);
-                        cb.Cross(ab);
+                        normals[vA + 0] += nX;
+                        normals[vA + 1] += nY;
+                        normals[vA + 2] += nZ;
 
-                        normals[vA + 0] += cb.X;
-                        normals[vA + 1] += cb.Y;
-                        normals[vA + 2] += cb.Z;
+                        normals[vB + 0] += nX;
+                        normals[vB + 1] += nY;
+                        normals[vB + 2] += nZ;
 
-                        normals[vB + 0] += cb.X;
-                        normals[vB + 1] += cb.Y;
-                        normals[vB + 2] += cb.Z;
-
-                        normals[vC + 0] += cb.X;
-                        normals[vC + 1] += cb.Y;
-                        normals[vC + 2] += cb.Z;
+                        normals[vC + 0] += nX;
+                        normals[vC + 1] += nY;
+                        normals[vC + 2] += nZ;
                     }
                 }
                 else
@@ -313,25 +313,19 @@ namespace ThreeJs4Net.Core
 
                     for (var i = 0; i < positions.Length; i += 9)
                     {
-                        pA.FromArray(positions, i + 0);
-                        pB.FromArray(positions, i + 3);
-                        pC.FromArray(positions, i + 6);
+                        FaceNormal(positions, i + 0, i + 3, i + 6, out var nX, out var nY, out var nZ);
 
-                        cb.SubVectors(pC, pB);
-                        ab.SubVectors(pA, pB);
-                        cb.Cross(ab);
+                        normals[i + 0] = nX;
+                        normals[i + 1] = nY;
+                        normals[i + 2] = nZ;
 
-                        normals[i + 0] = cb.X;
-                        normals[i + 1] = cb.Y;
-                        normals[i + 2] = cb.Z;
+                        normals[i + 3] = nX;
+                        normals[i + 4] = nY;
+                        normals[i + 5] = nZ;
 
-                        normals[i + 3] = cb.X;
-                        normals[i + 4] = cb.Y;
-                        normals[i + 5] = cb.Z;
-
-                        normals[i + 6] = cb.X;
-                        normals[i + 7] = cb.Y;
-                        normals[i + 8] = cb.Z;
+                        normals[i + 6] = nX;
+                        normals[i + 7] = nY;
+                        normals[i + 8] = nZ;
                     }
                 }
 
@@ -339,6 +333,27 @@ namespace ThreeJs4Net.Core
 
                 ((BufferAttribute<float>)Attributes["normal"]).needsUpdate = true;
             }
+        }
+
+        /// <summary>
+        /// Unnormalized face normal cross(pC - pB, pA - pB) for the vertices starting at offsets a, b, c.
+        /// </summary>
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        private static void FaceNormal(float[] positions, int a, int b, int c, out float x, out float y, out float z)
+        {
+            float pBx = positions[b], pBy = positions[b + 1], pBz = positions[b + 2];
+
+            var cbX = positions[c] - pBx;
+            var cbY = positions[c + 1] - pBy;
+            var cbZ = positions[c + 2] - pBz;
+
+            var abX = positions[a] - pBx;
+            var abY = positions[a + 1] - pBy;
+            var abZ = positions[a + 2] - pBz;
+
+            x = cbY * abZ - cbZ * abY;
+            y = cbZ * abX - cbX * abZ;
+            z = cbX * abY - cbY * abX;
         }
 
         public void Merge()

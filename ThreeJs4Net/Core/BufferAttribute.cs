@@ -7,6 +7,10 @@ namespace ThreeJs4Net.Core
 {
     public class BufferAttribute<T> : Renderers.Shaders.Attribute, IBufferAttribute
     {
+        // Cached boxes so that setting needsUpdate/Normalized does not allocate a new boxed bool on every call.
+        private static readonly object BoxedTrue = true;
+        private static readonly object BoxedFalse = false;
+
         public T[] Array
         {
             get => (T[])this["array"];
@@ -34,13 +38,13 @@ namespace ThreeJs4Net.Core
         public bool needsUpdate
         {
             get => (bool)this["needsUpdate"];
-            set => this["needsUpdate"] = value;
+            set => this["needsUpdate"] = value ? BoxedTrue : BoxedFalse;
         }
 
         public bool Normalized
         {
             get => (bool)this["normalized"];
-            set => this["normalized"] = value;
+            set => this["normalized"] = value ? BoxedTrue : BoxedFalse;
         }
 
         public int Usage
@@ -308,6 +312,10 @@ namespace ThreeJs4Net.Core
             return this;
         }
 
+        // The transforms below operate directly on the backing float[]: Array and ItemSize are read once
+        // (each is a dictionary lookup) and no Vector3 is allocated per vertex. The arithmetic is the same,
+        // in the same order, as Vector3.ApplyMatrix3/ApplyMatrix4/TransformDirection/Normalize.
+
         public BufferAttribute<T> ApplyMatrix3(Matrix3 m)
         {
             if (typeof(T) != typeof(float))
@@ -315,19 +323,7 @@ namespace ThreeJs4Net.Core
                 throw new Exception("BufferAttribute is not a float buffer. Can't apply Matrix3 to it");
             }
 
-            for (var i = 0; i < this.Count; i++)
-            {
-                var vector = new Vector3
-                {
-                    X = (float)(object)this.GetX(i),
-                    Y = (float)(object)this.GetY(i),
-                    Z = (float)(object)this.GetZ(i)
-                };
-
-                vector.ApplyMatrix3(m);
-
-                this.SetXYZ(i, (T)(object)vector.X, (T)(object)vector.Y, (T)(object)vector.Z);
-            }
+            ApplyMatrix3(m, normalize: false);
 
             return this;
         }
@@ -339,18 +335,25 @@ namespace ThreeJs4Net.Core
                 throw new Exception("BufferAttribute is not a float buffer. Can't apply Matrix4 to it");
             }
 
-            for (var i = 0; i < this.Count; i++)
+            var array = (float[])(object)this.Array;
+            var itemSize = this.ItemSize;
+            var count = array.Length / itemSize;
+
+            var e = m.Elements;
+            float e0 = e[0], e1 = e[1], e2 = e[2];
+            float e4 = e[4], e5 = e[5], e6 = e[6];
+            float e8 = e[8], e9 = e[9], e10 = e[10];
+            float e12 = e[12], e13 = e[13], e14 = e[14];
+
+            for (int i = 0, o = 0; i < count; i++, o += itemSize)
             {
-                var vector = new Vector3
-                {
-                    X = (float)(object)this.GetX(i),
-                    Y = (float)(object)this.GetY(i),
-                    Z = (float)(object)this.GetZ(i)
-                };
+                var lX = array[o];
+                var lY = array[o + 1];
+                var lZ = array[o + 2];
 
-                vector.ApplyMatrix4(m);
-
-                this.SetXYZ(i, (T)(object)vector.X, (T)(object)vector.Y, (T)(object)vector.Z);
+                array[o] = e0 * lX + e4 * lY + e8 * lZ + e12;
+                array[o + 1] = e1 * lX + e5 * lY + e9 * lZ + e13;
+                array[o + 2] = e2 * lX + e6 * lY + e10 * lZ + e14;
             }
 
             return this;
@@ -363,19 +366,7 @@ namespace ThreeJs4Net.Core
                 throw new Exception("BufferAttribute is not a float buffer. Can't apply Normal Matrix to it");
             }
 
-            for (var i = 0; i < this.Count; i++)
-            {
-                var vector = new Vector3
-                {
-                    X = (float)(object)this.GetX(i),
-                    Y = (float)(object)this.GetY(i),
-                    Z = (float)(object)this.GetZ(i)
-                };
-
-                vector.ApplyNormalMatrix(m);
-
-                this.SetXYZ(i, (T)(object)vector.X, (T)(object)vector.Y, (T)(object)vector.Z);
-            }
+            ApplyMatrix3(m, normalize: true);
 
             return this;
         }
@@ -387,21 +378,76 @@ namespace ThreeJs4Net.Core
                 throw new Exception("BufferAttribute is not a float buffer. Can't apply Normal Matrix to it");
             }
 
-            for (var i = 0; i < this.Count; i++)
+            var array = (float[])(object)this.Array;
+            var itemSize = this.ItemSize;
+            var count = array.Length / itemSize;
+
+            var e = m.Elements;
+            float e0 = e[0], e1 = e[1], e2 = e[2];
+            float e4 = e[4], e5 = e[5], e6 = e[6];
+            float e8 = e[8], e9 = e[9], e10 = e[10];
+
+            for (int i = 0, o = 0; i < count; i++, o += itemSize)
             {
-                var vector = new Vector3
-                {
-                    X = (float)(object)this.GetX(i),
-                    Y = (float)(object)this.GetY(i),
-                    Z = (float)(object)this.GetZ(i)
-                };
+                var lX = array[o];
+                var lY = array[o + 1];
+                var lZ = array[o + 2];
 
-                vector.TransformDirection(m);
+                var x = e0 * lX + e4 * lY + e8 * lZ;
+                var y = e1 * lX + e5 * lY + e9 * lZ;
+                var z = e2 * lX + e6 * lY + e10 * lZ;
 
-                this.SetXYZ(i, (T)(object)vector.X, (T)(object)vector.Y, (T)(object)vector.Z);
+                Normalize(ref x, ref y, ref z);
+
+                array[o] = x;
+                array[o + 1] = y;
+                array[o + 2] = z;
             }
 
             return this;
+        }
+
+        private void ApplyMatrix3(Matrix3 m, bool normalize)
+        {
+            var array = (float[])(object)this.Array;
+            var itemSize = this.ItemSize;
+            var count = array.Length / itemSize;
+
+            var e = m.Elements;
+            float e0 = e[0], e1 = e[1], e2 = e[2];
+            float e3 = e[3], e4 = e[4], e5 = e[5];
+            float e6 = e[6], e7 = e[7], e8 = e[8];
+
+            for (int i = 0, o = 0; i < count; i++, o += itemSize)
+            {
+                var lX = array[o];
+                var lY = array[o + 1];
+                var lZ = array[o + 2];
+
+                var x = e0 * lX + e3 * lY + e6 * lZ;
+                var y = e1 * lX + e4 * lY + e7 * lZ;
+                var z = e2 * lX + e5 * lY + e8 * lZ;
+
+                if (normalize)
+                {
+                    Normalize(ref x, ref y, ref z);
+                }
+
+                array[o] = x;
+                array[o + 1] = y;
+                array[o + 2] = z;
+            }
+        }
+
+        /// <summary>Same arithmetic as <see cref="Vector3.Normalize"/> (zero-length vectors stay unchanged).</summary>
+        private static void Normalize(ref float x, ref float y, ref float z)
+        {
+            var length = (float)System.Math.Sqrt(x * x + y * y + z * z);
+            var inverse = 1 / (length == 0 ? 1 : length);
+
+            x *= inverse;
+            y *= inverse;
+            z *= inverse;
         }
         #endregion
 
