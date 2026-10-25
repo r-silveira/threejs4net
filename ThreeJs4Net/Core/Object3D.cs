@@ -17,11 +17,6 @@ namespace ThreeJs4Net.Core
         #region --- Members ---
         protected static int Object3DIdCount;
         private bool _disposed;
-        public bool __webglInit = false;
-        public bool __webglActive = false;
-        public float[] __webglMorphTargetInfluences;
-        public Matrix4 _modelViewMatrix;
-        public Matrix3 _normalMatrix;
         public Vector3 DefaultUp = new Vector3(0, 1, 0);
         public Vector3 Up;
         public string type = "Object3D";

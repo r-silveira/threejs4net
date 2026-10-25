@@ -2,9 +2,7 @@
 
 =======
 
-C# and OpenTK implementation of Three.js
-
-All the fun of Three.js, now using C# and OpenTK for the OpenGL rendering. 
+C# implementation of the Three.js data structures and math.
 
 The aim of the Three.cs library is to be as close as possible to Three.js project, so that applications are as easy to port from one environment to another - taking into account the different capabilities of the programming languages. 
 
@@ -15,24 +13,13 @@ The library is being updated to reflect ThreeJS capabilities as of R116. After t
 Note 1: The library is far from being finished, with a handful of fully working examples, so still needs a lot of work.
 Note 2: At this moment, we are focused on updating all ThreeJS classes and methods and not so much on the rendering part of the process. 
 
-## Usage 
+## Data structures only (no rendering)
 
-Download the library and open it in Visual Studio (the project includes both Library and Demos) and should run straight out of the box.
+This branch keeps only the three.js data structures and math (Vector3, Matrix4, Box3, BufferGeometry,
+BufferAttribute, Object3D, Mesh, materials, cameras, lights, geometries, curves...). The OpenGL/WebGL
+renderer, the GLSL shaders, render targets, the software projector and the WinForms/OpenTK demo were
+removed. The library has no Windows or OpenGL dependency and targets plain `net6.0`.
 
-## Screenshot
+## Usage
 
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails/Screenshot.png">
-
-## Working Examples 
-
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_buffergeometry_lines.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//misc_controls_deviceorientation.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//misc_lookat.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_buffergeometry.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_buffergeometry_rawshader.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_geometry_cube.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_geometry_hierarchy.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_interactive_buffergeometry.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_panorama.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_shader.jpg">
-<img src="https://raw.githubusercontent.com/threejs4net/threejs4net/main/ThreeJs4Net.Demo/Data/Thumbnails//webgl_shader2.jpg">
+Reference `ThreeJs4Net/ThreeJs4Net.csproj` from your project. Tests are in `ThreeJs4Net.Tests` (`dotnet test`).

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Materials
 {
@@ -11,14 +10,6 @@ namespace ThreeJs4Net.Materials
         public bool SizeAttenuation = true;
         public bool Fog = true;
 
-#if USE_WINDOWS
-        public Texture Map { get; set; }
-        public Texture AlphaMap { get; set; }
-        public Texture SpecularMap { get; set; }
-        public Texture NormalMap { get; set; } // TODO: not in ThreeJs, just to be an IMap. Must be NULL
-        public Texture BumpMap { get; set; } // TODO: not in ThreeJs, just to be an IMap.  Must be NULL
-        public Texture LightMap { get; set; }
-#else
         public object Map { get; set; }
         public object AlphaMap { get; set; }
         public object SpecularMap { get; set; }
@@ -26,7 +17,6 @@ namespace ThreeJs4Net.Materials
         public object BumpMap { get; set; }
         public object LightMap { get; set; }
 
-#endif
         public PointCloudMaterial(Hashtable parameters = null)
         {
             this.type = "PointCloudMaterial";

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Materials
 {
@@ -32,13 +31,8 @@ namespace ThreeJs4Net.Materials
         public int Overdraw = 0; // Overdrawn pixels (typically between 0 and 1) for fixing antialiasing gaps in CanvasRenderer
         public bool Visible = true;
         public bool NeedsUpdate = true;
-        public List<UniformLocation> UniformsList;
         public int VertexColors; // Set to use "Color" attribute stream
-#if USE_WINDOWS
-        public Texture EnvMap = null; // Hoort hier eigenlijk niet
-#else
         public object EnvMap = null; // Hoort hier eigenlijk niet
-#endif
 
         /// <summary>
         /// 

@@ -1,5 +1,4 @@
 ﻿using ThreeJs4Net.Math;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Lights
 {
@@ -22,11 +21,7 @@ namespace ThreeJs4Net.Lights
         float shadowMapWidth { get; set; }
 
         float shadowMapHeight { get; set; }
-#if USE_WINDOWS
-        Texture shadowMap { get; set; }
-#else
         object shadowMap { get; set; }
-#endif
 
         //Size shadowMapSize { get; set; }
 

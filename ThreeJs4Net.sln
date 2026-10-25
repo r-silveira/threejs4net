@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeJs4Net.Tests", "ThreeJ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThreeJs4Net", "ThreeJs4Net\ThreeJs4Net.csproj", "{0A03130F-7C4F-45C3-B95C-6DEDC96509BA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThreeJs4Net.Demo", "ThreeJs4Net.Demo\ThreeJs4Net.Demo.csproj", "{921CAD5C-0AF8-4B39-A60B-C3DC59F70735}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{0A03130F-7C4F-45C3-B95C-6DEDC96509BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A03130F-7C4F-45C3-B95C-6DEDC96509BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A03130F-7C4F-45C3-B95C-6DEDC96509BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{921CAD5C-0AF8-4B39-A60B-C3DC59F70735}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{921CAD5C-0AF8-4B39-A60B-C3DC59F70735}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{921CAD5C-0AF8-4B39-A60B-C3DC59F70735}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{921CAD5C-0AF8-4B39-A60B-C3DC59F70735}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

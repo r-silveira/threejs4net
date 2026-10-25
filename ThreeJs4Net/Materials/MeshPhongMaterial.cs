@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Materials
 {
@@ -23,19 +22,6 @@ namespace ThreeJs4Net.Materials
         public Vector3 WrapRgb = new Vector3( 1, 1, 1 );
 
         // IMap
-#if USE_WINDOWS
-        public Texture Map  { get; set; }
-
-        public Texture AlphaMap { get; set; }
-
-        public Texture SpecularMap { get; set; }
-
-        public Texture NormalMap { get; set; }
-
-        public Texture BumpMap { get; set; }
-
-        public Texture LightMap { get; set; }
-#else
         public object Map  { get; set; }
 
         public object AlphaMap { get; set; }
@@ -48,7 +34,6 @@ namespace ThreeJs4Net.Materials
 
         public object LightMap { get; set; }
 
-#endif
 
         //
 

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Textures;
 
 namespace ThreeJs4Net.Objects
 {
@@ -14,11 +13,7 @@ namespace ThreeJs4Net.Objects
         private float[] boneMatrices;
         private int Frame;
         private List<Matrix4> boneInverses;
-#if USE_WINDOWS
-        private DataTexture boneTexture; 
-#else
         private object boneTexture;
-#endif
 
         public List<Bone> Bones { get; } = new List<Bone>();
 
@@ -121,12 +116,6 @@ namespace ThreeJs4Net.Objects
                 _offsetMatrix.MultiplyMatrices(matrix, boneInverses[i]);
                 _offsetMatrix.ToArray(ref boneMatrices, i * 16);
             }
-#if USE_WINDOWS
-            if (boneTexture != null)
-            {
-                boneTexture.NeedsUpdate = true;
-            }
-#endif
         }
 
         public Skeleton Clone()
@@ -142,9 +131,6 @@ namespace ThreeJs4Net.Objects
 
         public void Dispose()
         {
-#if USE_WINDOWS
-            boneTexture?.Dispose();
-#endif
         }
     }
 }

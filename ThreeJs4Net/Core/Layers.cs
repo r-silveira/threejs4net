@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ThreeJs4Net.Cameras;
 using ThreeJs4Net.Lights;
 using ThreeJs4Net.Math;
-using ThreeJs4Net.Renderers.Renderables;
 using ThreeJs4Net.Scenes;
 
 namespace ThreeJs4Net.Core
