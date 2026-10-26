@@ -5,6 +5,17 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <LangVersion>8</LangVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Animation\**" />
+    <Compile Remove="Audio\**" />
+    <Compile Remove="Complement\**" />
+    <EmbeddedResource Remove="Animation\**" />
+    <EmbeddedResource Remove="Audio\**" />
+    <EmbeddedResource Remove="Complement\**" />
+    <None Remove="Animation\**" />
+    <None Remove="Audio\**" />
+    <None Remove="Complement\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
@@ -15,9 +26,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Animation\" />
-    <Folder Include="Audio\" />
-    <Folder Include="Complement\" />
     <Folder Include="Examples\Jsm\Geometries\" />
     <Folder Include="Extras\Helpers\" />
     <Folder Include="Math\Interpolants\" />
