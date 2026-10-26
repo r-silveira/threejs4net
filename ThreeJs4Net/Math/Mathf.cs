@@ -46,6 +46,20 @@ namespace ThreeJs4Net.Math
         public static int Round(float value, MidpointRounding midpoint = MidpointRounding.ToEven) { return (int)System.Math.Round(value, midpoint); }
         public static int Round(float value, int decimals) { return (int)System.Math.Round(value, decimals); }
 
+        /// <summary>
+        /// JavaScript Math.round semantics, as used by three.js: rounds to the nearest integer with halves
+        /// going toward +Infinity (0.5 -> 1, -0.5 -> -0, 2.5 -> 3, -1.5 -> -1). Unlike <see cref="Round(float, MidpointRounding)"/>
+        /// it stays in float (no int overflow for large values) and returns NaN and Infinity unchanged.
+        /// </summary>
+        internal static float RoundHalfUp(float value)
+        {
+            var floor = (float)System.Math.Floor(value);
+            var result = value - floor >= 0.5f ? floor + 1 : floor;
+
+            // Math.round keeps the sign of zero (e.g. Math.round(-0.4) is -0).
+            return result == 0 ? System.MathF.CopySign(0, value) : result;
+        }
+
         internal static int Floor(float value) { return (int)System.Math.Floor(value); }
         internal static int Ceiling(float value) { return (int)System.Math.Ceiling(value); }
 

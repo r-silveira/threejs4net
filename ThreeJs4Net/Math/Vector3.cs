@@ -722,9 +722,9 @@ namespace ThreeJs4Net.Math
 
         public Vector3 Round()
         {
-            x = Mathf.Round(x);
-            y = Mathf.Round(y);
-            z = Mathf.Round(z);
+            x = Mathf.RoundHalfUp(x);
+            y = Mathf.RoundHalfUp(y);
+            z = Mathf.RoundHalfUp(z);
 
             return this;
         }

@@ -341,8 +341,8 @@ namespace ThreeJs4Net.Math
 
         public Vector2 Round()
         {
-            this.X = Mathf.Round(this.X);
-            this.Y = Mathf.Round(this.Y);
+            this.X = Mathf.RoundHalfUp(this.X);
+            this.Y = Mathf.RoundHalfUp(this.Y);
 
             return this;
         }

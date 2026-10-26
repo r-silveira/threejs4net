@@ -509,10 +509,10 @@ namespace ThreeJs4Net.Math
 
         public Vector4 Round()
         {
-            this.X = Mathf.Round(this.X);
-            this.Y = Mathf.Round(this.Y);
-            this.Z = Mathf.Round(this.Z);
-            this.W = Mathf.Round(this.W);
+            this.X = Mathf.RoundHalfUp(this.X);
+            this.Y = Mathf.RoundHalfUp(this.Y);
+            this.Z = Mathf.RoundHalfUp(this.Z);
+            this.W = Mathf.RoundHalfUp(this.W);
 
             return this;
         }
