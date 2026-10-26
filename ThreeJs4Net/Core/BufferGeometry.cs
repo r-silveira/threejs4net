@@ -69,14 +69,23 @@ namespace ThreeJs4Net.Core
         {
             this.Attributes[name] = attribute;
 
-            // Object.keys
-            this.AttributesKeys = new List<string>();
-            foreach (var entry in this.Attributes)
-            {
-                this.AttributesKeys.Add(entry.Key);
-            }
+            this.RefreshAttributesKeys();
 
             return this;
+        }
+
+        /// <summary>
+        /// Object.keys: replaces AttributesKeys with a new list holding the current keys, in dictionary order.
+        /// </summary>
+        private void RefreshAttributesKeys()
+        {
+            var keys = new List<string>(this.Attributes.Count);
+            foreach (var entry in this.Attributes)
+            {
+                keys.Add(entry.Key);
+            }
+
+            this.AttributesKeys = keys;
         }
 
         public object GetAttribute(string name)
@@ -417,22 +426,39 @@ namespace ThreeJs4Net.Core
 
             // attributes
             var attributes = source.Attributes;
+            var attributesSet = false;
 
-            foreach (var attr in attributes)
+            // Same as calling SetAttribute for each copied attribute, but AttributesKeys is rebuilt once at
+            // the end instead of once per attribute (the intermediate lists were never observable).
+            try
             {
-                attr.Value.TryGetValue("type", out object bufType);
+                foreach (var attr in attributes)
+                {
+                    attr.Value.TryGetValue("type", out object bufType);
 
-                if (bufType == typeof(float))
-                {
-                    this.SetAttribute(attr.Key, (attr.Value as BufferAttribute<float>).Clone());
+                    if (bufType == typeof(float))
+                    {
+                        this.Attributes[attr.Key] = (attr.Value as BufferAttribute<float>).Clone();
+                        attributesSet = true;
+                    }
+                    if (bufType == typeof(int))
+                    {
+                        this.Attributes[attr.Key] = (attr.Value as BufferAttribute<int>).Clone();
+                        attributesSet = true;
+                    }
+                    if (bufType == typeof(uint))
+                    {
+                        this.Attributes[attr.Key] = (attr.Value as BufferAttribute<uint>).Clone();
+                        attributesSet = true;
+                    }
                 }
-                if (bufType == typeof(int))
+            }
+            finally
+            {
+                // Also on an exception, so AttributesKeys matches what per-attribute SetAttribute calls would leave.
+                if (attributesSet)
                 {
-                    this.SetAttribute(attr.Key, (attr.Value as BufferAttribute<int>).Clone());
-                }
-                if (bufType == typeof(uint))
-                {
-                    this.SetAttribute(attr.Key, (attr.Value as BufferAttribute<uint>).Clone());
+                    this.RefreshAttributesKeys();
                 }
             }
 

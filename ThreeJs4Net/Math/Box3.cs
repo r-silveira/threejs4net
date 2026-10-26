@@ -21,7 +21,9 @@ namespace ThreeJs4Net.Math
         /// </summary>
         public Box3()
         {
-            this.Copy(Box3.Empty());
+            // Same values as Copy(Box3.Empty()), without allocating a temporary Box3 and four Vector3.
+            this.Min.Set(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+            this.Max.Set(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
         }
 
         /// <summary>

@@ -300,22 +300,42 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
             {
                 var indexOffset = 0;
                 var mergedIndex = new BufferAttribute<uint>();
-                var values = new List<uint>();
+
+                // Size the merged index up front instead of growing a List<uint>. A non-positive Count
+                // (e.g. ItemSize -1) contributes nothing, exactly like the original "j < index.Count" loop.
+                var totalCount = 0;
+                for (var i = 0; i < geometries.Length; ++i)
+                {
+                    var count = geometries[i].Index.Count;
+                    if (count > 0)
+                    {
+                        totalCount += count;
+                    }
+                }
+
+                var values = new uint[totalCount];
+                var k = 0;
 
                 for (var i = 0; i < geometries.Length; ++i)
                 {
                     var geometry = geometries[i];
                     var position = geometry.GetAttribute<float>("position");
                     var index = geometry.Index;
-                    for (var j = 0; j < index.Count; ++j)
+
+                    // Same as index.GetX(j) for each j, reading Array/ItemSize once (dictionary lookups).
+                    var indexArray = index.Array;
+                    var itemSize = index.ItemSize;
+                    var count = indexArray.Length / itemSize;
+
+                    for (var j = 0; j < count; ++j)
                     {
-                        values.Add((uint)(index.GetX(j) + indexOffset));
+                        values[k++] = (uint)(indexArray[j * itemSize] + indexOffset);
                     }
 
                     indexOffset += position.Count;
                 }
 
-                mergedIndex.Array = values.ToArray(); // .Add("Index", index.GetX(j) + indexOffset);
+                mergedIndex.Array = values; // .Add("Index", index.GetX(j) + indexOffset);
                 mergedGeometry.SetIndex(mergedIndex);
             }
 

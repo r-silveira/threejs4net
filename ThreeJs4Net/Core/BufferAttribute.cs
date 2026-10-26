@@ -11,6 +11,33 @@ namespace ThreeJs4Net.Core
         private static readonly object BoxedTrue = true;
         private static readonly object BoxedFalse = false;
 
+        // Cached boxes for the small ints stored in the dictionary (itemSize, buffer = -1), same idea as above.
+        private static readonly object[] BoxedSmallInts = CreateBoxedSmallInts();
+
+        private const int MinCachedInt = -1;
+
+        private static object[] CreateBoxedSmallInts()
+        {
+            var boxes = new object[18];
+            for (var i = 0; i < boxes.Length; i++)
+            {
+                boxes[i] = i + MinCachedInt;
+            }
+
+            return boxes;
+        }
+
+        private static object Box(int value)
+        {
+            var i = value - MinCachedInt;
+            return (uint)i < (uint)BoxedSmallInts.Length ? BoxedSmallInts[i] : value;
+        }
+
+        private static object Box(bool value) => value ? BoxedTrue : BoxedFalse;
+
+        // Number of entries the constructors add; used to create the dictionary at its final size.
+        private const int EntryCount = 7;
+
         public T[] Array
         {
             get => (T[])this["array"];
@@ -26,25 +53,25 @@ namespace ThreeJs4Net.Core
         public int ItemSize
         {
             get => (int)this["itemSize"];
-            set => this["itemSize"] = value;
+            set => this["itemSize"] = Box(value);
         }
 
         public int buffer
         {
             get => (int)this["buffer"];
-            set => this["buffer"] = value;
+            set => this["buffer"] = Box(value);
         }
 
         public bool needsUpdate
         {
             get => (bool)this["needsUpdate"];
-            set => this["needsUpdate"] = value ? BoxedTrue : BoxedFalse;
+            set => this["needsUpdate"] = Box(value);
         }
 
         public bool Normalized
         {
             get => (bool)this["normalized"];
-            set => this["normalized"] = value ? BoxedTrue : BoxedFalse;
+            set => this["normalized"] = Box(value);
         }
 
         public int Usage
@@ -59,23 +86,43 @@ namespace ThreeJs4Net.Core
         // If needed we can use base.Count to use it again
         public new int Count => this.Array.Length / this.ItemSize;
 
-        public BufferAttribute()
+        public BufferAttribute() : base(EntryCount)
         {
-            this.Add("array", null);
-            this.Add("itemSize", -1);
-            this.Add("buffer", -1);
-            this.Add("needsUpdate", false);
-            this.Add("type", null);
-            this.Add("normalized", false);
+            this.AddEntries(null, -1, null, false);
+        }
+
+        public BufferAttribute(T[] array, int itemSize, bool normalized = false) : base(EntryCount)
+        {
+            // Same keys, in the same order, with the same final values as the previous
+            // "add defaults, then overwrite" sequence, but each entry is written only once.
+            this.AddEntries(array, itemSize, typeof(T), normalized);
+        }
+
+        private void AddEntries(T[] array, int itemSize, Type type, bool normalized)
+        {
+            this.Add("array", array);
+            this.Add("itemSize", Box(itemSize));
+            this.Add("buffer", Box(-1));
+            this.Add("needsUpdate", BoxedFalse);
+            this.Add("type", type);
+            this.Add("normalized", Box(normalized));
             this.Add("usage", Three.StaticDrawUsage);
         }
 
-        public BufferAttribute(T[] array, int itemSize, bool normalized = false) : this()
+        /// <summary>
+        /// Copy of the array with the same result as the previous <c>new T[0].Concat(source).ToArray()</c>
+        /// (an exact T[], ArgumentNullException for null), without LINQ.
+        /// </summary>
+        private static T[] CopyOf(T[] source)
         {
-            this.Array = array;
-            this.ItemSize = itemSize;
-            this.Type = typeof(T);
-            this.Normalized = normalized;
+            if (source == null)
+            {
+                throw new ArgumentNullException("second");
+            }
+
+            var copy = new T[source.Length];
+            System.Array.Copy(source, copy, source.Length);
+            return copy;
         }
 
 
@@ -210,7 +257,7 @@ namespace ThreeJs4Net.Core
         public BufferAttribute<T> Copy(BufferAttribute<T> source)
         {
             //!!this.Name = source.name;
-            this.Array = (new T[] { }).Concat(source.Array).ToArray();
+            this.Array = CopyOf(source.Array);
             this.ItemSize = source.ItemSize;
             //!!this.Count = source.Count;
             this.Normalized = source.Normalized;
@@ -221,7 +268,12 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> Clone()
         {
-            return new BufferAttribute<T>(this.Array, this.ItemSize).Copy(this);
+            // Same result as new BufferAttribute<T>(Array, ItemSize).Copy(this): a fresh attribute with
+            // a copied array, this ItemSize/Normalized/Usage and default buffer/needsUpdate.
+            var array = CopyOf(this.Array);
+            var clone = new BufferAttribute<T>(array, this.ItemSize, this.Normalized);
+            clone.Usage = this.Usage;
+            return clone;
         }
 
         public BufferAttribute<T> CopyAt(int index1, BufferAttribute<T> attribute, int index2)
