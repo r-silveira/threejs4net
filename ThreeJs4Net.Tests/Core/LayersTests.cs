@@ -123,13 +123,14 @@ namespace ThreeJs4Net.Tests.Core
             var a = new Layers();
             var b = new Layers();
 
-            Assert.False(a.Test(b));
+            // Both start with only channel 0 enabled, so they share a channel (same as three.js: "Start out true").
+            Assert.True(a.Test(b), "Start out true");
 
             a.Set(1);
-            Assert.False(a.Test(b));
+            Assert.False(a.Test(b), "Set channel 1 in a and fail the test");
 
             b.Toggle(1);
-            Assert.True(a.Test(b));
+            Assert.True(a.Test(b), "Toggle channel 1 in b and pass again");
         }
     }
 }

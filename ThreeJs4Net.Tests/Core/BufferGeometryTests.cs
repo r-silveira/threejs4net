@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ThreeJs4Net.Core;
 using ThreeJs4Net.Math;
 using Xunit;
@@ -18,8 +19,9 @@ namespace ThreeJs4Net.Tests.Core
 
             for (int i = 0; i < a.Count * a.ItemSize; i++)
             {
-                var delta = a.Array[i] - b.Array[i];
-                if (delta > tolerance)
+                // Absolute difference, and written so that NaN fails the comparison.
+                var delta = System.Math.Abs(a.Array[i] - b.Array[i]);
+                if (!(delta <= tolerance))
                 {
                     return false;
                 }
@@ -104,26 +106,46 @@ namespace ThreeJs4Net.Tests.Core
         [Fact()]
         public void ComputeVertexNormals_IndexedTest()
         {
-            float sqrt = 0.5f * Mathf.Sqrt(2);
-            var normal = new BufferAttribute<float>(new float[] { -1, 0, 0, -1, 0, 0, -1, 0, 0, sqrt, sqrt, 0, sqrt, sqrt, 0, sqrt, sqrt, 0, -1, 0, 0 }, 3);
-            var position = new BufferAttribute<float>(new float[] { 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, -0.5f }, 3);
-            var index = new BufferAttribute<uint>(new uint[] { 0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5 }, 1);
+            // Two opposite faces of a unit cube: the +X face (vertices 0-3) and the -X face (vertices 4-7).
+            // The data ported from three.js had only 7 vertices while the index references vertex 7, and
+            // expected normals that do not match this geometry; it only passed there because its
+            // bufferAttributeEquals read a[i] from the attribute object (always undefined).
+            var position = new float[]
+            {
+                0.5f, 0.5f, 0.5f,    0.5f, 0.5f, -0.5f,    0.5f, -0.5f, 0.5f,    0.5f, -0.5f, -0.5f,
+                -0.5f, 0.5f, -0.5f,  -0.5f, 0.5f, 0.5f,    -0.5f, -0.5f, -0.5f,  -0.5f, -0.5f, 0.5f,
+            };
+            var index = new uint[] { 0, 2, 1, 2, 3, 1, 4, 6, 5, 6, 7, 5 };
+
+            // non-indexed geometry: the same four triangles as an unconnected triangle soup
+            var soup = index.SelectMany(i => new[] { position[i * 3], position[i * 3 + 1], position[i * 3 + 2] }).ToArray();
+            var soupNormals = new BufferAttribute<float>(new float[]
+            {
+                1, 0, 0,  1, 0, 0,  1, 0, 0,   1, 0, 0,  1, 0, 0,  1, 0, 0,
+                -1, 0, 0, -1, 0, 0, -1, 0, 0,  -1, 0, 0, -1, 0, 0, -1, 0, 0,
+            }, 3);
+
             var a = new BufferGeometry();
-
-            a.SetAttribute("position", position);
+            a.SetAttribute("position", new BufferAttribute<float>(soup, 3));
             a.ComputeVertexNormals();
-            Assert.True(BufferAttributeEquals(normal, a.GetAttribute<float>("normal")));
+            Assert.True(BufferAttributeEquals(soupNormals, a.GetAttribute<float>("normal")), "Regular geometry: first computed normals are correct");
 
-            // a second time to see if the existing normals get properly deleted
+            // a second time to see if the existing normals get properly reset
             a.ComputeVertexNormals();
-            Assert.True(BufferAttributeEquals(normal, a.GetAttribute<float>("normal")));
+            Assert.True(BufferAttributeEquals(soupNormals, a.GetAttribute<float>("normal")), "Regular geometry: second computed normals are correct");
 
-            // indexed geometry
+            // indexed geometry: shared vertices accumulate both triangle normals before normalization
+            var indexedNormals = new BufferAttribute<float>(new float[]
+            {
+                1, 0, 0,  1, 0, 0,  1, 0, 0,  1, 0, 0,
+                -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0,
+            }, 3);
+
             a = new BufferGeometry();
-            a.SetAttribute("position", position);
-            a.SetIndex(index);
+            a.SetAttribute("position", new BufferAttribute<float>(position, 3));
+            a.SetIndex(new BufferAttribute<uint>(index, 1));
             a.ComputeVertexNormals();
-            Assert.True(BufferAttributeEquals(normal, a.GetAttribute<float>("normal")));
+            Assert.True(BufferAttributeEquals(indexedNormals, a.GetAttribute<float>("normal")), "Indexed geometry: computed normals are correct");
 
         }
 
@@ -164,15 +186,12 @@ namespace ThreeJs4Net.Tests.Core
             // which can be taken from Number.EPSILON
             var direction = new Vector3(1, 1, 0).Normalize(); // A vector which should have 90 degrees difference to normals
             var difference = direction.Dot(new Vector3(normals[0], normals[1], normals[2]));
-            Assert.True(difference < MathUtils.EPS5, "normal is equal to reference vector");
+            Assert.True(System.Math.Abs(difference) < MathUtils.EPS5, "normal is equal to reference vector");
 
-            // get normals for A line should be NAN because you need min A triangle to calculate normals
-            normals = GetNormalsForVertices(new float[] { 1, 0, 0, -1, 0, 0 }).Array;
-
-            for (var i = 0; i < normals.Length; i++)
-            {
-                //Assert.True(!normals[i], "normals can't be calculated which is good");
-            }
+            // A line (two vertices) is not a triangle, so normals cannot be calculated. In three.js the
+            // out-of-range reads return undefined and the normals end up NaN; in C# the incomplete
+            // triangle is rejected with an exception instead.
+            Assert.Throws<IndexOutOfRangeException>(() => GetNormalsForVertices(new float[] { 1, 0, 0, -1, 0, 0 }));
         }
 
         [Fact()]
