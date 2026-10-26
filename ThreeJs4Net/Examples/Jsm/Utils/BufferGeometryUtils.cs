@@ -299,7 +299,6 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
             if (isIndexed)
             {
                 var indexOffset = 0;
-                var mergedIndex = new BufferAttribute<uint>();
 
                 // Size the merged index up front instead of growing a List<uint>. A non-positive Count
                 // (e.g. ItemSize -1) contributes nothing, exactly like the original "j < index.Count" loop.
@@ -335,7 +334,9 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                     indexOffset += position.Count;
                 }
 
-                mergedIndex.Array = values; // .Add("Index", index.GetX(j) + indexOffset);
+                // As in three.js (new BufferAttribute(mergedIndex, 1)). It used to be created with the
+                // parameterless constructor, leaving ItemSize = -1 and Type = null, so Count was negative.
+                var mergedIndex = new BufferAttribute<uint>(values, 1);
                 mergedGeometry.SetIndex(mergedIndex);
             }
 
