@@ -32,7 +32,7 @@ namespace ThreeJs4Net.Tests.Math
             Assert.Equal(Euler.RotationOrder.XYZ, Euler.DefaultOrder);
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void SetTest()
         {
             Assert.True(false, "This test needs an implementation");
@@ -87,19 +87,19 @@ namespace ThreeJs4Net.Tests.Math
             Assert.NotEqual(a, eulerZero);
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void SetFromRotationMatrixTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void SetFromQuaternionTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void SetFromVector3Test()
         {
             Assert.True(false, "This test needs an implementation");
@@ -146,7 +146,7 @@ namespace ThreeJs4Net.Tests.Math
             Assert.StrictEqual(array[3], (int)order);
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ToVector3Test()
         {
             Assert.True(false, "This test needs an implementation");

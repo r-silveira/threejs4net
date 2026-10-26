@@ -14,19 +14,19 @@ namespace ThreeJs4Net.Tests.Objects
             var mesh = new Mesh(obj, new MeshBasicMaterial());
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void CloneTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void UpdateMorphTargetsTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void RaycastTest()
         {
             Assert.True(false, "This test needs an implementation");

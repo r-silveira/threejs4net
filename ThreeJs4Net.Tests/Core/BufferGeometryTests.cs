@@ -77,25 +77,25 @@ namespace ThreeJs4Net.Tests.Core
         {
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void AddAttributeTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ComputeBoundingSphereTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ComputeBoundingBoxTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ComputeFaceNormalsTest()
         {
             Assert.True(false, "This test needs an implementation");
@@ -239,61 +239,61 @@ namespace ThreeJs4Net.Tests.Core
             Assert.Throws<KeyNotFoundException>(() => geometry.Attributes[attributeName]);
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void MergeTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void NormalizeNormalsTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void GetAttributeTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void AddDrawCallTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void CenterTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ApplyMatrix4Test()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ScaleTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void RotateXTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void RotateYTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void RotateZTest()
         {
             Assert.True(false, "This test needs an implementation");

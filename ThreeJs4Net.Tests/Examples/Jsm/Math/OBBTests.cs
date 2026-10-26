@@ -47,97 +47,97 @@ namespace ThreeJs4Net.Tests.Examples.Jsm.Math
             });
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void OBBTest1()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void SetTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void CopyTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void CloneTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void GetSizeTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ContainsPointTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void IntersectsBox3Test()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ApplyMatrix4Test()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void ClampPointTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void IntersectsRayTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void FromBox3Test()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void IntersectsSphereTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void EqualsTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void IntersectRayTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void IntersectsPlaneTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void IntersectsOBBTest()
         {
             Assert.True(false, "This test needs an implementation");

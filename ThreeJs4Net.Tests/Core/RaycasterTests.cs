@@ -16,37 +16,37 @@ namespace ThreeJs4Net.Tests.Core
             );
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void RaycasterTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void RaycasterTest1()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void SetTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void IntersectObjectTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void IntersectObjectsTest()
         {
             Assert.True(false, "This test needs an implementation");
         }
 
-        [Fact()]
+        [Fact(Skip = "Test not implemented yet")]
         public void SetFromCameraTest()
         {
             Assert.True(false, "This test needs an implementation");
