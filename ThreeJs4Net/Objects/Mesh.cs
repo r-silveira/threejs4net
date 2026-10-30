@@ -104,6 +104,7 @@ namespace ThreeJs4Net.Objects
             var vA = new Vector3();
             var vB = new Vector3();
             var vC = new Vector3();
+            var intersectionPoint = new Vector3();
 
             for (var f = 0; f < geometry.Faces.Count; f++)
             {
@@ -159,17 +160,10 @@ namespace ThreeJs4Net.Objects
 
                         }
 */
-                Vector3 intersectionPoint = new Vector3();
-                if (material.Side == Three.BackSide)
-                {
-                    intersectionPoint = ray.IntersectTriangle(c, b, a, true, intersectionPoint);
-                }
-                else
-                {
-                    intersectionPoint = ray.IntersectTriangle(a, b, c, material.Side != Three.DoubleSide, intersectionPoint);
-                }
-
-                if (intersectionPoint == null) continue;
+                var hit = material.Side == Three.BackSide
+                    ? ray.IntersectTriangle(c, b, a, true, intersectionPoint)
+                    : ray.IntersectTriangle(a, b, c, material.Side != Three.DoubleSide, intersectionPoint);
+                if (hit == null) continue;
 
                 intersectionPoint.ApplyMatrix4(this.MatrixWorld);
 
@@ -181,7 +175,7 @@ namespace ThreeJs4Net.Objects
                     new Intersect()
                     {
                         Distance = distance,
-                        Point = intersectionPoint,
+                        Point = intersectionPoint.Clone(),
                         Face = face,
                         FaceIndex = f,
                         Object3D = this
@@ -211,6 +205,7 @@ namespace ThreeJs4Net.Objects
             var vA = new Vector3();
             var vB = new Vector3();
             var vC = new Vector3();
+            var intersectionPoint = new Vector3();
 
             if (attributes.ContainsKey("index"))
             {
@@ -256,17 +251,10 @@ namespace ThreeJs4Net.Objects
                             positions[c * 3 + 2]
                         );
 
-                        Vector3 intersectionPoint = new Vector3();
-                        if (material.Side == Three.BackSide)
-                        {
-                            intersectionPoint = ray.IntersectTriangle(vC, vB, vA, true, intersectionPoint);
-                        }
-                        else
-                        {
-                            intersectionPoint = ray.IntersectTriangle(vA, vB, vC, material.Side != Three.DoubleSide, intersectionPoint);
-                        }
-
-                        if (intersectionPoint == null) continue;
+                        var hit = material.Side == Three.BackSide
+                            ? ray.IntersectTriangle(vC, vB, vA, true, intersectionPoint)
+                            : ray.IntersectTriangle(vA, vB, vC, material.Side != Three.DoubleSide, intersectionPoint);
+                        if (hit == null) continue;
 
                         intersectionPoint.ApplyMatrix4(this.MatrixWorld);
 
@@ -277,7 +265,7 @@ namespace ThreeJs4Net.Objects
                         intersects.Add(new Intersect()
                         {
                             Distance = distance,
-                            Point = intersectionPoint,
+                            Point = intersectionPoint.Clone(),
                             Indices = new int[] { a, b, c },
                             Face = null,
                             FaceIndex = -1,
@@ -321,17 +309,10 @@ namespace ThreeJs4Net.Objects
                         positions[j + 8]
                     );
 
-                    Vector3 intersectionPoint = new Vector3();
-                    if (material.Side == Three.BackSide)
-                    {
-                        intersectionPoint = ray.IntersectTriangle(vC, vB, vA, true, intersectionPoint);
-                    }
-                    else
-                    {
-                        intersectionPoint = ray.IntersectTriangle(vA, vB, vC, material.Side != Three.DoubleSide, intersectionPoint);
-                    }
-
-                    if (intersectionPoint == null) continue;
+                    var hit = material.Side == Three.BackSide
+                        ? ray.IntersectTriangle(vC, vB, vA, true, intersectionPoint)
+                        : ray.IntersectTriangle(vA, vB, vC, material.Side != Three.DoubleSide, intersectionPoint);
+                    if (hit == null) continue;
 
                     intersectionPoint.ApplyMatrix4(this.MatrixWorld);
 
@@ -342,7 +323,7 @@ namespace ThreeJs4Net.Objects
                     intersects.Add(new Intersect()
                     {
                         Distance = distance,
-                        Point = intersectionPoint,
+                        Point = intersectionPoint.Clone(),
                         Indices = new int[] { a, b, c },
                         Face = null,
                         FaceIndex = -1,
@@ -407,6 +388,14 @@ namespace ThreeJs4Net.Objects
                 var uv2 = bufGeometry.GetAttribute<float>("uv2");
                 var groups = bufGeometry.groups;
                 var drawRange = bufGeometry.DrawRange;
+                // Per-raycast scratch: never stored in any Intersect result and never shared between threads.
+                var vA = new Vector3();
+                var vB = new Vector3();
+                var vC = new Vector3();
+                var localPoint = new Vector3();
+                var uvA = new Vector2();
+                var uvB = new Vector2();
+                var uvC = new Vector2();
                 //var i, j, il, jl;
                 //var group, groupMaterial;
                 int start, end;
@@ -456,7 +445,8 @@ namespace ThreeJs4Net.Objects
                             var c = (int)index.GetX(i + 2);
 
                             var intersection = CheckBufferGeometryIntersection(this, this.Material, raycaster, ray, position,
-                                null /*morphPosition*/, null /*morphTargetsRelative*/, uv, uv2, a, b, c);
+                                null /*morphPosition*/, null /*morphTargetsRelative*/, uv, uv2, a, b, c,
+                                vA, vB, vC, localPoint, uvA, uvB, uvC);
 
                             if (intersection != null)
                             {
@@ -513,7 +503,8 @@ namespace ThreeJs4Net.Objects
                             var b = i + 1;
                             var c = i + 2;
                             var intersection = CheckBufferGeometryIntersection(this, this.Material, raycaster, ray, position,
-                                null /*morphPosition*/, null /*morphTargetsRelative*/, uv, uv2, a, b, c);
+                                null /*morphPosition*/, null /*morphTargetsRelative*/, uv, uv2, a, b, c,
+                                vA, vB, vC, localPoint, uvA, uvB, uvC);
 
                             if (intersection != null)
                             {
@@ -602,11 +593,13 @@ namespace ThreeJs4Net.Objects
         }
 
         private Intersect CheckBufferGeometryIntersection(Object3D object3D, Material material, Raycaster raycaster, Ray ray, BufferAttribute<float> position, Vector3 morphPosition,
-            object morphTargetsRelative, BufferAttribute<float> uv, BufferAttribute<float> uv2, int a, int b, int c)
+            object morphTargetsRelative, BufferAttribute<float> uv, BufferAttribute<float> uv2, int a, int b, int c,
+            Vector3 vA, Vector3 vB, Vector3 vC, Vector3 intersectionPoint,
+            Vector2 uvA, Vector2 uvB, Vector2 uvC)
         {
-            var vA = new Vector3().FromBufferAttribute(position, a);
-            var vB = new Vector3().FromBufferAttribute(position, b);
-            var vC = new Vector3().FromBufferAttribute(position, c);
+            vA.FromBufferAttribute(position, a);
+            vB.FromBufferAttribute(position, b);
+            vC.FromBufferAttribute(position, c);
 
             //!!	var morphInfluences = object.morphTargetInfluences;
 
@@ -656,24 +649,23 @@ namespace ThreeJs4Net.Objects
             //    object.boneTransform(c, _vC);
             //}
 
-            Vector3 intersectionPoint = new Vector3();
             var intersection = CheckIntersection(object3D, material, raycaster, ray, vA, vB, vC, intersectionPoint);
 
             if (intersection != null)
             {
                 if (uv != null)
                 {
-                    var uvA = new Vector2().FromBufferAttribute(uv, a);
-                    var uvB = new Vector2().FromBufferAttribute(uv, b);
-                    var uvC = new Vector2().FromBufferAttribute(uv, c);
+                    uvA.FromBufferAttribute(uv, a);
+                    uvB.FromBufferAttribute(uv, b);
+                    uvC.FromBufferAttribute(uv, c);
                     intersection.Uv = Triangle.GetUV(intersectionPoint, vA, vB, vC, uvA, uvB, uvC, new Vector2());
                 }
 
                 if (uv2 != null)
                 {
-                    var uvA = new Vector2().FromBufferAttribute(uv2, a);
-                    var uvB = new Vector2().FromBufferAttribute(uv2, b);
-                    var uvC = new Vector2().FromBufferAttribute(uv2, c);
+                    uvA.FromBufferAttribute(uv2, a);
+                    uvB.FromBufferAttribute(uv2, b);
+                    uvC.FromBufferAttribute(uv2, c);
 
                     intersection.Uv2 = Triangle.GetUV(intersectionPoint, vA, vB, vC, uvA, uvB, uvC, new Vector2());
                 }
@@ -713,7 +705,7 @@ namespace ThreeJs4Net.Objects
             return new Intersect()
             {
                 Distance = distance,
-                Point = intersectionPointWorld.Clone(),
+                Point = intersectionPointWorld,
                 Object3D = object3d
             };
         }

@@ -568,17 +568,40 @@ namespace ThreeJs4Net.Core
 
         public BufferGeometry SetFromPoints(IEnumerable<Vector3> points)
         {
-            var position = new List<float>();
-
-            foreach (var point in points)
+            if (points == null)
             {
-                position.Add(point.X);
-                position.Add(point.Y);
-                position.Add(point.Z);
+                throw new ArgumentNullException(nameof(points));
             }
 
-            this.SetAttribute("position", new BufferAttribute<float>(position.ToArray(), 3));
+            // When a collection exposes its size, fill the output float[] directly.
+            // For one-shot sequences, buffer once without enumerating twice.
+            var count = points is ICollection<Vector3> collection ? (int?)collection.Count
+                : points is IReadOnlyCollection<Vector3> readOnly ? (int?)readOnly.Count : null;
 
+            float[] positions;
+            if (count.HasValue)
+            {
+                positions = new float[checked(count.Value * 3)];
+                var offset = 0;
+                foreach (var point in points)
+                {
+                    positions[offset++] = point.X;
+                    positions[offset++] = point.Y;
+                    positions[offset++] = point.Z;
+                }
+            }
+            else
+            {
+                var data = new List<float>();
+                foreach (var point in points)
+                {
+                    data.Add(point.X);
+                    data.Add(point.Y);
+                    data.Add(point.Z);
+                }
+                positions = data.ToArray();
+            }
+            this.SetAttribute("position", new BufferAttribute<float>(positions, 3));
             return this;
         }
     }

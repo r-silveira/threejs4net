@@ -169,8 +169,41 @@ namespace ThreeJs4Net.Math
 
         public double DistanceToPoint(Vector3 point)
         {
-            var clampedPoint = new Vector3().Copy(point).Clamp(this.Min, this.Max);
-            return clampedPoint.Sub(point).Length();
+            var x = point.X;
+            var y = point.Y;
+            var z = point.Z;
+
+            // Vector3.Clamp uses comparisons (not Math.Min/Max), including for NaNs.
+            if (x < this.Min.X)
+            {
+                x = this.Min.X;
+            }
+            else if (x > this.Max.X)
+            {
+                x = this.Max.X;
+            }
+            if (y < this.Min.Y)
+            {
+                y = this.Min.Y;
+            }
+            else if (y > this.Max.Y)
+            {
+                y = this.Max.Y;
+            }
+            if (z < this.Min.Z)
+            {
+                z = this.Min.Z;
+            }
+            else if (z > this.Max.Z)
+            {
+                z = this.Max.Z;
+            }
+
+            x -= point.X;
+            y -= point.Y;
+            z -= point.Z;
+
+            return Mathf.Sqrt(x * x + y * y + z * z);
         }
 
         public Box3 ExpandByObject(Object3D o)
@@ -315,11 +348,41 @@ namespace ThreeJs4Net.Math
 
         public bool IntersectsSphere(Sphere sphere)
         {
-            // Find the point on the AABB closest to the sphere center.
-            var vector = this.ClampPoint(sphere.Center);
+            // Inline the clamp: no temporary Vector3 for a potentially very frequent AABB test.
+            var x = sphere.Center.X;
+            var y = sphere.Center.Y;
+            var z = sphere.Center.Z;
 
-            // If that point is inside the sphere, the AABB and sphere intersect.
-            return vector.DistanceToSquared(sphere.Center) <= (sphere.Radius * sphere.Radius);
+            if (x < this.Min.X)
+            {
+                x = this.Min.X;
+            }
+            else if (x > this.Max.X)
+            {
+                x = this.Max.X;
+            }
+            if (y < this.Min.Y)
+            {
+                y = this.Min.Y;
+            }
+            else if (y > this.Max.Y)
+            {
+                y = this.Max.Y;
+            }
+            if (z < this.Min.Z)
+            {
+                z = this.Min.Z;
+            }
+            else if (z > this.Max.Z)
+            {
+                z = this.Max.Z;
+            }
+
+            var dx = x - sphere.Center.X;
+            var dy = y - sphere.Center.Y;
+            var dz = z - sphere.Center.Z;
+
+            return dx * dx + dy * dy + dz * dz <= sphere.Radius * sphere.Radius;
         }
 
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ThreeJs4Net.Math;
 
 namespace ThreeJs4Net.Core
@@ -295,27 +294,61 @@ namespace ThreeJs4Net.Core
             return this;
         }
 
+        // For arrays/lists read Count without enumerating; for lazy IEnumerable use a single pass.
+        // No per-component (T)(object) boxing: only one reference cast on the completed float[].
+        private static int? KnownCount<TVector>(IEnumerable<TVector> vectors)
+        {
+            if (vectors is ICollection<TVector> collection)
+            {
+                return collection.Count;
+            }
+
+            if (vectors is IReadOnlyCollection<TVector> readOnlyCollection)
+            {
+                return readOnlyCollection.Count;
+            }
+
+            return null;
+        }
+
         public BufferAttribute<T> CopyVector4sArray(IEnumerable<Vector4> vectors)
         {
             if (typeof(T) != typeof(float))
             {
                 throw new Exception("BufferAttribute is not a float buffer. Can't copy Vector4 into it");
             }
-
-            int targetLength = vectors.Count() * 4;
-            var tempArray = new T[targetLength];
-            int offset = 0;
-
-            foreach (var vector in vectors)
+                
+            if (vectors == null)
             {
-                tempArray[offset++] = (T)(object)vector.X;
-                tempArray[offset++] = (T)(object)vector.Y;
-                tempArray[offset++] = (T)(object)vector.Z;
-                tempArray[offset++] = (T)(object)vector.W;
+                throw new ArgumentNullException(nameof(vectors));
             }
 
-            this.Array = tempArray;
-
+            var known = KnownCount(vectors);
+            if (known.HasValue)
+            {
+                var data = new float[checked(known.Value * 4)];
+                var offset = 0;
+                foreach (var vector in vectors)
+                {
+                    data[offset++] = vector.X;
+                    data[offset++] = vector.Y;
+                    data[offset++] = vector.Z;
+                    data[offset++] = vector.W;
+                }
+                this.Array = (T[])(object)data;
+            }
+            else
+            {
+                var data = new List<float>();
+                foreach (var vector in vectors)
+                {
+                    data.Add(vector.X);
+                    data.Add(vector.Y);
+                    data.Add(vector.Z);
+                    data.Add(vector.W);
+                }
+                this.Array = (T[])(object)data.ToArray();
+            }
             return this;
         }
 
@@ -325,20 +358,36 @@ namespace ThreeJs4Net.Core
             {
                 throw new Exception("BufferAttribute is not a float buffer. Can't copy Vector3 into it");
             }
-
-            int targetLength = vectors.Count() * 3;
-            var tempArray = new T[targetLength];
-            int offset = 0;
-
-            foreach (var vector in vectors)
+                
+            if (vectors == null)
             {
-                tempArray[offset++] = (T)(object)vector.X;
-                tempArray[offset++] = (T)(object)vector.Y;
-                tempArray[offset++] = (T)(object)vector.Z;
+                throw new ArgumentNullException(nameof(vectors));
             }
 
-            this.Array = tempArray;
-
+            var known = KnownCount(vectors);
+            if (known.HasValue)
+            {
+                var data = new float[checked(known.Value * 3)];
+                var offset = 0;
+                foreach (var vector in vectors)
+                {
+                    data[offset++] = vector.X;
+                    data[offset++] = vector.Y;
+                    data[offset++] = vector.Z;
+                }
+                this.Array = (T[])(object)data;
+            }
+            else
+            {
+                var data = new List<float>();
+                foreach (var vector in vectors)
+                {
+                    data.Add(vector.X);
+                    data.Add(vector.Y);
+                    data.Add(vector.Z);
+                }
+                this.Array = (T[])(object)data.ToArray();
+            }
             return this;
         }
 
@@ -349,18 +398,33 @@ namespace ThreeJs4Net.Core
                 throw new Exception("BufferAttribute is not a float buffer. Can't copy Vector2 into it");
             }
 
-            int targetLength = vectors.Count() * 2;
-            var tempArray = new T[targetLength];
-            int offset = 0;
-
-            foreach (var vector in vectors)
+            if (vectors == null)
             {
-                tempArray[offset++] = (T)(object)vector.X;
-                tempArray[offset++] = (T)(object)vector.Y;
+                throw new ArgumentNullException(nameof(vectors));
             }
 
-            this.Array = tempArray;
-
+            var known = KnownCount(vectors);
+            if (known.HasValue)
+            {
+                var data = new float[checked(known.Value * 2)];
+                var offset = 0;
+                foreach (var vector in vectors)
+                {
+                    data[offset++] = vector.X;
+                    data[offset++] = vector.Y;
+                }
+                this.Array = (T[])(object)data;
+            }
+            else
+            {
+                var data = new List<float>();
+                foreach (var vector in vectors)
+                {
+                    data.Add(vector.X);
+                    data.Add(vector.Y);
+                }
+                this.Array = (T[])(object)data.ToArray();
+            }
             return this;
         }
 
@@ -505,4 +569,3 @@ namespace ThreeJs4Net.Core
 
     }
 }
-

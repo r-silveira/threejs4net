@@ -82,18 +82,21 @@ namespace ThreeJs4Net.Math
 
         public float DistanceSqToPoint(Vector3 point)
         {
-            var vector = new Vector3();
-            var directionDistance = vector.SubVectors(point, this.Origin).Dot(this.Direction);
+            // Keep the original projection and squared-distance operations without a temporary Vector3.
+            var dx = point.X - this.Origin.X;
+            var dy = point.Y - this.Origin.Y;
+            var dz = point.Z - this.Origin.Z;
+            var directionDistance = dx * this.Direction.X + dy * this.Direction.Y + dz * this.Direction.Z;
 
-            // point behind the ray
             if (directionDistance < 0)
             {
                 return this.Origin.DistanceToSquared(point);
             }
 
-            vector.Copy(this.Direction).MultiplyScalar(directionDistance).Add(this.Origin);
-
-            return vector.DistanceToSquared(point);
+            var x = this.Direction.X * directionDistance + this.Origin.X - point.X;
+            var y = this.Direction.Y * directionDistance + this.Origin.Y - point.Y;
+            var z = this.Direction.Z * directionDistance + this.Origin.Z - point.Z;
+            return x * x + y * y + z * z;
         }
 
         public float DistanceSqToSegment(Vector3 v0, Vector3 v1, Vector3 optionalPointOnRay = null, Vector3 optionalPointOnSegment = null)
@@ -105,15 +108,28 @@ namespace ThreeJs4Net.Math
             // - The closest point on the ray
             // - The closest point on the segment
 
-            var segCenter = ((Vector3)v0.Clone()).Add(v1).MultiplyScalar((float)0.5);
-            var segDir = ((Vector3)v1.Clone()).Sub(v0).Normalize();
-            var diff = ((Vector3)this.Origin.Clone()).Sub(segCenter);
+            // Scalar form of the existing geometric-tools algorithm. No temporary vectors,
+            // and the optional output vectors are written only after the calculation.
+            var centerX = (v0.X + v1.X) * 0.5f;
+            var centerY = (v0.Y + v1.Y) * 0.5f;
+            var centerZ = (v0.Z + v1.Z) * 0.5f;
+            var segX = v1.X - v0.X;
+            var segY = v1.Y - v0.Y;
+            var segZ = v1.Z - v0.Z;
+            var segLength = Mathf.Sqrt(segX * segX + segY * segY + segZ * segZ);
+            var invLength = 1 / (segLength == 0 ? 1 : segLength);
+            segX *= invLength;
+            segY *= invLength;
+            segZ *= invLength;
+            var diffX = this.Origin.X - centerX;
+            var diffY = this.Origin.Y - centerY;
+            var diffZ = this.Origin.Z - centerZ;
 
-            var segExtent = v0.DistanceTo(v1) * (float)0.5;
-            var a01 = -this.Direction.Dot(segDir);
-            var b0 = diff.Dot(this.Direction);
-            var b1 = -diff.Dot(segDir);
-            var c = diff.LengthSq();
+            var segExtent = v0.DistanceTo(v1) * 0.5f;
+            var a01 = -(this.Direction.X * segX + this.Direction.Y * segY + this.Direction.Z * segZ);
+            var b0 = diffX * this.Direction.X + diffY * this.Direction.Y + diffZ * this.Direction.Z;
+            var b1 = -(diffX * segX + diffY * segY + diffZ * segZ);
+            var c = diffX * diffX + diffY * diffY + diffZ * diffZ;
             var det = System.Math.Abs(1 - a01 * a01);
 
             float s0, s1, sqrDist;
@@ -188,8 +204,14 @@ namespace ThreeJs4Net.Math
                 sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
             }
 
-            optionalPointOnRay?.Copy(this.Direction.Clone().MultiplyScalar(s0).Add(this.Origin));
-            optionalPointOnSegment?.Copy(segDir.Clone().MultiplyScalar(s1).Add(segCenter));
+            optionalPointOnRay?.Set(
+                this.Direction.X * s0 + this.Origin.X,
+                this.Direction.Y * s0 + this.Origin.Y,
+                this.Direction.Z * s0 + this.Origin.Z);
+            optionalPointOnSegment?.Set(
+                segX * s1 + centerX,
+                segY * s1 + centerY,
+                segZ * s1 + centerZ);
 
             return sqrDist;
         }
@@ -223,9 +245,11 @@ namespace ThreeJs4Net.Math
 
         public Vector3 IntersectSphere(Sphere sphere, Vector3 target)
         {
-            var vector = new Vector3().SubVectors(sphere.Center, this.Origin);
-            var tca = vector.Dot(this.Direction);
-            var d2 = vector.Dot(vector) - tca * tca;
+            var x = sphere.Center.X - this.Origin.X;
+            var y = sphere.Center.Y - this.Origin.Y;
+            var z = sphere.Center.Z - this.Origin.Z;
+            var tca = x * this.Direction.X + y * this.Direction.Y + z * this.Direction.Z;
+            var d2 = (x * x + y * y + z * z) - tca * tca;
             var radius2 = sphere.Radius * sphere.Radius;
 
             if (d2 > radius2)
@@ -298,6 +322,13 @@ namespace ThreeJs4Net.Math
         }
 
         public Vector3 IntersectBox(Box3 box, Vector3 target)
+        {
+            var t = GetBoxIntersectionT(box);
+            return t.HasValue ? this.At(t.Value, target) : null;
+        }
+
+        // Shared slab test avoids allocating a throwaway Vector3 in IntersectsBox.
+        private float? GetBoxIntersectionT(Box3 box)
         {
             float tmin, tmax, tymin, tymax, tzmin, tzmax;
 
@@ -379,81 +410,69 @@ namespace ThreeJs4Net.Math
                 return null;
             }
 
-            return this.At(tmin >= 0 ? tmin : tmax, target);
+            return tmin >= 0 ? tmin : tmax;
         }
 
 
         public bool IntersectsBox(Box3 box)
         {
-            return this.IntersectBox(box, new Vector3()) != null;
+            return GetBoxIntersectionT(box).HasValue;
         }
 
         public Vector3 IntersectTriangle(Vector3 a, Vector3 b, Vector3 c, bool backfaceCulling, Vector3 target)
         {
-            // Compute the offset origin, edges, and normal.
-            // from http://www.geometrictools.com/GTEngine/Include/Mathematics/GteIntrRay3Triangle3.h
+            // Scalar equivalent of the original GTEngine test. Preserve face-culling,
+            // degenerate triangles, boundary hits and the supplied output target.
+            var e1x = b.X - a.X;
+            var e1y = b.Y - a.Y;
+            var e1z = b.Z - a.Z;
+            var e2x = c.X - a.X;
+            var e2y = c.Y - a.Y;
+            var e2z = c.Z - a.Z;
+            var nx = e1y * e2z - e1z * e2y;
+            var ny = e1z * e2x - e1x * e2z;
+            var nz = e1x * e2y - e1y * e2x;
 
-            var edge1 = new Vector3().SubVectors(b, a);
-            var edge2 = new Vector3().SubVectors(c, a);
-            var normal = new Vector3().CrossVectors(edge1, edge2);
-
-            // Solve Q + t*D = b1*E1 + b2*E2 (Q = kDiff, D = ray direction,
-            // E1 = kEdge1, E2 = kEdge2, N = Cross(E1,E2)) by
-            //   |Dot(D,N)|*b1 = sign(Dot(D,N))*Dot(D,Cross(Q,E2))
-            //   |Dot(D,N)|*b2 = sign(Dot(D,N))*Dot(D,Cross(E1,Q))
-            //   |Dot(D,N)|*t = -sign(Dot(D,N))*Dot(Q,N)
-            var DdN = this.Direction.Dot(normal);
+            var dx = this.Direction.X;
+            var dy = this.Direction.Y;
+            var dz = this.Direction.Z;
+            var ddn = dx * nx + dy * ny + dz * nz;
             float sign;
-
-            if (DdN > 0)
+            if (ddn > 0)
             {
-                if (backfaceCulling) { return null; }
+                if (backfaceCulling) return null;
                 sign = 1;
             }
-            else if (DdN < 0)
+            else if (ddn < 0)
             {
                 sign = -1;
-                DdN = -DdN;
+                ddn = -ddn;
             }
             else
             {
                 return null;
             }
 
-            var diff = new Vector3().SubVectors(this.Origin, a);
-            var DdQxE2 = sign * this.Direction.Dot(edge2.CrossVectors(diff, edge2));
+            var qx = this.Origin.X - a.X;
+            var qy = this.Origin.Y - a.Y;
+            var qz = this.Origin.Z - a.Z;
+            var qxe2x = qy * e2z - qz * e2y;
+            var qxe2y = qz * e2x - qx * e2z;
+            var qxe2z = qx * e2y - qy * e2x;
+            var ddqxe2 = sign * (dx * qxe2x + dy * qxe2y + dz * qxe2z);
+            if (ddqxe2 < 0) return null;
 
-            // b1 < 0, no intersection
-            if (DdQxE2 < 0)
-            {
-                return null;
-            }
+            var e1xqx = e1y * qz - e1z * qy;
+            var e1xqy = e1z * qx - e1x * qz;
+            var e1xqz = e1x * qy - e1y * qx;
+            var dde1xq = sign * (dx * e1xqx + dy * e1xqy + dz * e1xqz);
+            if (dde1xq < 0) return null;
+            if (ddqxe2 + dde1xq > ddn) return null;
 
-            var DdE1xQ = sign * this.Direction.Dot(edge1.Cross(diff));
+            var qdn = -sign * (qx * nx + qy * ny + qz * nz);
+            if (qdn < 0) return null;
 
-            // b2 < 0, no intersection
-            if (DdE1xQ < 0)
-            {
-                return null;
-            }
-
-            // b1+b2 > 1, no intersection
-            if (DdQxE2 + DdE1xQ > DdN)
-            {
-                return null;
-            }
-
-            // Line intersects triangle, check if ray does.
-            var QdN = -sign * diff.Dot(normal);
-
-            // t < 0, no intersection
-            if (QdN < 0)
-            {
-                return null;
-            }
-
-            // Ray intersects triangle.
-            return this.At(QdN / DdN, target);
+            return this.At(qdn / ddn, target);
         }
 
         public Ray LookAt(Vector3 target)
