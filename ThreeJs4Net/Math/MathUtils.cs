@@ -18,5 +18,28 @@ namespace ThreeJs4Net.Math
         {
             return System.Math.Max(min, System.Math.Min(max, value));
         }
+
+        /// <summary>
+        /// Random (version 4, RFC 4122 variant) Guid for object ids, like three.js MathUtils.generateUUID,
+        /// which is also based on a non-cryptographic generator.
+        /// <para>
+        /// Guid.NewGuid() asks the OS for cryptographically secure bytes on every call, which dominated the
+        /// cost of constructing (and therefore cloning/merging) small geometries. The ids only need to be
+        /// unique, not unpredictable; 122 random bits from the thread-safe shared generator give the same
+        /// collision odds as Guid.NewGuid().
+        /// </para>
+        /// </summary>
+        internal static Guid GenerateUuid()
+        {
+            Span<byte> bytes = stackalloc byte[16];
+            Random.Shared.NextBytes(bytes);
+
+            // Guid byte layout is little-endian for the first three fields: the version nibble is the
+            // high nibble of byte 7, the variant bits are the two high bits of byte 8.
+            bytes[7] = (byte)((bytes[7] & 0x0F) | 0x40);
+            bytes[8] = (byte)((bytes[8] & 0x3F) | 0x80);
+
+            return new Guid(bytes);
+        }
     }
 }

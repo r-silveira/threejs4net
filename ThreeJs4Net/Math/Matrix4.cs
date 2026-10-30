@@ -9,8 +9,6 @@ namespace ThreeJs4Net.Math
 {
     public class Matrix4 : ICloneable, INotifyPropertyChanged
     {
-        private Vector3 _v1 = new Vector3();
-
         [NotNull]
         public float[] elements = new float[16];
 
@@ -20,6 +18,18 @@ namespace ThreeJs4Net.Math
         public Matrix4()
         {
             Identity();
+        }
+
+        /// <summary>
+        /// Creates a matrix whose elements are all zero. Only for internal results where every element is
+        /// written right away, so the identity written by the public constructor would be overwritten anyway.
+        /// </summary>
+        private Matrix4(bool identity)
+        {
+            if (identity)
+            {
+                Identity();
+            }
         }
 
         /// <summary>
@@ -84,9 +94,10 @@ namespace ThreeJs4Net.Math
         {
             if (this.CheckParamArray(values))
             {
+                var te = this.elements;
                 for (var i = 0; i < values.Length; i++)
                 {
-                    this.Elements[i] = values[i];
+                    te[i] = values[i];
                 }
             }
 
@@ -95,10 +106,14 @@ namespace ThreeJs4Net.Math
 
         public Matrix4 MakeScale(float x, float y, float z)
         {
-            Set(new float[]{x,0,0,0,
-                            0,y,0,0,
-                            0,0,z,0,
-                            0,0,0,1});
+            // Same values as Set(new float[] { x,0,0,0, 0,y,0,0, 0,0,z,0, 0,0,0,1 }), without the temporary array.
+            var te = this.elements;
+
+            te[0] = x; te[1] = 0; te[2] = 0; te[3] = 0;
+            te[4] = 0; te[5] = y; te[6] = 0; te[7] = 0;
+            te[8] = 0; te[9] = 0; te[10] = z; te[11] = 0;
+            te[12] = 0; te[13] = 0; te[14] = 0; te[15] = 1;
+
             return this;
         }
 
@@ -115,10 +130,12 @@ namespace ThreeJs4Net.Math
 
         public Matrix4 Identity()
         {
-            Set(new float[]{1,0,0,0,
-                            0,1,0,0,
-                            0,0,1,0,
-                            0,0,0,1});
+            var te = this.elements;
+
+            te[0] = 1; te[1] = 0; te[2] = 0; te[3] = 0;
+            te[4] = 0; te[5] = 1; te[6] = 0; te[7] = 0;
+            te[8] = 0; te[9] = 0; te[10] = 1; te[11] = 0;
+            te[12] = 0; te[13] = 0; te[14] = 0; te[15] = 1;
 
             return this;
         }
@@ -131,11 +148,17 @@ namespace ThreeJs4Net.Math
         /// <returns>A new Matrix44 which holds the result of the multiplication</returns>
         public static Matrix4 operator *(Matrix4 left, Matrix4 right)
         {
-            var ae = left.Elements;
-            var be = right.Elements;
+            var result = new Matrix4(identity: false);
+            MultiplyElements(left.Elements, right.Elements, result.elements);
+            return result;
+        }
 
-            var te = new Matrix4();
-
+        /// <summary>
+        /// te = ae * be (column-major, as in three.js). All operands are read into locals before anything is
+        /// written, so te may be the same array as ae and/or be.
+        /// </summary>
+        private static void MultiplyElements(float[] ae, float[] be, float[] te)
+        {
             var a11 = ae[0]; var a12 = ae[4]; var a13 = ae[8]; var a14 = ae[12];
             var a21 = ae[1]; var a22 = ae[5]; var a23 = ae[9]; var a24 = ae[13];
             var a31 = ae[2]; var a32 = ae[6]; var a33 = ae[10]; var a34 = ae[14];
@@ -146,37 +169,41 @@ namespace ThreeJs4Net.Math
             var b31 = be[2]; var b32 = be[6]; var b33 = be[10]; var b34 = be[14];
             var b41 = be[3]; var b42 = be[7]; var b43 = be[11]; var b44 = be[15];
 
-            te.Elements[0] = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41;
-            te.Elements[4] = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42;
-            te.Elements[8] = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43;
-            te.Elements[12] = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44;
+            te[0] = a11 * b11 + a12 * b21 + a13 * b31 + a14 * b41;
+            te[4] = a11 * b12 + a12 * b22 + a13 * b32 + a14 * b42;
+            te[8] = a11 * b13 + a12 * b23 + a13 * b33 + a14 * b43;
+            te[12] = a11 * b14 + a12 * b24 + a13 * b34 + a14 * b44;
 
-            te.Elements[1] = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41;
-            te.Elements[5] = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42;
-            te.Elements[9] = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43;
-            te.Elements[13] = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44;
+            te[1] = a21 * b11 + a22 * b21 + a23 * b31 + a24 * b41;
+            te[5] = a21 * b12 + a22 * b22 + a23 * b32 + a24 * b42;
+            te[9] = a21 * b13 + a22 * b23 + a23 * b33 + a24 * b43;
+            te[13] = a21 * b14 + a22 * b24 + a23 * b34 + a24 * b44;
 
-            te.Elements[2] = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41;
-            te.Elements[6] = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42;
-            te.Elements[10] = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43;
-            te.Elements[14] = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44;
+            te[2] = a31 * b11 + a32 * b21 + a33 * b31 + a34 * b41;
+            te[6] = a31 * b12 + a32 * b22 + a33 * b32 + a34 * b42;
+            te[10] = a31 * b13 + a32 * b23 + a33 * b33 + a34 * b43;
+            te[14] = a31 * b14 + a32 * b24 + a33 * b34 + a34 * b44;
 
-            te.Elements[3] = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41;
-            te.Elements[7] = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42;
-            te.Elements[11] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43;
-            te.Elements[15] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
+            te[3] = a41 * b11 + a42 * b21 + a43 * b31 + a44 * b41;
+            te[7] = a41 * b12 + a42 * b22 + a43 * b32 + a44 * b42;
+            te[11] = a41 * b13 + a42 * b23 + a43 * b33 + a44 * b43;
+            te[15] = a41 * b14 + a42 * b24 + a43 * b34 + a44 * b44;
+        }
 
-            return te;
+        /// <summary>Same arithmetic as <c>new Vector3(x, y, z).Length()</c>.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float Length(float x, float y, float z)
+        {
+            return Mathf.Sqrt(x * x + y * y + z * z);
         }
 
         public Matrix4 Decompose(Vector3 position, Quaternion quaternion, Vector3 scale)
         {
-            var _m1 = new Matrix4();
             var te = this.elements;
 
-            var sx = this._v1.Set(te[0], te[1], te[2]).Length();
-            var sy = this._v1.Set(te[4], te[5], te[6]).Length();
-            var sz = this._v1.Set(te[8], te[9], te[10]).Length();
+            var sx = Length(te[0], te[1], te[2]);
+            var sy = Length(te[4], te[5], te[6]);
+            var sz = Length(te[8], te[9], te[10]);
 
             // if determine is negative, we need to invert one scale
             var det = this.Determinant();
@@ -187,25 +214,14 @@ namespace ThreeJs4Net.Math
             position.Z = te[14];
 
             // scale the rotation part
-            _m1.Copy(this);
-
             var invSX = 1 / sx;
             var invSY = 1 / sy;
             var invSZ = 1 / sz;
 
-            _m1.elements[0] *= invSX;
-            _m1.elements[1] *= invSX;
-            _m1.elements[2] *= invSX;
-
-            _m1.elements[4] *= invSY;
-            _m1.elements[5] *= invSY;
-            _m1.elements[6] *= invSY;
-
-            _m1.elements[8] *= invSZ;
-            _m1.elements[9] *= invSZ;
-            _m1.elements[10] *= invSZ;
-
-            quaternion.SetFromRotationMatrix(_m1);
+            quaternion.SetFromRotationMatrix(
+                te[0] * invSX, te[4] * invSY, te[8] * invSZ,
+                te[1] * invSX, te[5] * invSY, te[9] * invSZ,
+                te[2] * invSX, te[6] * invSY, te[10] * invSZ);
 
             scale.X = sx;
             scale.Y = sy;
@@ -216,15 +232,12 @@ namespace ThreeJs4Net.Math
 
         public Matrix4 ExtractRotation(Matrix4 m)
         {
-
-            var v1 = new Vector3();
-
             var te = this.elements;
             var me = m.elements;
 
-            var scaleX = 1 / v1.Set(me[0], me[1], me[2]).Length();
-            var scaleY = 1 / v1.Set(me[4], me[5], me[6]).Length();
-            var scaleZ = 1 / v1.Set(me[8], me[9], me[10]).Length();
+            var scaleX = 1 / Length(me[0], me[1], me[2]);
+            var scaleY = 1 / Length(me[4], me[5], me[6]);
+            var scaleZ = 1 / Length(me[8], me[9], me[10]);
 
             te[0] = me[0] * scaleX;
             te[1] = me[1] * scaleX;
@@ -667,7 +680,7 @@ namespace ThreeJs4Net.Math
             var n31 = this.Elements[2]; var n32 = this.Elements[6]; var n33 = this.Elements[10]; var n34 = this.Elements[14];
             var n41 = this.Elements[3]; var n42 = this.Elements[7]; var n43 = this.Elements[11]; var n44 = this.Elements[15];
 
-            var result = new Matrix4();
+            var result = new Matrix4(identity: false);
 
             result.Elements[0] = n23 * n34 * n42 - n24 * n33 * n42 + n24 * n32 * n43 - n22 * n34 * n43 - n23 * n32 * n44 + n22 * n33 * n44;
             result.Elements[4] = n14 * n33 * n42 - n13 * n34 * n42 - n14 * n32 * n43 + n12 * n34 * n43 + n13 * n32 * n44 - n12 * n33 * n44;
@@ -692,7 +705,7 @@ namespace ThreeJs4Net.Math
             {
                 //var msg = "Matrix4.getInverse(): can't invert matrix; var determinant is 0";
 
-                return new Matrix4().Identity();
+                return new Matrix4();
             }
 
             result.MultiplyScalar(1 / det);
@@ -805,7 +818,7 @@ namespace ThreeJs4Net.Math
             a10 = a[4]; a11 = a[5]; a12 = a[6]; a13 = a[7];
             a20 = a[8]; a21 = a[9]; a22 = a[10]; a23 = a[11];
 
-            var b = new Matrix4();
+            var b = new Matrix4(identity: false); // all 16 elements are written below
             var o = b.elements;
             o[0] = a00; o[1] = a01; o[2] = a02; o[3] = a03;
             o[4] = a10; o[5] = a11; o[6] = a12; o[7] = a13;
@@ -970,7 +983,7 @@ namespace ThreeJs4Net.Math
         #region --- Already in R116 ---
         public Matrix4 MultiplyMatrices(Matrix4 left, Matrix4 right)
         {
-            this.Set((left * right).Elements);
+            MultiplyElements(left.Elements, right.Elements, this.elements);
             return this;
         }
 

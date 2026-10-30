@@ -229,11 +229,12 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                     }
 
                     //TODO:
-                    if (!attributes.ContainsKey(name))
+                    if (!attributes.TryGetValue(name, out var list))
                     {
-                        attributes[name] = new List<IBufferAttribute>();
+                        list = new List<IBufferAttribute>(geometries.Length);
+                        attributes[name] = list;
                     }
-                    attributes[name].Add(geometry.Attributes[name] as IBufferAttribute);
+                    list.Add(geometry.Attributes[name] as IBufferAttribute);
 
                     attributesCount++;
                 }
@@ -346,31 +347,30 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                 var name = attr.Key;
 
                 IBufferAttribute mergedAttribute = null;
-                var x = attr.Value.First().Type.Name;
+                var toMerge = attr.Value.ToArray();
 
-                //TODO: We should find a better way to do this...
-                switch (attr.Value.First().Type.Name)
+                switch (toMerge[0].Type.Name)
                 {
                     case "String":
-                        mergedAttribute = MergeBufferAttributes<string>(attr.Value.ToArray());
+                        mergedAttribute = MergeBufferAttributes<string>(toMerge);
                         break;
                     case "Byte":
-                        mergedAttribute = MergeBufferAttributes<byte>(attr.Value.ToArray());
+                        mergedAttribute = MergeBufferAttributes<byte>(toMerge);
                         break;
                     case "Int16":
-                        mergedAttribute = MergeBufferAttributes<Int16>(attr.Value.ToArray());
+                        mergedAttribute = MergeBufferAttributes<Int16>(toMerge);
                         break;
                     case "Int32":
-                        mergedAttribute = MergeBufferAttributes<int>(attr.Value.ToArray());
+                        mergedAttribute = MergeBufferAttributes<int>(toMerge);
                         break;
                     case "UInt32":
-                        mergedAttribute = MergeBufferAttributes<uint>(attr.Value.ToArray());
+                        mergedAttribute = MergeBufferAttributes<uint>(toMerge);
                         break;
                     case "UInt16":
-                        mergedAttribute = MergeBufferAttributes<UInt16>(attr.Value.ToArray());
+                        mergedAttribute = MergeBufferAttributes<UInt16>(toMerge);
                         break;
                     case "Single":
-                        mergedAttribute = MergeBufferAttributes<float>(attr.Value.ToArray());
+                        mergedAttribute = MergeBufferAttributes<float>(toMerge);
                         break;
                 }
 
@@ -424,20 +424,23 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
                 {
                     throw new Exception("BufferGeometryUtils: .mergeBufferAttributes() failed. InterleavedBufferAttributes are not supported.");
                 }
-                if (typedArray == null) typedArray = attribute.Type;
-                if (typedArray != attribute.Type)
+                var attributeType = attribute.Type;
+                if (typedArray == null) typedArray = attributeType;
+                if (typedArray != attributeType)
                 {
                     throw new Exception("BufferGeometryUtils: .mergeBufferAttributes() failed. BufferAttribute.array must be of consistent array types across matching attributes.");
                 }
 
-                if (itemSize == null) itemSize = attribute.ItemSize;
-                if (itemSize != attribute.ItemSize)
+                var attributeItemSize = attribute.ItemSize;
+                if (itemSize == null) itemSize = attributeItemSize;
+                if (itemSize != attributeItemSize)
                 {
                     throw new Exception("BufferGeometryUtils: .mergeBufferAttributes() failed. BufferAttribute.itemSize must be consistent across matching attributes.");
                 }
 
-                if (normalized == null) normalized = attribute.Normalized;
-                if (normalized != attribute.Normalized)
+                var attributeNormalized = attribute.Normalized;
+                if (normalized == null) normalized = attributeNormalized;
+                if (normalized != attributeNormalized)
                 {
                     throw new Exception("BufferGeometryUtils: .mergeBufferAttributes() failed. BufferAttribute.normalized must be consistent across matching attributes.");
                 }
@@ -449,10 +452,10 @@ namespace ThreeJs4Net.Examples.Jsm.Utils
 
             for (var i = 0; i < attributes.Length; ++i)
             {
-                var attribute = attributes[i] as BufferAttribute<T>;
+                var source = (attributes[i] as BufferAttribute<T>).Array;
 
-                attribute.Array.CopyTo(array, offset);
-                offset += attribute.Array.Length;
+                source.CopyTo(array, offset);
+                offset += source.Length;
             }
             
             return new BufferAttribute<T>(array, (int)itemSize, (bool)normalized);

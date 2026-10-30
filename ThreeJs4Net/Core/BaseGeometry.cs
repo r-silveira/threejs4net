@@ -7,7 +7,7 @@ namespace ThreeJs4Net.Core
 {
     public abstract class BaseGeometry : IDisposable
     {
-        public Guid Uuid = Guid.NewGuid();
+        public Guid Uuid = MathUtils.GenerateUuid();
         private bool _disposed = false;
         public int Id;
         public string Name;

@@ -383,10 +383,21 @@ namespace ThreeJs4Net.Math
 
             var te = m1.elements;
 
-            var m11 = te[0]; var m12 = te[4]; var m13 = te[8];
-            var m21 = te[1]; var m22 = te[5]; var m23 = te[9];
-            var m31 = te[2]; var m32 = te[6]; var m33 = te[10];
+            return SetFromRotationMatrix(
+                te[0], te[4], te[8],
+                te[1], te[5], te[9],
+                te[2], te[6], te[10]);
+        }
 
+        /// <summary>
+        /// Same as <see cref="SetFromRotationMatrix(Matrix4)"/> for the given upper 3x3 (row-major arguments),
+        /// so callers that already hold the values (e.g. Matrix4.Decompose) need no temporary Matrix4.
+        /// </summary>
+        internal Quaternion SetFromRotationMatrix(
+            float m11, float m12, float m13,
+            float m21, float m22, float m23,
+            float m31, float m32, float m33)
+        {
             var trace = m11 + m22 + m33;
 
             if (trace > 0)

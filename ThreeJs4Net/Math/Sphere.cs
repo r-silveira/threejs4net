@@ -16,7 +16,6 @@ namespace ThreeJs4Net.Math
         /// </summary>
         public Sphere()
         {
-            this.Center = new Vector3();
             this.Radius = -1;
         }
 

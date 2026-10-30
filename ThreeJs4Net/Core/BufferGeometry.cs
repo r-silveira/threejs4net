@@ -95,9 +95,9 @@ namespace ThreeJs4Net.Core
 
         public BufferAttribute<T> GetAttribute<T>(string name)
         {
-            if (this.Attributes.ContainsKey(name))
+            if (this.Attributes.TryGetValue(name, out var attribute))
             {
-                return this.Attributes[name] as BufferAttribute<T>;
+                return attribute as BufferAttribute<T>;
             }
 
             return null;
@@ -174,27 +174,33 @@ namespace ThreeJs4Net.Core
         /// </summary>
         public override void ComputeBoundingSphere()
         {
-            var box = new Box3();
-
             this.BoundingSphere ??= new Sphere();
 
             var position = this.Attributes["position"] as BufferAttribute<float>;
-            var positions = GetBuffer<float>("position");
+            var positions = position?.Array;
 
             if (positions != null)
             {
                 var center = this.BoundingSphere.Center;
-                box.SetFromBufferAttribute(position);
+                var itemSize = position.ItemSize;
+
+                Box3.ComputeBounds(positions, itemSize,
+                    out var minX, out var minY, out var minZ,
+                    out var maxX, out var maxY, out var maxZ);
 
                 //!! IMPLEMENT MORPH
 
-                box.GetCenter(center);
+                if (maxX < minX || maxY < minY || maxZ < minZ)
+                {
+                    center.Set(0, 0, 0);
+                }
+                else
+                {
+                    center.Set(minX + maxX, minY + maxY, minZ + maxZ).MultiplyScalar((float)0.5);
+                }
 
                 float maxRadiusSq = 0;
 
-                // Same arithmetic as center.DistanceToSquared(vector.FromBufferAttribute(position, i)),
-                // reading the backing array directly (ItemSize is a dictionary lookup).
-                var itemSize = position.ItemSize;
                 var count = positions.Length / itemSize;
                 float cX = center.X, cY = center.Y, cZ = center.Z;
 
@@ -226,7 +232,7 @@ namespace ThreeJs4Net.Core
             //!! NOT IMPLEMENTED YET:   var morphAttributesPosition = this.Attributes["position"] as BufferAttribute<float>;
             Debug.Assert(position != null);
 
-            var positions = GetBuffer<float>("position");
+            var positions = position?.Array;
 
 
             if (positions != null)
@@ -531,17 +537,17 @@ namespace ThreeJs4Net.Core
         public override void ApplyMatrix4(Matrix4 matrix)
         {
 
-            if (this.Attributes.ContainsKey("position"))
+            if (this.Attributes.TryGetValue("position", out var positionAttribute))
             {
-                var position = (BufferAttribute<float>)this.Attributes["position"];
+                var position = (BufferAttribute<float>)positionAttribute;
 
                 matrix.ApplyToVector3Array(position.Array);
                 position.needsUpdate = true;
             }
 
-            if (this.Attributes.ContainsKey("normal"))
+            if (this.Attributes.TryGetValue("normal", out var normalAttribute))
             {
-                var normal = (BufferAttribute<float>)this.Attributes["normal"];
+                var normal = (BufferAttribute<float>)normalAttribute;
 
                 var normalMatrix = new Matrix3().GetNormalMatrix(matrix);
 

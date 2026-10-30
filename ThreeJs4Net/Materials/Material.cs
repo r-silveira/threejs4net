@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -11,7 +10,7 @@ namespace ThreeJs4Net.Materials
         private static int materialIdCount;
         private bool _disposed;
         public int Id = materialIdCount++;
-        public Guid Uuid = Guid.NewGuid();
+        public Guid Uuid = ThreeJs4Net.Math.MathUtils.GenerateUuid();
         public Hashtable Defines = new Hashtable();
         public string Name;
         public string type = "Material";

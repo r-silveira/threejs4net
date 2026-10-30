@@ -11,7 +11,7 @@ namespace ThreeJs4Net.Extras.Core
     [Serializable]
     public class Shape : Path
     {
-        public Guid Uuid = Guid.NewGuid();
+        public Guid Uuid = MathUtils.GenerateUuid();
 
         public List<Path> Holes;
 

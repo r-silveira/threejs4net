@@ -40,18 +40,28 @@ namespace ThreeJs4Net.Math
         #region --- Already in R116 ---
         public Box3 SetFromBufferAttribute(BufferAttribute<float> attribute)
         {
-            var minX = float.PositiveInfinity;
-            var minY = float.PositiveInfinity;
-            var minZ = float.PositiveInfinity;
+            ComputeBounds(attribute.Array, attribute.ItemSize,
+                out var minX, out var minY, out var minZ,
+                out var maxX, out var maxY, out var maxZ);
 
-            var maxX = float.NegativeInfinity;
-            var maxY = float.NegativeInfinity;
-            var maxZ = float.NegativeInfinity;
+            this.Min.Set(minX, minY, minZ);
+            this.Max.Set(maxX, maxY, maxZ);
 
-            // Read Array/ItemSize once: each access is a dictionary lookup, and the previous loop did
-            // eight of them per vertex (Count + GetX/GetY/GetZ).
-            var array = attribute.Array;
-            var itemSize = attribute.ItemSize;
+            return this;
+        }
+
+        internal static void ComputeBounds(float[] array, int itemSize,
+            out float minX, out float minY, out float minZ,
+            out float maxX, out float maxY, out float maxZ)
+        {
+            minX = float.PositiveInfinity;
+            minY = float.PositiveInfinity;
+            minZ = float.PositiveInfinity;
+
+            maxX = float.NegativeInfinity;
+            maxY = float.NegativeInfinity;
+            maxZ = float.NegativeInfinity;
+
             var count = array.Length / itemSize;
 
             for (int i = 0, o = 0; i < count; i++, o += itemSize)
@@ -68,11 +78,6 @@ namespace ThreeJs4Net.Math
                 if (y > maxY) maxY = y;
                 if (z > maxZ) maxZ = z;
             }
-
-            this.Min.Set(minX, minY, minZ);
-            this.Max.Set(maxX, maxY, maxZ);
-
-            return this;
         }
 
         public Box3 ApplyMatrix4(Matrix4 matrix)
@@ -83,22 +88,48 @@ namespace ThreeJs4Net.Math
                 return this;
             }
 
-            // NOTE: I am using A binary pattern to specify all 2^3 combinations below
-            var points = new List<Vector3>()
-            {
-                new Vector3(Min.X, Min.Y, Min.Z).ApplyMatrix4(matrix), // 000
-                new Vector3(Min.X, Min.Y, Max.Z).ApplyMatrix4(matrix), // 001
-                new Vector3(Min.X, Max.Y, Min.Z).ApplyMatrix4(matrix), // 010
-                new Vector3(Min.X, Max.Y, Max.Z).ApplyMatrix4(matrix), // 011
-                new Vector3(Max.X, Min.Y, Min.Z).ApplyMatrix4(matrix), // 100
-                new Vector3(Max.X, Min.Y, Max.Z).ApplyMatrix4(matrix), // 101
-                new Vector3(Max.X, Max.Y, Min.Z).ApplyMatrix4(matrix), // 110
-                new Vector3(Max.X, Max.Y, Max.Z).ApplyMatrix4(matrix), // 111
-            };
+            float x0 = Min.X, y0 = Min.Y, z0 = Min.Z;
+            float x1 = Max.X, y1 = Max.Y, z1 = Max.Z;
 
-            this.SetFromPoints(points);
+            var e = matrix.Elements;
+            float e0 = e[0], e1 = e[1], e2 = e[2];
+            float e4 = e[4], e5 = e[5], e6 = e[6];
+            float e8 = e[8], e9 = e[9], e10 = e[10];
+            float e12 = e[12], e13 = e[13], e14 = e[14];
+
+            float minX = float.PositiveInfinity, minY = float.PositiveInfinity, minZ = float.PositiveInfinity;
+            float maxX = float.NegativeInfinity, maxY = float.NegativeInfinity, maxZ = float.NegativeInfinity;
+
+            // NOTE: I am using A binary pattern to specify all 2^3 combinations below
+            ExpandByCorner(x0, y0, z0); // 000
+            ExpandByCorner(x0, y0, z1); // 001
+            ExpandByCorner(x0, y1, z0); // 010
+            ExpandByCorner(x0, y1, z1); // 011
+            ExpandByCorner(x1, y0, z0); // 100
+            ExpandByCorner(x1, y0, z1); // 101
+            ExpandByCorner(x1, y1, z0); // 110
+            ExpandByCorner(x1, y1, z1); // 111
+
+            this.Min.Set(minX, minY, minZ);
+            this.Max.Set(maxX, maxY, maxZ);
 
             return this;
+
+            void ExpandByCorner(float lX, float lY, float lZ)
+            {
+                var x = e0 * lX + e4 * lY + e8 * lZ + e12;
+                var y = e1 * lX + e5 * lY + e9 * lZ + e13;
+                var z = e2 * lX + e6 * lY + e10 * lZ + e14;
+
+                // Vector3.Min / Vector3.Max
+                if (minX > x) minX = x;
+                if (minY > y) minY = y;
+                if (minZ > z) minZ = z;
+
+                if (maxX < x) maxX = x;
+                if (maxY < y) maxY = y;
+                if (maxZ < z) maxZ = z;
+            }
         }
 
         public Vector3 ClampPoint(Vector3 point, Vector3 target = null)

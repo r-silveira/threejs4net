@@ -49,7 +49,7 @@ namespace ThreeJs4Net.Core
         public Object3D Parent;
         public string Tag;
         public object UserData;
-        public Guid Uuid = Guid.NewGuid();
+        public Guid Uuid = MathUtils.GenerateUuid();
         private readonly PreventCircularUpdate preventCircularUpdate = new PreventCircularUpdate();
         #endregion
 

@@ -9,7 +9,7 @@ namespace ThreeJs4Net.Core
     public class Geometry : BaseGeometry, ICloneable
     {
         protected static int GeometryIdCount;
-        public Guid uuid = Guid.NewGuid();
+        public Guid uuid = MathUtils.GenerateUuid();
 
         public List<Vector3> Vertices = new List<Vector3>();
         public List<Color> Colors = new List<Color>(); // one-to-one vertex colors, used in Points and Line
